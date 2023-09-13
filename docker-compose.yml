@@ -18,6 +18,14 @@ services:
     networks:
       - marsy-net
 
+  command-service:
+    build:
+      context: ./command-service
+    ports:
+      - "8083:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge
