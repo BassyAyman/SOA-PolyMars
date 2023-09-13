@@ -26,6 +26,14 @@ services:
     networks:
       - marsy-net
 
+  launchpad-service:
+    build:
+      context: ./launchpad-service
+    ports:
+      - "8084:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge

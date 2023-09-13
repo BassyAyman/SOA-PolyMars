@@ -44,6 +44,12 @@ echo "Preparing Command Service..."
 cd command-service
 mvn clean install
 
+cd ..
+
+echo "Preparing Launcher Pad Service..."
+cd launchpad-service
+mvn clean install
+
 # For Python/Flask: pip install -r requirements.txt
 # For Node.js: npm install
 # For C++/WebSocket: make
