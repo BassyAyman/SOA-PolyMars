@@ -1,0 +1,68 @@
+### MAVEN ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+**/.mvn/wrapper/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+**/out/
+**/target/
+**/build/
+**/javadoc/
+**/apidocs/
+**/testapidocs/
+**/spring-shell.log
+**/logs/
+
+### STS (eclipse case for spring) ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+**/.idea/
+**/*.iws
+**/*.ipr
+**/*.iml
+**/.gradle
+**/local.properties
+.idea/
+*.iml
+
+# IntelliJ
+out/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### Java template
+# Compiled class file
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### VS Code ###
+.vscode/
+
+### MacOS ###
+**/.DS_Store
+
+### Mono build ###
+**/*.exe
