@@ -7,6 +7,7 @@ pom.xml.next
 **/.mvn/wrapper/
 !**/src/main/**/target/
 !**/src/test/**/target/
+.mvn/
 
 **/out/
 **/target/
