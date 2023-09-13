@@ -1,4 +1,4 @@
-package com.marsy.commandservice;
+package com.marsy.teamb.commandservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

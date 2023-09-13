@@ -1,4 +1,4 @@
-package com.marsy.commandservice;
+package com.marsy.teamb.commandservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
