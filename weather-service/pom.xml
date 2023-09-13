@@ -34,6 +34,7 @@
     </dependencies>
 
     <build>
+        <finalName>weather-service</finalName> <!-- no version after name for .jar script -->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

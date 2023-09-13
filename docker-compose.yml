@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  # Weather Monitoring Service
+  weather-service:
+    build:
+      context: ./weather-service
+    ports:
+      - "8081:8080"
+    networks:
+      - marsy-net
+
+networks:
+  marsy-net:
+    driver: bridge
+
