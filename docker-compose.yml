@@ -10,6 +10,22 @@ services:
     networks:
       - marsy-net
 
+  rocket-service:
+    build:
+      context: ./rocket-service
+    ports:
+      - "8082:8080"
+    networks:
+      - marsy-net
+
+  command-service:
+    build:
+      context: ./command-service
+    ports:
+      - "8083:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge
