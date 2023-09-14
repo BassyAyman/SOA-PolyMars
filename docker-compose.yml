@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # Weather Monitoring Service
   weather-service:
+    container_name: weather-service
     build:
       context: ./weather-service
     ports:
@@ -11,6 +12,7 @@ services:
       - marsy-net
 
   rocket-service:
+    container_name: rocket-service
     build:
       context: ./rocket-service
     ports:
@@ -19,6 +21,7 @@ services:
       - marsy-net
 
   command-service:
+    container_name: command-service
     build:
       context: ./command-service
     ports:
@@ -27,6 +30,7 @@ services:
       - marsy-net
 
   launchpad-service:
+    container_name: launchpad-service
     build:
       context: ./launchpad-service
     ports:
