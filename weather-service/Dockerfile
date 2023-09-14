@@ -16,5 +16,8 @@ COPY --chown=$APPLICATION_USER:root target/$SERVICE_NAME.jar /app/$SERVICE_NAME.
 # Set working directory
 WORKDIR /app
 
+# Expose port 8080
+EXPOSE 8080
+
 # Run the jar
 CMD ["java", "-jar", "weather-service.jar"]
