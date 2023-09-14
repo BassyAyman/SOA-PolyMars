@@ -21,7 +21,7 @@ public class LaunchController {
 
     @GetMapping("/rocketCheck")
     public ResponseEntity<String> checkLaunching() {
-        String resultOnLaunch = pad.canLauchRocket();
+        String resultOnLaunch = pad.canLaunchRocket();
         return ResponseEntity.ok(resultOnLaunch);
     }
 }

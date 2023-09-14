@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 public class LauncherPad implements CheckLaunch {
     private static final int dataToCheck = 100;
     @Override
-    public String canLauchRocket() {
+    public String canLaunchRocket() {
         // TODO comunique avec le service de mathieu et check la data, si bon ok sinon pas ok
         return "OK";
     }
