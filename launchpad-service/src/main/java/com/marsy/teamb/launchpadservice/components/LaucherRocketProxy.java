@@ -5,15 +5,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Component
 public class LaucherRocketProxy implements RocketProxy {
 
-    private final static String rocketApiUrl = "http://localhost:8082/";
+    private static final Logger LOGGER = Logger.getLogger(LaucherRocketProxy.class.getSimpleName());
+
+    private final static String rocketApiUrl = "http://rocket-service:8080";
     private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public String retrieveRocketStatus() {
-        ResponseEntity<String> response = restTemplate.getForEntity(rocketApiUrl+"rocket-status", String.class);
+
+        LOGGER.log(Level.INFO, "Launchpad's rocket proxy try to retrieve rocket status...");
+
+        ResponseEntity<String> response = restTemplate.getForEntity(rocketApiUrl+"/rocket-status", String.class);
+
+        LOGGER.log(Level.INFO, "Launchpad's rocket proxy retrieved rocket status: "+response);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
