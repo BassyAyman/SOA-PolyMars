@@ -1,14 +1,15 @@
 package com.marsy.teamb.launchpadservice.components;
 
 import com.marsy.teamb.launchpadservice.interfaces.CheckLaunch;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Controller
+@Component
 public class LauncherPad implements CheckLaunch {
-    private static final int dataToCheck = 100;
+    @Autowired
+    private LaucherRocketProxy proxy;
     @Override
     public String canLaunchRocket() {
-        // TODO comunique avec le service de mathieu et check la data, si bon ok sinon pas ok
-        return "OK";
+        return proxy.retrieveRocketStatus();
     }
 }

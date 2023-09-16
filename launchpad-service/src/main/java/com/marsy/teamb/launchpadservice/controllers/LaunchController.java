@@ -15,9 +15,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class LaunchController {
 
-    public static final String BASE_URI = "/";
+    static final String BASE_URI = "/";
     @Autowired
-    public LauncherPad pad;
+    private LauncherPad pad;
 
     @GetMapping("/rocketCheck")
     public ResponseEntity<String> checkLaunching() {
