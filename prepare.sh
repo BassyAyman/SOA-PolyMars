@@ -51,3 +51,13 @@ cd launchpad-service
 mvn clean install
 
 cd ..
+
+echo "Starting Docker containers..."
+docker-compose up --build -d # Use '-d' for detached mode
+
+source ./framework.sh
+
+wait_on_health http://localhost:8081
+wait_on_health http://localhost:8082
+wait_on_health http://localhost:8083
+wait_on_health http://localhost:8084

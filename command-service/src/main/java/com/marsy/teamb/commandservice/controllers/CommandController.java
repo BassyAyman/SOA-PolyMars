@@ -19,13 +19,11 @@ public class CommandController {
     private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
 
     @GetMapping("/launch")
-    public void rocketLaunch(){
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.log(Level.INFO, "Preparing for launching...");
-            String result = command.launchRocket();
-            LOGGER.log(Level.INFO, result);
-            ResponseEntity.ok(result);
-        }
+    public ResponseEntity<String> rocketLaunch(){
+        LOGGER.log(Level.INFO, "Preparing for launching...");
+        String result = command.launchRocket();
+        LOGGER.log(Level.INFO, "Command center decision: \"" + result + "\"");
+        return ResponseEntity.ok(result);
     }
 
 }
