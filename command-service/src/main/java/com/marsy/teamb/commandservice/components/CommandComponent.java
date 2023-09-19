@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 public class CommandComponent implements ICommand {
 
     final static String WEATHER_SERVICE = "http://weather-service:8080";
+    final static String LAUNCHPAD_SERVICE = "http://launchpad-service:8080";
 
     private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
     private final RestTemplate restTemplate = new RestTemplate();
@@ -26,7 +27,11 @@ public class CommandComponent implements ICommand {
             return "NO GO - Something wrong with weather !";
         }
         // Launchpad - Rocket
-        // TODO
+        LOGGER.log(Level.INFO, "Rocket-Launchpad check...");
+        response = restTemplate.getForEntity(LAUNCHPAD_SERVICE + "/rocketCheck", String.class);
+        if (!Objects.equals(response.getBody(), "OK")) {
+            return "NO GO - Something wrong with rocket or launchpad !";
+        }
         return "GO Order, everything ok";
     }
 
