@@ -8,9 +8,12 @@ public class MetricsDTO {
 
     public final double fuelVolume;
 
-    public MetricsDTO(double altitude, double velocity, double fuelVolume) {
+    public final double elapsedTime;
+
+    public MetricsDTO(double altitude, double velocity, double fuelVolume, double elapsedTime) {
         this.altitude = altitude;
         this.velocity = velocity;
         this.fuelVolume = fuelVolume;
+        this.elapsedTime = elapsedTime;
     }
 }

@@ -27,19 +27,26 @@ public class RocketController {
     Sensors sensors;
 
     @GetMapping("/rocketStatus")
-    public ResponseEntity<String> rocketLaunch() {
-        LOGGER.log(Level.INFO, "Rocket status are ok");
+    public ResponseEntity<String> rocketStatus() {
+        LOGGER.log(Level.INFO, "Rocket status is ok");
         return ResponseEntity.ok("OK");
     }
 
     @GetMapping("/rocketMetrics")
     public ResponseEntity<MetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new MetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume()));
+        return ResponseEntity.ok(new MetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime()));
     }
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        LOGGER.log(Level.INFO, "[INTERNAL] Payload detaching");
         return ResponseEntity.ok("OK");
+    }
+
+    @PutMapping("/launchRocket")
+    public ResponseEntity<String> launchRocket() {
+        Sensors.startRocketClock();
+        return ResponseEntity.ok("Ignition");
     }
 
 }
