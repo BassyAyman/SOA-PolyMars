@@ -39,6 +39,7 @@ public class RocketController {
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        LOGGER.log(Level.INFO, "[INTERNAL] Payload detaching");
         return ResponseEntity.ok("OK");
     }
 

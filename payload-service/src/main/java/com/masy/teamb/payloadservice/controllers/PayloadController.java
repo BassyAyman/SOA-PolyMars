@@ -28,7 +28,6 @@ public class PayloadController {
         if (!result){
             ResponseEntity.ok("NOT OK, bad orbit");
         }
-        // TODO
         return ResponseEntity.ok("OK, good orbit");
     }
 
