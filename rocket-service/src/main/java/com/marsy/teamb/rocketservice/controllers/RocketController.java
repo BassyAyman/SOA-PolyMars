@@ -21,7 +21,7 @@ public class RocketController {
     private static final Logger LOGGER = Logger.getLogger(RocketController.class.getSimpleName());
 
     @GetMapping("/rocket-status")
-    public ResponseEntity<String> rocketLaunch(){
+    public ResponseEntity<String> rocketLaunch() {
         LOGGER.log(Level.INFO, "Rocket status are ok");
         return ResponseEntity.ok("OK");
     }

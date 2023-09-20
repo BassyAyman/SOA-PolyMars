@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class LauncherPad implements CheckLaunch {
     @Autowired
     private LaucherRocketProxy proxy;
+
     @Override
     public String canLaunchRocket() {
         return proxy.retrieveRocketStatus();
