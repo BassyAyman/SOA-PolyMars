@@ -53,9 +53,13 @@ mvn clean install
 cd ..
 
 echo "Starting Docker containers..."
-docker-compose up --build -d # Use '-d' for detached mode
+docker-compose up --build -d
 
-source ./framework.sh
+if [ -e "framework.sh" ]; then
+  chmod +x ./framework.sh
+  source ./framework.sh
+else echo "framework.sh not found."
+fi
 
 wait_on_health http://localhost:8081
 wait_on_health http://localhost:8082
