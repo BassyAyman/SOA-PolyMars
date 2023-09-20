@@ -10,6 +10,7 @@
 * `launchpad-service` deployed on `http://localhost:8084`
 
 ## Scripts
+
 * `build-all.sh` builds and starts all the services
 * `follow-logs.sh` displays logs of all services from the moment the script is launched
 * `run.sh` executes the rocket launch scenario

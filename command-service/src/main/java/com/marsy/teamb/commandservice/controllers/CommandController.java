@@ -13,13 +13,12 @@ import java.util.logging.Logger;
 @RestController
 public class CommandController {
 
+    private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
     @Autowired
     private ICommand command;
 
-    private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
-
     @GetMapping("/launch")
-    public ResponseEntity<String> rocketLaunch(){
+    public ResponseEntity<String> rocketLaunch() {
         LOGGER.log(Level.INFO, "Preparing for launching...");
         String result = command.launchRocket();
         LOGGER.log(Level.INFO, "Command center decision: \"" + result + "\"");

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class WeatherService implements WeatherStatus {
 
     private static final Logger LOGGER = Logger.getLogger(WeatherService.class.getSimpleName());
-    private static final String[] WEATHER_CONDITIONS = {"Sunny", "Rainy", "Cloudy", "Windy", "Snowy"};
+    private static final String[] WEATHER_CONDITIONS = {"Sunny", "Rainy", "Windy", "Snowy"};
 
     private static String currentWeather() {
         try {

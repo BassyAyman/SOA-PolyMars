@@ -21,7 +21,7 @@ public class LaucherRocketProxy implements RocketProxy {
 
         LOGGER.log(Level.INFO, "Call to rocket-service: asking for status");
 
-        ResponseEntity<String> response = restTemplate.getForEntity(rocketApiUrl+"/rocket-status", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(rocketApiUrl + "/rocketStatus", String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
