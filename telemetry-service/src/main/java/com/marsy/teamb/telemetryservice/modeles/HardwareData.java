@@ -8,6 +8,13 @@ public class HardwareData {
     private double velocity;
     private double fuelVolume;
 
+    public HardwareData() {}
+
+    public HardwareData(double altitude, double velocity, double fuelVolume){
+        this.altitude = altitude;
+        this.velocity = velocity;
+        this.fuelVolume = fuelVolume;
+    }
     public double getAltitude() {
         return altitude;
     }
