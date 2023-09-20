@@ -21,13 +21,13 @@ public class CommandComponent implements ICommand {
 
     public String launchRocket() {
         // Weather
-        LOGGER.log(Level.INFO, "Weather check...");
+        LOGGER.log(Level.INFO, "Call to weather-service: readiness check");
         ResponseEntity<String> response = restTemplate.getForEntity(WEATHER_SERVICE + "/checkWeather", String.class);
         if (!Objects.equals(response.getBody(), "OK")) {
             return "NO GO - Something wrong with weather !";
         }
         // Launchpad - Rocket
-        LOGGER.log(Level.INFO, "Rocket-Launchpad check...");
+        LOGGER.log(Level.INFO, "Call to launchpad-service: readiness check");
         response = restTemplate.getForEntity(LAUNCHPAD_SERVICE + "/rocketCheck", String.class);
         if (!Objects.equals(response.getBody(), "OK")) {
             return "NO GO - Something wrong with rocket or launchpad !";

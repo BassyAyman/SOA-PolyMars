@@ -19,7 +19,7 @@ public class LaucherRocketProxy implements RocketProxy {
     @Override
     public String retrieveRocketStatus() {
 
-        LOGGER.log(Level.INFO, "Rocket status check...");
+        LOGGER.log(Level.INFO, "Call to rocket-service: asking for status");
 
         ResponseEntity<String> response = restTemplate.getForEntity(rocketApiUrl+"/rocket-status", String.class);
 

@@ -22,7 +22,7 @@ public class RocketController {
 
     @GetMapping("/rocket-status")
     public ResponseEntity<String> rocketLaunch(){
-        LOGGER.log(Level.INFO, "Rocket ready to launch");
+        LOGGER.log(Level.INFO, "Rocket status are ok");
         return ResponseEntity.ok("OK");
     }
 }
