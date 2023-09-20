@@ -47,6 +47,15 @@ services:
     networks:
       - marsy-net
 
+  telemetry-service:
+    container_name: telemetry-service
+    build:
+      context: ./telemetry-service
+    ports:
+      - "8086:8080"
+    networks:
+      - marsy-net
+
   staging-service:
     container_name: staging-service
     build:

@@ -14,14 +14,14 @@ import java.util.logging.Logger;
 public class HardwareDataSenderProxy implements HardwareRocketSender {
     private static final Logger LOGGER = Logger.getLogger(HardwareDataSenderProxy.class.getSimpleName());
 
-    private final static String staggApiUrl = "http://staging-service:8080";
-    private final static String payloadApiUrl = "http://payload-service:8080";
+    private final static String STAGING_API_URL = "http://staging-service:8080";
+    private final static String PAYLOAD_API_URL = "http://payload-service:8080";
     private RestTemplate restTemplate = new RestTemplate();
     @Override
     public void sendFuelMetric(HardwareData data) {
         LOGGER.log(Level.INFO," sending the level of fuel "+data.getFuelVolume()+" to the staging");
         FuelDataDTO fuelDataDto = FuelDataDTO.builder().fuelVolume(data.getFuelVolume()).build();
-        restTemplate.postForEntity(staggApiUrl+"/fuelState", fuelDataDto, Object.class);
+        restTemplate.postForEntity(STAGING_API_URL+"/fuelState", fuelDataDto, Object.class);
     }
     @Override
     public void sendOrbitMetric(HardwareData data) {
@@ -30,6 +30,6 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
                 .altitude(data.getAltitude())
                 .build();
         LOGGER.log(Level.INFO," sending orbit information "+orbiteDataDto.toString()+ " to the staging");
-        restTemplate.postForEntity(payloadApiUrl+"/orbitState", orbiteDataDto, Object.class);
+        restTemplate.postForEntity(PAYLOAD_API_URL+"/orbitState", orbiteDataDto, Object.class);
     }
 }
