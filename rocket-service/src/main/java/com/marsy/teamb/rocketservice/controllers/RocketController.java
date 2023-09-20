@@ -1,7 +1,6 @@
 package com.marsy.teamb.rocketservice.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +11,6 @@ import java.util.logging.Logger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(path = RocketController.BASE_URI, produces = APPLICATION_JSON_VALUE)
-@CrossOrigin
 @RestController
 public class RocketController {
 
