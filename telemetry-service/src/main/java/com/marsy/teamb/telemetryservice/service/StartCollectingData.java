@@ -21,13 +21,14 @@ public class StartCollectingData {
     @Autowired
     private HardwareDataSenderProxy sender;
 
-    public void startTelemtryService() {
+    public void startTelemetryService() throws InterruptedException {
         LOGGER.log(Level.INFO,"Start of the Telemetry Service ---------- ***");
         HardwareData dataRocketMetrics;
         while (true){
             dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
             LOGGER.log(Level.INFO, "collected data from rocket: "+ dataRocketMetrics.toString());
             // TODO envoyer les requetes une a une au autre service
+            Thread.sleep(1000);
         }
     }
 

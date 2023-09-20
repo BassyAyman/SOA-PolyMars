@@ -17,7 +17,7 @@ public class TelemetryController {
     private StartCollectingData starterService;
 
     @PutMapping("/startTelemetryService")
-    public void startTelemetryService(){
-        starterService.startTelemtryService();
+    public void startTelemetryService() throws InterruptedException {
+        starterService.startTelemetryService();
     }
 }
