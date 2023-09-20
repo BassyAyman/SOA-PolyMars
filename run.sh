@@ -14,6 +14,9 @@ if [ -e "follow-logs.sh" ]; then
   elif grep -q Microsoft /proc/version; then
     # In WSL, just run the script in the current terminal
     ./follow-logs.sh
+  # Detect if running in Git Bash
+  elif [ ! -z "$MSYSTEM" ]; then
+    start bash -c "./follow-logs.sh; exec bash"
   else
     echo "No known terminal emulator found. Cannot open a new terminal."
   fi
