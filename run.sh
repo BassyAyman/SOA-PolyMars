@@ -10,6 +10,10 @@ if [ -e "follow-logs.sh" ]; then
     konsole -e "./follow-logs.sh; bash"
   elif command -v xfce4-terminal > /dev/null; then
     xfce4-terminal -e "./follow-logs.sh; bash"
+  # Detect if running in WSL
+  elif grep -q Microsoft /proc/version; then
+    # In WSL, just run the script in the current terminal
+    ./follow-logs.sh
   else
     echo "No known terminal emulator found. Cannot open a new terminal."
   fi
