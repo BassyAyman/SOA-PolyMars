@@ -9,7 +9,7 @@
 		<version>3.1.3</version>
 	</parent>
 	<groupId>com.marsy.teamb</groupId>
-	<artifactId>rocket-service</artifactId>
+	<artifactId>staging-service</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>staging-service</name>
 	<description>staging-service</description>
@@ -60,6 +60,10 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.15</version> <!-- Use the latest version -->
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 	</dependencies>
 
