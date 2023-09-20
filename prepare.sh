@@ -72,3 +72,4 @@ wait_on_health http://localhost:8082
 wait_on_health http://localhost:8083
 wait_on_health http://localhost:8084
 wait_on_health http://localhost:8085
+wait_on_health http://localhost:8087

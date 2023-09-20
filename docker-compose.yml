@@ -47,6 +47,15 @@ services:
     networks:
       - marsy-net
 
+  staging-service:
+    container_name: staging-service
+    build:
+      context: ./staging-service
+    ports:
+      - "8087:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge
