@@ -58,6 +58,12 @@ mvn clean install
 
 cd ..
 
+echo "Preparing Staging Service..."
+cd staging-service
+mvn clean install
+
+cd ..
+
 echo "Starting Docker containers..."
 docker-compose up --build -d
 
