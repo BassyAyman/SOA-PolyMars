@@ -38,6 +38,15 @@ services:
     networks:
       - marsy-net
 
+  payload-service:
+    container_name: payload-service
+    build:
+      context: ./payload-service
+    ports:
+      - "8085:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge

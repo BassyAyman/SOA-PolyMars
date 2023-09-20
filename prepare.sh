@@ -52,6 +52,12 @@ mvn clean install
 
 cd ..
 
+echo "Preparing Payload Service..."
+cd payload-service
+mvn clean install
+
+cd ..
+
 echo "Starting Docker containers..."
 docker-compose up --build -d
 
