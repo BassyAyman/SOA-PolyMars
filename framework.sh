@@ -6,9 +6,9 @@ function wait_on_health()  # $1 is URL of the Spring service with actuator on, $
 {
    until [ $(curl --silent "$1"/actuator/health | grep UP -c ) == 1 ]
    do
-      echo "no service ready at $1"
+      echo "Service $2 is ready at $1"
       sleep 3
    done
-   echo "a service is up and running at $1"
+   echo "Service $2 is up and running at $1"
 }
 

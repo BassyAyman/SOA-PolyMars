@@ -73,9 +73,9 @@ if [ -e "framework.sh" ]; then
 else echo "framework.sh not found."
 fi
 
-wait_on_health http://localhost:8081
-wait_on_health http://localhost:8082
-wait_on_health http://localhost:8083
-wait_on_health http://localhost:8084
-wait_on_health http://localhost:8085
-wait_on_health http://localhost:8087
+wait_on_health http://localhost:8081 weather-service
+wait_on_health http://localhost:8082 rocket-service
+wait_on_health http://localhost:8083 command-service
+wait_on_health http://localhost:8084 launchpad-service
+wait_on_health http://localhost:8085 payload-service
+wait_on_health http://localhost:8087 staging-service
