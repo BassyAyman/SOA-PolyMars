@@ -2,6 +2,7 @@ package com.marsy.teamb.commandservice.interfaces;
 
 public interface ICommand {
 
-    String launchRocket();
+    String readinessPoll();
+    void launchRocket();
 
 }

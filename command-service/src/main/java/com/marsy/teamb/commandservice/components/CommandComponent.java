@@ -20,7 +20,7 @@ public class CommandComponent implements ICommand {
     private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String launchRocket() {
+    public String readinessPoll() {
         // Telemetry
         LOGGER.log(Level.INFO, "Start the Telemetry monitoring");
         restTemplate.put(TELEMETRY_SERVICE+"/startTelemetryService",null);
@@ -37,6 +37,11 @@ public class CommandComponent implements ICommand {
             return "NO GO - Something wrong with rocket or launchpad !";
         }
         return "GO Order, everything ok";
+    }
+
+    public void launchRocket() {
+        LOGGER.log(Level.INFO, "Call to launchpad-service: launch rocket");
+        restTemplate.put(LAUNCHPAD_SERVICE+"/launchRocket",null);
     }
 
 }

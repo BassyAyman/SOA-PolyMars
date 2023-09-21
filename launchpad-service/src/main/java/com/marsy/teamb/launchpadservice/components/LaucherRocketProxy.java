@@ -29,4 +29,10 @@ public class LaucherRocketProxy implements RocketProxy {
             return "Rocket is not OK!";
         }
     }
+
+    @Override
+    public void launchRocket() {
+        LOGGER.log(Level.INFO, "Call to rocket-service: launch rocket");
+        restTemplate.put(rocketApiUrl+"/launchRocket", null);
+    }
 }

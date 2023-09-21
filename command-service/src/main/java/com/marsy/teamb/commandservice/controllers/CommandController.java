@@ -20,8 +20,11 @@ public class CommandController {
     @GetMapping("/launch")
     public ResponseEntity<String> rocketLaunch() {
         LOGGER.log(Level.INFO, "Preparing for launching...");
-        String result = command.launchRocket();
+        String result = command.readinessPoll();
         LOGGER.log(Level.INFO, "Command center decision: \"" + result + "\"");
+        if (result.equals("GO Order, everything ok")) {
+            command.launchRocket();
+        }
         return ResponseEntity.ok(result);
     }
 

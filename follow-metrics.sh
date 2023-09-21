@@ -7,7 +7,7 @@ send_get_request() {
     fuelVolume=$(echo "$response" | sed -n 's/.*"fuelVolume":\([^,]*\).*/\1/p')
     elapsedTime=$(echo "$response" | sed -n 's/.*"elapsedTime":\([^}]*\).*/\1/p')
 
-    printf "\rAltitude: %.2f m | Velocity: %.2f m/s | Fuel: %.2f m^3 | Elapsed Time: %s s" "$altitude" "$velocity" "$fuelVolume" "$elapsedTime"
+    printf "\rAltitude: %.2f m | Velocity: %.2f m/s | Fuel: %.2f m^3 | Elapsed Time: %.2f s" "$altitude" "$velocity" "$fuelVolume" "$elapsedTime"
 }
 
 while true; do

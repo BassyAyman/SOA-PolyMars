@@ -45,6 +45,7 @@ public class RocketController {
 
     @PutMapping("/launchRocket")
     public ResponseEntity<String> launchRocket() {
+        LOGGER.log(Level.INFO, "Ignition...");
         Sensors.startRocketClock();
         return ResponseEntity.ok("Ignition");
     }
