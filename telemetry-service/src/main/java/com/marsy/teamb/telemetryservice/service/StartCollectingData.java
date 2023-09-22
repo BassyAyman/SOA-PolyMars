@@ -4,6 +4,7 @@ import com.marsy.teamb.telemetryservice.components.HardwareDataCollectorProxy;
 import com.marsy.teamb.telemetryservice.components.HardwareDataSenderProxy;
 import com.marsy.teamb.telemetryservice.modeles.HardwareData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Level;
@@ -21,14 +22,21 @@ public class StartCollectingData {
     @Autowired
     private HardwareDataSenderProxy sender;
 
+    private boolean started = false;
+
+    @Async
     public void startTelemetryService() throws InterruptedException {
         LOGGER.log(Level.INFO,"Start of the Telemetry Service ---------- ***");
+        if(started){
+            return;
+        }
+        started = true;
         HardwareData dataRocketMetrics;
         while (true){
             dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
             LOGGER.log(Level.INFO, "collected data from rocket: "+ dataRocketMetrics.toString());
             // TODO envoyer les requetes une a une au autre service
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
     }
 
