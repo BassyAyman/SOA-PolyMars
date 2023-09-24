@@ -1,14 +1,12 @@
 package com.marsy.teamb.stagingservice.components.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class FuelDataDTO {
     private double fuelVolume;
-
-    public double getFuelVolume() {
-        return fuelVolume;
-    }
 
     public void setFuelVolume(double fuelVolume) {
         this.fuelVolume = fuelVolume;
