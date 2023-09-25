@@ -35,7 +35,8 @@ public class StartCollectingData {
         while (true){
             dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
             LOGGER.log(Level.INFO, "collected data from rocket: "+ dataRocketMetrics.toString());
-            // TODO envoyer les requetes une a une au autre service
+            sender.sendFuelMetric(dataRocketMetrics);
+            sender.sendOrbitMetric(dataRocketMetrics);
             Thread.sleep(3000);
         }
     }
