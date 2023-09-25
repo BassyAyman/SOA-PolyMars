@@ -16,8 +16,6 @@ public class FuelDataDTO {
 
     @Override
     public String toString() {
-        return "FuelDataDTO{" +
-                "fuelVolume=" + fuelVolume +
-                '}';
+        return "fuelVolume=" + fuelVolume + " ";
     }
 }

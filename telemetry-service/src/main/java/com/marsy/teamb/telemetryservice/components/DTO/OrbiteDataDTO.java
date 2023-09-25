@@ -25,9 +25,7 @@ public class OrbiteDataDTO {
 
     @Override
     public String toString() {
-        return "OrbiteDataDTO{" +
-                "altitude=" + altitude +
-                ", velocity=" + velocity +
-                '}';
+        return "altitude=" + altitude +
+                ", velocity=" + velocity +" ";
     }
 }
