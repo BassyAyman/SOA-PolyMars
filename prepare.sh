@@ -2,12 +2,12 @@
 
 set -e
 
-# Directory
-if [ ! -d "app" ]; then
-  mkdir app
-else
-  echo "Directory app already exists."
-fi
+## Directory
+#if [ ! -d "app" ]; then
+#  mkdir app
+#else
+#  echo "Directory app already exists."
+#fi
 
 ## Check if Maven is installed; install if not
 #if ! command -v mvn &> /dev/null; then

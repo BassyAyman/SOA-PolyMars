@@ -20,10 +20,9 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     private RestTemplate restTemplate = new RestTemplate();
     @Override
     public void sendFuelMetric(HardwareData data) {
-        LOGGER.log(Level.INFO," sending the level of fuel "+data.getFuelVolume()+" to the staging");
+        //LOGGER.log(Level.INFO," sending the level of fuel "+data.getFuelVolume()+" to the staging");
         FuelDataDTO fuelDataDto = FuelDataDTO.builder().fuelVolume(data.getFuelVolume()).build();
-        ResponseEntity<String> response =
-                restTemplate.postForEntity(STAGING_API_URL+"/fuelState", fuelDataDto, String.class);
+        restTemplate.postForEntity(STAGING_API_URL+"/fuelState", fuelDataDto, String.class);
     }
     @Override
     public void sendOrbitMetric(HardwareData data) {
@@ -31,8 +30,7 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
                 .velocity(data.getVelocity())
                 .altitude(data.getAltitude())
                 .build();
-        LOGGER.log(Level.INFO," sending orbit information "+orbiteDataDto.toString()+ " to the staging");
-        ResponseEntity<Object> response =
-                restTemplate.postForEntity(PAYLOAD_API_URL+"/orbitState", orbiteDataDto, Object.class);
+        //LOGGER.log(Level.INFO," sending orbit information "+orbiteDataDto.toString()+ " to the staging");
+        restTemplate.postForEntity(PAYLOAD_API_URL+"/orbitState", orbiteDataDto, String.class);
     }
 }

@@ -34,7 +34,7 @@ public class StartCollectingData {
         HardwareData dataRocketMetrics;
         while (true){
             dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
-            LOGGER.log(Level.INFO, "collected data from rocket: "+ dataRocketMetrics.toString());
+            //LOGGER.log(Level.INFO, "collected data from rocket: "+ dataRocketMetrics.toString());
             sender.sendFuelMetric(dataRocketMetrics);
             sender.sendOrbitMetric(dataRocketMetrics);
             Thread.sleep(3000);

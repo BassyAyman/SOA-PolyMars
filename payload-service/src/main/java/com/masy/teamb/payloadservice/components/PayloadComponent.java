@@ -16,15 +16,18 @@ public class PayloadComponent implements IPayload {
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private boolean isPayloadDetached = false;
+
     @Autowired
     private IPayloadProxy payloadProxy;
 
     @Override
     public boolean isOrbitRight(OrbitDataDTO orbitDataDTO) {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
-        if (orbitDataDTO.altitude() > 10000 && orbitDataDTO.velocity() > 7000){
+        if (orbitDataDTO.altitude() > 10000 && orbitDataDTO.velocity() > 900 && !isPayloadDetached){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "[INTERNAL] Good orbit");
+            isPayloadDetached = true;
             payloadProxy.sendDetachOrder();
             return true;
         }

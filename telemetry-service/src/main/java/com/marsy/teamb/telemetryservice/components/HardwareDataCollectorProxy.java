@@ -17,7 +17,7 @@ public class HardwareDataCollectorProxy implements HardwareRocketCollector {
 
     @Override
     public HardwareData retrieveHardwareMetric() {
-        LOGGER.log(Level.INFO, "Request to the Rocket the data about metrics ... ");
+        //LOGGER.log(Level.INFO, "Request to the Rocket the data about metrics ... ");
         ResponseEntity<HardwareData> collected =
                 restTemplate.getForEntity(ROCKET_API_SERVICE+"/rocketMetrics", HardwareData.class);
         return collected.getBody();

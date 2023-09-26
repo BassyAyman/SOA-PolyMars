@@ -23,7 +23,7 @@ public class PayloadController {
 
     @PostMapping(path = "orbitState", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> evaluateOrbitState(@RequestBody OrbitDataDTO orbitDataDTO){
-        LOGGER.log(Level.INFO, "[INTERNAL] verifying orbit...");
+        //LOGGER.log(Level.INFO, "[INTERNAL] verifying orbit...");
         boolean result = payload.isOrbitRight(orbitDataDTO);
         if (!result){
             ResponseEntity.ok("NOT OK, bad orbit");
