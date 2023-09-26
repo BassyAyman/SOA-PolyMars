@@ -22,8 +22,8 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     public void sendFuelMetric(HardwareData data) {
         LOGGER.log(Level.INFO," sending the level of fuel "+data.getFuelVolume()+" to the staging");
         FuelDataDTO fuelDataDto = FuelDataDTO.builder().fuelVolume(data.getFuelVolume()).build();
-        ResponseEntity<Object> response =
-                restTemplate.postForEntity(STAGING_API_URL+"/fuelState", fuelDataDto, Object.class);
+        ResponseEntity<String> response =
+                restTemplate.postForEntity(STAGING_API_URL+"/fuelState", fuelDataDto, String.class);
     }
     @Override
     public void sendOrbitMetric(HardwareData data) {

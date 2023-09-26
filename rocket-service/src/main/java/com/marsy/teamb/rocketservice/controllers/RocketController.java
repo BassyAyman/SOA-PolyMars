@@ -39,7 +39,7 @@ public class RocketController {
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
-        LOGGER.log(Level.INFO, "[INTERNAL] Payload detaching");
+        LOGGER.log(Level.INFO, "Detaching payload...");
         return ResponseEntity.ok("OK");
     }
 
@@ -47,7 +47,13 @@ public class RocketController {
     public ResponseEntity<String> launchRocket() {
         LOGGER.log(Level.INFO, "Ignition...");
         Sensors.startRocketClock();
-        return ResponseEntity.ok("Ignition");
+        return ResponseEntity.ok("OK");
+    }
+
+    @PutMapping("/staging")
+    public ResponseEntity<String> staging() {
+        LOGGER.log(Level.INFO, "Staging...");
+        return ResponseEntity.ok("OK");
     }
 
 }

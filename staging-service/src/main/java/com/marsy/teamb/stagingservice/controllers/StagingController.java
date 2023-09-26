@@ -1,6 +1,7 @@
 package com.marsy.teamb.stagingservice.controllers;
 
 import com.marsy.teamb.stagingservice.components.dto.FuelDataDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,23 +19,16 @@ public class StagingController {
 
     private static final Logger LOGGER = Logger.getLogger(StagingController.class.getSimpleName());
 
-    // rest template
-    @Autowired
-    private static final RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate();
 
-    @PostMapping(path = "fuelState", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> shouldWeStage(@RequestBody FuelDataDTO fuelDto) {
-        LOGGER.log(Level.INFO, "");
-        ResponseEntity.ok("Not staging");
-        if (fuelDto.getFuelVolume() <= 8.1) {
-            LOGGER.log(Level.INFO, "No fuel. You trash");
-            restTemplate.postForEntity("http://rocket-service:8080/staging", fuelDto, FuelDataDTO.class);
-            return ResponseEntity.ok("Staging");
-        } else {
-            LOGGER.log(Level.INFO, "Fuel..");
+    @PostMapping(path = "/fuelState", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> shouldWeStage(@RequestBody @Valid FuelDataDTO fuelDto) {
+        if (fuelDto.getFuelVolume() <= 8) {
+            LOGGER.log(Level.INFO, "Call to rocket-service: stage rocket");
+            restTemplate.put("http://rocket-service:8080/staging", null);
+            return ResponseEntity.ok("Asked rocket to stage");
         }
-        restTemplate.postForEntity("http://rocket-service:8080/staging", fuelDto, FuelDataDTO.class);
-        return ResponseEntity.ok("not staged");
+        return ResponseEntity.ok("Not staged");
     }
 
 }
