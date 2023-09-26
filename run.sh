@@ -23,6 +23,6 @@
 #else
 #  echo "follow-logs.sh not found."
 #fi
-
+ 
 echo "Test of rocket launch: call Command Service to launch rocket"
 curl http://localhost:8083/launch
