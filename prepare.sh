@@ -2,6 +2,7 @@
 
 set -e
 
+
 # Directory
 if [ ! -d "app" ]; then
   mkdir app
@@ -22,8 +23,11 @@ fi
 if ! command -v docker &> /dev/null; then
     echo "Docker not found. Installing Docker..."
     sudo apt update
-    sudo apt install -y docker.io
+    sudo apt-get remove containerd.io
+    sudo apt install docker.io docker-compose -y
     sudo systemctl enable --now docker
+    systemctl start docker
+    sudo gpasswd -a "$USER" docker
 else
     echo "Docker is already installed."
 fi
