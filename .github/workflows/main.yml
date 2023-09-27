@@ -21,11 +21,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Set up Docker Compose
-        uses: docker/compose-cli-github-action@v0.1.1
-        with:
-          compose-version: '2.0.1'
-
       - name: Prepare services
         run: sh prepare.sh
 
