@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -31,6 +32,7 @@ public class BoosterController {
 
     @PutMapping("/leaveRocket")
     public ResponseEntity<Void> leaveRocket() {
+        LOGGER.log(Level.INFO, "Leaving rocket");
         sensors.leaveRocket();
         return ResponseEntity.ok().build();
     }
