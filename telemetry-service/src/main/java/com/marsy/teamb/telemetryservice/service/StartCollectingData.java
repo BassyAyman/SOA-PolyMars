@@ -1,8 +1,6 @@
 package com.marsy.teamb.telemetryservice.service;
 
-import com.marsy.teamb.telemetryservice.components.HardwareDataCollectorProxy;
-import com.marsy.teamb.telemetryservice.components.HardwareDataSenderProxy;
-import com.marsy.teamb.telemetryservice.modeles.HardwareData;
+import com.marsy.teamb.telemetryservice.components.TelemetryOrchestratorMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +18,22 @@ public class StartCollectingData {
     private static final Logger LOGGER = Logger.getLogger(StartCollectingData.class.getSimpleName());
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
-    @Autowired
-    private HardwareDataCollectorProxy collector;
-    @Autowired
-    private HardwareDataSenderProxy sender;
+//    /**
+//     * Variable that make the service statefull, used to know whento change type of Telemetry
+//     * ( on who are we doing the telemetry retrieving metrics )
+//     */
+//    private boolean isRocketDeployed = false;
 
-    private boolean started = false;
+    @Autowired
+    TelemetryOrchestratorMetrics orchestrator;
 
 
     public void startTelemetryService() {
         LOGGER.log(Level.INFO,"Start of the Telemetry Service ---------- ***");
         executorService.scheduleAtFixedRate(() -> {
             try {
-                HardwareData dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
-                //LOGGER.log(Level.INFO, "collected data from rocket: " + dataRocketMetrics.toString());
-                sender.sendFuelMetric(dataRocketMetrics);
-                sender.sendOrbitMetric(dataRocketMetrics);
+                String response = orchestrator.ProcessRocketRelatedMetrics();
+                //isRocketDeployed = Objects.equals(response, "stop");
             } catch (Exception e) {
                 throw new RuntimeException("Exception at launching Telemetry");
             }
@@ -49,13 +47,5 @@ public class StartCollectingData {
         executorService.shutdown();
     }
 
-    private HardwareData setNewData(HardwareData metricsFromRocket){
-        if(metricsFromRocket == null){
-            return HardwareData.builder().build();
-        }
-        return HardwareData.builder()
-                .fuelVolume(metricsFromRocket.getFuelVolume())
-                .velocity(metricsFromRocket.getVelocity())
-                .altitude(metricsFromRocket.getAltitude()).build();
-    }
+
 }
