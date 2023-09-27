@@ -63,7 +63,8 @@ public class RocketController {
 
     @PutMapping("/destroy")
     public void destroy() {
-        LOGGER.log(Level.INFO, "Autodesctruction...");
+        LOGGER.log(Level.INFO, "Autodestruction...");
+        this.sensors.autoDestruct();
     }
 
 }
