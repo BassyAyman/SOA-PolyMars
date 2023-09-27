@@ -1,7 +1,7 @@
-package com.marsy.teamb.satelliteservice.controllers;
+package com.marsy.teamb.boosterservice.controllers;
 
-import com.marsy.teamb.satelliteservice.components.Sensors;
-import com.marsy.teamb.satelliteservice.dto.SatelliteMetricsDTO;
+import com.marsy.teamb.boosterservice.dto.BoosterMetricsDTO;
+import com.marsy.teamb.boosterservice.components.Sensors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +14,20 @@ import java.util.logging.Logger;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@RequestMapping(path = SatelliteController.BASE_URI, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = BoosterController.BASE_URI, produces = APPLICATION_JSON_VALUE)
 @RestController
-public class SatelliteController {
+public class BoosterController {
 
     public static final String BASE_URI = "/";
 
-    private static final Logger LOGGER = Logger.getLogger(SatelliteController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(BoosterController.class.getSimpleName());
 
     @Autowired
     Sensors sensors;
 
-    @GetMapping("/satelliteMetrics")
-    public ResponseEntity<SatelliteMetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new SatelliteMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultDetachState()));
+    @GetMapping("/boosterMetrics")
+    public ResponseEntity<BoosterMetricsDTO> rocketMetrics() {
+        return ResponseEntity.ok(new BoosterMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultDetachState()));
     }
 
     @PutMapping("/leaveRocket")
