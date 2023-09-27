@@ -1,5 +1,7 @@
 package com.masy.teamb.payloadservice.interfaces;
 
+import com.masy.teamb.payloadservice.controllers.dto.SatelliteMetricsDTO;
+
 public interface IPayloadProxy {
 
     String ROCKET_SERVICE = "http://rocket-service:8080";
@@ -7,6 +9,6 @@ public interface IPayloadProxy {
 
     public void sendDetachOrder();
 
-    public void getSatelliteMetrics();
+    public SatelliteMetricsDTO getSatelliteMetrics();
 
 }

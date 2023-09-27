@@ -22,8 +22,8 @@ public class PayloadProxy implements IPayloadProxy {
     }
 
     @Override
-    public void getSatelliteMetrics() {
-        LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
+    public SatelliteMetricsDTO getSatelliteMetrics() {
         ResponseEntity<SatelliteMetricsDTO> metrics = restTemplate.getForEntity(SATELLITE_SERVICE+"/satelliteMetrics", SatelliteMetricsDTO.class);
+        return metrics.getBody();
     }
 }
