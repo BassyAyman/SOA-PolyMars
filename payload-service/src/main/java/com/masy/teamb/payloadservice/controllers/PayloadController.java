@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -28,7 +27,7 @@ public class PayloadController {
         if (!result){
             ResponseEntity.ok("NOT OK, bad orbit");
         }
-        return ResponseEntity.ok("OK, good orbit");
+        return ResponseEntity.ok("STOP"); // To stop receive data from telemetry service about rocket metrics
     }
 
 }
