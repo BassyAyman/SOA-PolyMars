@@ -16,6 +16,7 @@ public class CommandComponent implements ICommand {
     final static String TELEMETRY_SERVICE = "http://telemetry-service:8080";
     final static String WEATHER_SERVICE = "http://weather-service:8080";
     final static String LAUNCHPAD_SERVICE = "http://launchpad-service:8080";
+    final static String ROCKET_SERVICE = "http://rocket-service:8080";
 
     private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
     private final RestTemplate restTemplate = new RestTemplate();
@@ -42,6 +43,13 @@ public class CommandComponent implements ICommand {
     public void launchRocket() {
         LOGGER.log(Level.INFO, "Call to launchpad-service: launch rocket");
         restTemplate.put(LAUNCHPAD_SERVICE+"/launchRocket",null);
+    }
+
+    @Override
+    public void processVerificationDestruction(boolean orderToDestroy) {
+        if(!orderToDestroy){
+            restTemplate.put(ROCKET_SERVICE+"/destroy",null);
+        }
     }
 
 }
