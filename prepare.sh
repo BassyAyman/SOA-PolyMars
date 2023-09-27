@@ -27,9 +27,8 @@ if ! command -v docker &> /dev/null; then
     sudo apt install docker.io docker-compose -y
     sudo systemctl enable --now docker
     sudo systemctl start docker
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker "$USER"
     sudo gpasswd -a "$USER" docker
-
 else
     echo "Docker is already installed."
 fi
@@ -53,7 +52,7 @@ fi
 function compile_dir()   # $1 is the dir to get it
 {
   echo "Preparing $1..."
-    cd $1
+    cd "$1"
     mvn clean install
     cd ..
 }
