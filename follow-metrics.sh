@@ -10,6 +10,7 @@ send_get_request() {
     printf "\rAltitude: %.2f m | Velocity: %.2f m/s | Fuel: %.2f m^3 | Elapsed Time: %.2f s" "$altitude" "$velocity" "$fuelVolume" "$elapsedTime"
 }
 
+clear
 while true; do
     send_get_request
     sleep 0.1
