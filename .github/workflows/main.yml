@@ -5,23 +5,12 @@ on: [ push, pull_request ]
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set services matrix
-        id: set-matrix
-        run: |
-          SERVICES_LIST=$(find . -name pom.xml -not -path "./app/*" -printf '%h\n' | sed 's|./||')
-          echo "Services List: $SERVICES_LIST"
-          echo "::set-output name=matrix::{\"include\":[${SERVICES_LIST// /},{\"module\":\"}]}"
-
   build:
     needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,16 +20,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles(format('{0}/pom.xml', matrix.module)) }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build with Maven
-        run: mvn -B package --file ${{ matrix.module }}/pom.xml
 
       - name: Prepare services
         run: sh prepare.sh
