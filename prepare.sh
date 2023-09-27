@@ -26,7 +26,7 @@ if ! command -v docker &> /dev/null; then
     sudo apt-get remove containerd.io
     sudo apt install docker.io docker-compose -y
     sudo systemctl enable --now docker
-    systemctl start docker
+    sudo systemctl start docker
     sudo usermod -aG docker $USER
     sudo gpasswd -a "$USER" docker
 
