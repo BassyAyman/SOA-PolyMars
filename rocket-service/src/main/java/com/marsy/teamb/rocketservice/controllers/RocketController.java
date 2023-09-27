@@ -1,8 +1,7 @@
 package com.marsy.teamb.rocketservice.controllers;
 
 import com.marsy.teamb.rocketservice.components.Sensors;
-import com.marsy.teamb.rocketservice.controllers.dto.MetricsDTO;
-import org.apache.kafka.common.protocol.types.Field;
+import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +32,8 @@ public class RocketController {
     }
 
     @GetMapping("/rocketMetrics")
-    public ResponseEntity<MetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new MetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime()));
+    public ResponseEntity<RocketMetricsDTO> rocketMetrics() {
+        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.isFine()));
     }
 
     @PutMapping("/payloadDetach")
@@ -54,6 +53,17 @@ public class RocketController {
     public ResponseEntity<String> staging() {
         LOGGER.log(Level.INFO, "Staging...");
         return ResponseEntity.ok("OK");
+    }
+
+    @PutMapping("/mockProblem")
+    public void mockProblem() {
+        LOGGER.log(Level.INFO, "There is a problem with the rocket");
+        this.sensors.detectProblem();
+    }
+
+    @PutMapping("/destroy")
+    public void destroy() {
+        LOGGER.log(Level.INFO, "Autodesctruction...");
     }
 
 }

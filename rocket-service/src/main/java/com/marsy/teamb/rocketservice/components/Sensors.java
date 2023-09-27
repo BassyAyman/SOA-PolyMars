@@ -1,5 +1,8 @@
 package com.marsy.teamb.rocketservice.components;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -10,11 +13,16 @@ import java.time.LocalDateTime;
  */
 @Component
 public class Sensors {
+
+    @Autowired
+    private ApplicationContext applicationContext;
     public static double MAX_FUEL_VOLUME = 150; //in m^3
 
     public static double LAUNCH_DURATION = 20; //planned launch duration in s
 
     public static LocalDateTime launchDateTime;
+
+    public static boolean isFine = true;
 
     /**
      * return altitude in m
@@ -83,4 +91,16 @@ public class Sensors {
         return Duration.between(launchDateTime, LocalDateTime.now()).toSeconds();
     }
 
+    public void detectProblem() {
+        isFine = false;
+    }
+
+    public boolean isFine() {
+        return isFine;
+    }
+
+    public void autoDestruct() {
+        int exitCode = SpringApplication.exit(applicationContext, () -> 0);
+        System.exit(exitCode);
+    }
 }
