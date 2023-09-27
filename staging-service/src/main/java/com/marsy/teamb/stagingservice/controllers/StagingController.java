@@ -16,7 +16,7 @@ public class StagingController {
 
     private static final Logger LOGGER = Logger.getLogger(StagingController.class.getSimpleName());
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private boolean isRocketStaged = false;
 

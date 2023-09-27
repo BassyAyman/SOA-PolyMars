@@ -23,6 +23,41 @@
 #else
 #  echo "follow-logs.sh not found."
 #fi
- 
+
+# if follow-logs.sh exists and is executable
+if [ -e "follow-logs.sh" ] && [ -x "follow-logs.sh" ]; then
+  tmux send-keys -t mysession:0.0 './follow-logs.sh' Enter
+else
+  echo "follow-logs.sh not found or not executable."
+fi
+
+# if follow-metrics.sh exists and is executable
+if [ -e "follow-metrics.sh" ] && [ -x "follow-metrics.sh" ]; then
+  tmux send-keys -t mysession:0.1 './follow-metrics.sh' Enter
+  tmux send-keys -t mysession:0.1 'Rocket telemetry: ' Enter
+else
+  echo "follow-metrics.sh not found or not executable."
+fi
+
+################################
+
 echo "Test of rocket launch: call Command Service to launch rocket"
 curl http://localhost:8083/launch
+
+################################
+
+tmux new-session -d -s mysession
+
+tmux split-window -v
+tmux resize-pane -y 1
+
+tmux send-keys -t mysession:0.0 './follow-logs.sh' Enter
+tmux send-keys -t mysession:0.1 './follow-metrics.sh' Enter
+tmux send-keys -t mysession:0.1 'Rocket telemetry: ' Enter
+tmux set -g status off
+
+tmux set -g mouse off
+tmux set -g mouse-select-pane off
+tmux set -g mouse-select-window off
+
+tmux attach -t mysession

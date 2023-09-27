@@ -33,7 +33,7 @@ public class StartCollectingData {
         executorService.scheduleAtFixedRate(() -> {
             try {
                 HardwareData dataRocketMetrics = setNewData(collector.retrieveHardwareMetric());
-                LOGGER.log(Level.INFO, "collected data from rocket: " + dataRocketMetrics.toString());
+                //LOGGER.log(Level.INFO, "collected data from rocket: " + dataRocketMetrics.toString());
                 sender.sendFuelMetric(dataRocketMetrics);
                 sender.sendOrbitMetric(dataRocketMetrics);
             } catch (Exception e) {
