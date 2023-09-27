@@ -15,10 +15,11 @@ public class RocketHardwareData {
 
     public RocketHardwareData() {}
 
-    public RocketHardwareData(double altitude, double velocity, double fuelVolume){
+    public RocketHardwareData(double altitude, double velocity, double fuelVolume, boolean fine){
         this.altitude = altitude;
         this.velocity = velocity;
         this.fuelVolume = fuelVolume;
+        this.isFine = fine;
     }
 
     @Override

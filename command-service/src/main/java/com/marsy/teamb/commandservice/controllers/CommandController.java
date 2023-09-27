@@ -34,6 +34,7 @@ public class CommandController {
 
     @PostMapping(path = "/anyTrouble", consumes = APPLICATION_JSON_VALUE)
     public void rocketDestroy(@RequestBody boolean isFine){
+        LOGGER.log(Level.INFO, "receive a new destroy instruction : "+isFine);
         command.processVerificationDestruction(isFine);
     }
 

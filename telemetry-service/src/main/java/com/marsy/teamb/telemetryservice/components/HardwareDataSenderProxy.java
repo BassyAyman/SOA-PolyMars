@@ -7,6 +7,7 @@ import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
@@ -36,6 +37,7 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     @Override
     public void sendCrashValue(RocketHardwareData data) {
         boolean isFineValue = data.isFine();
-        restTemplate.postForEntity(STAGING_API_URL+"/anyTrouble", isFineValue, String.class);
+        LOGGER.log(Level.INFO, "sending a new destroy instruction : "+isFineValue);
+        restTemplate.postForEntity(COMMAND_API_URL+"/anyTrouble", isFineValue, String.class);
     }
 }
