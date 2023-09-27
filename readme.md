@@ -8,6 +8,9 @@
 * `rocket-service` deployed on `http://localhost:8082`
 * `command-service` deployed on `http://localhost:8083`
 * `launchpad-service` deployed on `http://localhost:8084`
+* `payload-service` deployed on `http://localhost:8085`
+* `telemetry-service` deployed on `http://localhost:8086`
+* `staging-service` deployed on `http://localhost:8087`
 
 ## Scripts
 
