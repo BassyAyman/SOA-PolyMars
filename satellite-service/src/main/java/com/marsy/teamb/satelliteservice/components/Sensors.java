@@ -21,7 +21,7 @@ public class Sensors {
      * @return
      */
     public double consultAltitude() {
-        return 2000000;
+        return isDetached ? 2000000 : 0;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Sensors {
      * @return
      */
     public double consultVelocity() {
-        return 1000;
+        return isDetached ? 1000 : 0;
     }
 
     /**
@@ -37,7 +37,7 @@ public class Sensors {
      * @return volume in m^3
      */
     public double consultFuelVolume() {
-        return 10;
+        return isDetached ? 10 : 0;
     }
 
     public boolean consultDetachState() {
