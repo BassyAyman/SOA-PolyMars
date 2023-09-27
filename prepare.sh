@@ -30,13 +30,13 @@ fi
 
 if ! command -v tmux > /dev/null; then
   if command -v apt-get > /dev/null; then
-    sudo apt-get install tmux
+    sudo apt-get install -y tmux
   elif command -v yum > /dev/null; then
-    sudo yum install tmux
+    sudo yum install -y tmux
   elif command -v pacman > /dev/null; then
-    sudo pacman -S tmux
+    sudo pacman -S -y tmux
   elif command -v brew > /dev/null; then
-    brew install tmux
+    brew install -y tmux
   else
     echo "No package manager found. Cannot install tmux."
     exit 1
