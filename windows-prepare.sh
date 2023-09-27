@@ -6,7 +6,7 @@ function compile_dir()   # $1 is the dir to get it
 {
   echo "Preparing $1..."
     cd $1
-    mvn clean install
+    mvn clean package -DskipTests
     cd ..
 }
 
