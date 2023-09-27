@@ -1,6 +1,7 @@
 package com.marsy.teamb.rocketservice.controllers;
 
 import com.marsy.teamb.rocketservice.components.BoosterProxy;
+import com.marsy.teamb.rocketservice.components.SatelliteProxy;
 import com.marsy.teamb.rocketservice.components.Sensors;
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class RocketController {
     @Autowired
     BoosterProxy boosterProxy;
 
+    @Autowired
+    SatelliteProxy satelliteProxy;
+
     @GetMapping("/rocketStatus")
     public ResponseEntity<String> rocketStatus() {
         LOGGER.log(Level.INFO, "Rocket status is ok");
@@ -43,6 +47,7 @@ public class RocketController {
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
         LOGGER.log(Level.INFO, "Detaching payload...");
+        this.satelliteProxy.dropSatellite();
         return ResponseEntity.ok("OK");
     }
 
