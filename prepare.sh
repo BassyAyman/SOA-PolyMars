@@ -50,6 +50,7 @@ if ! command -v tmux > /dev/null; then
   fi
 fi
 
+echo "$BASH_VERSION"
 
 function compile_dir() {
   echo "Preparing $1..."
@@ -73,8 +74,6 @@ echo "Services compiled."
 echo "Starting Docker containers..."
 docker-compose up --build -d
 echo "Docker containers started."
-
-echo "$BASH_VERSION"
 
 function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name
 {
