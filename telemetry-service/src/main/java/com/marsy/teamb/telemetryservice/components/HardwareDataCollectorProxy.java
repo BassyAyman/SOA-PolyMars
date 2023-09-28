@@ -28,7 +28,7 @@ public class HardwareDataCollectorProxy implements HardwareDataCollector {
     @Override
     public BoosterHardwareData retrieveBoosterHardwareMetric() {
         ResponseEntity<BoosterHardwareData> collected =
-                restTemplate.getForEntity(ROCKET_API_SERVICE+"/boosterMetrics", BoosterHardwareData.class);
+                restTemplate.getForEntity(BOOSTER_API_SERVICE+"/boosterMetrics", BoosterHardwareData.class);
         return collected.getBody();
     }
 }

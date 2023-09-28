@@ -27,4 +27,6 @@
     <logger name="org.springframework" level="ERROR" additivity="false">
         <appender-ref ref="SPRING_LOG"/>
     </logger>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" />
 </configuration>

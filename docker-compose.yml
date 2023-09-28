@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  # PostGresDB for Telemetry Service
+  postgres:
+    image: postgres:latest
+    container_name: telemetry-database
+    environment:
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_DB=telemetry-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - backend:/home/telemetry/data/bd
+    networks:
+      - marsy-net
+
   # Weather Monitoring Service
   weather-service:
     container_name: weather-service
@@ -55,6 +70,8 @@ services:
       - "8086:8080"
     networks:
       - marsy-net
+    depends_on:
+      - postgres
 
   staging-service:
     container_name: staging-service
@@ -86,4 +103,7 @@ services:
 networks:
   marsy-net:
     driver: bridge
+
+volumes:
+  backend:
 

@@ -1,8 +1,9 @@
 package com.marsy.teamb.telemetryservice.components;
 
 import com.marsy.teamb.telemetryservice.interfaces.MetricsOrchestrator;
-import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
+import com.marsy.teamb.telemetryservice.repository.RocketMetricsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,13 +11,12 @@ import org.springframework.stereotype.Component;
 public class TelemetryOrchestratorMetrics implements MetricsOrchestrator {
 
     @Autowired
-    private HardwareDataCollectorProxy collector;
+    private RocketMetricsRepository repository;
     @Autowired
     private HardwareDataSenderProxy sender;
 
     @Override
-    public String ProcessRocketRelatedMetrics() {
-        RocketHardwareData dataRocketMetrics = collector.retrieveRocketHardwareMetric();
+    public String ProcessRocketRelatedMetrics(RocketHardwareData dataRocketMetrics) {
         //LOGGER.log(Level.INFO, "collected data from rocket: " + dataRocketMetrics.toString());
         sender.sendFuelMetric(dataRocketMetrics);
         sender.sendCrashValue(dataRocketMetrics);
@@ -24,8 +24,8 @@ public class TelemetryOrchestratorMetrics implements MetricsOrchestrator {
     }
 
     @Override
-    public void ProcessMetricStorage() {
-        // BoosterHardwareData dataRocketMetrics = collector.retrieveBoosterHardwareMetric();
-        // TODO faire le stockage des données en persistance
+    @Transactional
+    public void ProcessMetricStorage(RocketHardwareData dataRocketMetrics) {
+        repository.save(dataRocketMetrics);
     }
 }
