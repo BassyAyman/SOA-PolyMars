@@ -21,8 +21,11 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Giving permissions
+        run: chmod +x prepare.sh test.sh
+
       - name: Prepare services
-        run: sh prepare.sh
+        run: bash prepare.sh
 
       - name: Run tests
-        run: sh test.sh
+        run: bash test.sh
