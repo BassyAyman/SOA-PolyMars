@@ -20,9 +20,14 @@ public class HardwareDataCollectorProxy implements HardwareDataCollector {
     @Override
     public RocketHardwareData retrieveRocketHardwareMetric() {
         //LOGGER.log(Level.INFO, "Request to the Rocket the data about metrics ... ");
-        ResponseEntity<RocketHardwareData> collected =
-                restTemplate.getForEntity(ROCKET_API_SERVICE+"/rocketMetrics", RocketHardwareData.class);
-        return collected.getBody();
+        try {
+            ResponseEntity<RocketHardwareData> collected =
+                    restTemplate.getForEntity(ROCKET_API_SERVICE+"/rocketMetrics", RocketHardwareData.class);
+            return collected.getBody();
+        } catch (Exception e) {
+            LOGGER.severe("Error while retrieving rocket metrics");
+            return null;
+        }
     }
 
     @Override

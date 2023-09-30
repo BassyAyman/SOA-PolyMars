@@ -37,7 +37,7 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     @Override
     public void sendCrashValue(RocketHardwareData data) {
         boolean isFineValue = data.isFine();
-        LOGGER.log(Level.INFO, "sending a new destroy instruction : "+isFineValue);
+        //LOGGER.log(Level.INFO, "Sending rocket health to command center. Is rocket fine: "+isFineValue);
         restTemplate.postForEntity(COMMAND_API_URL+"/anyTrouble", isFineValue, String.class);
     }
 }

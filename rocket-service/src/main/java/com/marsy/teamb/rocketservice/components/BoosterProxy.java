@@ -15,7 +15,7 @@ public class BoosterProxy {
     private RestTemplate restTemplate = new RestTemplate();
 
     public void dropBooster() {
-        LOGGER.log(Level.INFO, "Call to boster-service: leave rocket");
+        LOGGER.log(Level.INFO, "[EXTERNAL CALL] to boster-service: leave rocket");
         restTemplate.put(BOOSTER_API_URL + "/leaveRocket", null);
     }
 }
