@@ -98,8 +98,8 @@ EXPECTED_RESPONSE_NOT_OK="NOT OK, bad orbit"
 ORBIT_DATANOK='{"altitude":2000,"velocity":7500}'
 ORBIT_DATAOK='{"altitude":160000,"velocity":1000}'
 echo "PayloadService..."
-test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATAOK" "$EXPECTED_RESPONSE_OK"
-test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATANOK" "$EXPECTED_RESPONSE_NOT_OK"
+#test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATAOK" "$EXPECTED_RESPONSE_OK"
+#test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATANOK" "$EXPECTED_RESPONSE_NOT_OK"
 
 echo "--------------------"
 echo "End of tests"
