@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -f
 
 WEATHER_SERVICE="http://localhost:8081"
 ROCKET_SERVICE="http://localhost:8082"
@@ -16,12 +16,14 @@ test_get() {
 
   if [[ "$RESPONSE" != "200" ]]; then
     echo "Error: $1 content: $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
-  CONTENT=$(curl -s $1)
+  CONTENT=$(curl -s "$1")
   if [[ "$CONTENT" != "$2" ]]; then
     echo "Error: $1 != '$2' content: $CONTENT"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -34,6 +36,7 @@ test_put() {
 
   if [[ "$RESPONSE" != "200" ]]; then
     echo "Error: $1 content: $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -49,6 +52,7 @@ test_post() {
 
   if [[ "$RESPONSE" != "$EXPECTED_RESPONSE" ]]; then
     echo "Error: $URL != '$EXPECTED_RESPONSE'. Content $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -96,3 +100,6 @@ ORBIT_DATAOK='{"altitude":160000,"velocity":1000}'
 echo "PayloadService..."
 test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATAOK" "$EXPECTED_RESPONSE_OK"
 test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATANOK" "$EXPECTED_RESPONSE_NOT_OK"
+
+echo "--------------------"
+echo "End of tests"
