@@ -11,20 +11,46 @@ else
 fi
 
 # Update and Upgrade System
-sudo apt update && sudo apt upgrade -y
+sudo apt update -y && sudo apt upgrade -y && sudo apt update -y
 
 # Install Basic Utilities
-sudo apt install -y curl wget
+if ! command -v curl > /dev/null; then
+  sudo apt install -y curl
+fi
 
+if ! command -v wget > /dev/null; then
+  sudo apt install -y wget
+fi
 # Directory
 [ ! -d "app" ] && mkdir app || echo "Directory app already exists."
 
 # Install Java
-command -v java &> /dev/null || { echo "Java not found. Installing Java..."; sudo apt install -y default-jdk; }
+command -v java &> /dev/null || {
+  echo "Java not found. Installing Java...";
+  # update to get java 17 openjdk
+  sudo apt update -y
+  sudo apt install -y openjdk-17-jdk
+  echo "Java installed."
+}
 
 # Install Maven
-command -v mvn &> /dev/null || { echo "Maven not found. Installing Maven..."; sudo apt install -y maven; }
-
+if ! command -v mvn &> /dev/null; then
+    echo "Maven not found. Installing Maven..."
+    sudo apt-get update
+    sudo apt-get install -y wget
+    wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+    tar -xvf apache-maven-3.6.3-bin.tar.gz
+    sudo mv apache-maven-3.6.3 /opt/
+    echo 'export M2_HOME=/opt/apache-maven-3.6.3' >> ~/.bashrc
+    echo 'export PATH=$M2_HOME/bin:$PATH' >> ~/.bashrc
+    source ~/.bashrc
+    # export to terminal if no bashrc
+    export M2_HOME=/opt/apache-maven-3.6.3
+    export PATH=$M2_HOME/bin:$PATH
+    echo "Maven installed."
+else
+    echo "Maven is already installed."
+fi
 # Install Docker
 command -v docker &> /dev/null || {
     echo "Docker not found. Installing Docker..."
