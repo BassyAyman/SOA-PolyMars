@@ -89,9 +89,10 @@ test_put "$ROCKET_SERVICE/launchRocket" "OK"
 echo "Test de RocketService /staging..."
 test_put "$ROCKET_SERVICE/staging" "OK"
 echo "--------------------"
-EXPECTED_RESPONSE_OK="OK, good orbit"
+EXPECTED_RESPONSE_OK="STOP"
 EXPECTED_RESPONSE_NOT_OK="NOT OK, bad orbit"
-ORBIT_DATA='{"altitude":2000,"velocity":7500}'
+ORBIT_DATANOK='{"altitude":2000,"velocity":7500}'
+ORBIT_DATAOK='{"altitude":160000,"velocity":1000}'
 echo "PayloadService..."
-test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATA" "$EXPECTED_RESPONSE_OK"
-
+test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATAOK" "$EXPECTED_RESPONSE_OK"
+test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATANOK" "$EXPECTED_RESPONSE_NOT_OK"
