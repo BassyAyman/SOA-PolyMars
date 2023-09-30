@@ -5,7 +5,7 @@ set -e
 WEATHER_SERVICE="http://localhost:8081"
 ROCKET_SERVICE="http://localhost:8082"
 COMMAND_SERVICE="http://localhost:8083"
-LAUNCHPAD_SERVICE="http://localhost:8084"
+LAUNCHPAD_SERVICE="http://localhost:8090"
 PAYLOAD_SERVICE="http://localhost:8085"
 TELEMETRY_SERVICE="http://localhost:8086"
 STAGING_SERVICE="http://localhost:8087"

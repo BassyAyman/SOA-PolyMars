@@ -7,7 +7,7 @@
 * `weather-service` deployed on `http://localhost:8081`
 * `rocket-service` deployed on `http://localhost:8082`
 * `command-service` deployed on `http://localhost:8083`
-* `launchpad-service` deployed on `http://localhost:8084`
+* `launchpad-service` deployed on `http://localhost:8090`
 * `payload-service` deployed on `http://localhost:8085`
 * `telemetry-service` deployed on `http://localhost:8086`
 * `staging-service` deployed on `http://localhost:8087`

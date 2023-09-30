@@ -59,7 +59,7 @@ services:
     build:
       context: ./launchpad-service
     ports:
-      - "8084:8080"
+      - "8090:8080"
     networks:
       - marsy-net
 
