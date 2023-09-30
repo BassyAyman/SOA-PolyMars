@@ -15,7 +15,7 @@ public class SatelliteProxy {
     private RestTemplate restTemplate = new RestTemplate();
 
     public void dropSatellite() {
-        LOGGER.log(Level.INFO, "Call to satellite-service: leave rocket");
+        LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: leave rocket");
         restTemplate.put(SATELLITE_API_URL + "/leaveRocket", null);
     }
 }

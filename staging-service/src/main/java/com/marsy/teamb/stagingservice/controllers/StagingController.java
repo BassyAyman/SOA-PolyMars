@@ -23,7 +23,7 @@ public class StagingController {
     @PostMapping(path = "/fuelState")
     public ResponseEntity<String> shouldWeStage(@RequestBody FuelDataDTO fuelDto) {
         if (fuelDto.getFuelVolume() <= 8 && !isRocketStaged) {
-            LOGGER.log(Level.INFO, "Call to rocket-service: stage rocket");
+            LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: stage rocket");
             isRocketStaged = true;
             restTemplate.put("http://rocket-service:8080/staging", null);
             return ResponseEntity.ok("Asked rocket to stage");

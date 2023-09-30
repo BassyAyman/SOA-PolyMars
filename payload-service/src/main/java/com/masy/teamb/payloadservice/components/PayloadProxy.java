@@ -18,7 +18,11 @@ public class PayloadProxy implements IPayloadProxy {
     @Override
     public void sendDetachOrder() {
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: detach payload");
-        restTemplate.put(ROCKET_SERVICE+"/payloadDetach", "Detach request");
+        try {
+            restTemplate.put(ROCKET_SERVICE+"/payloadDetach", "Detach request");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while sending detach order to rocket-service");
+        }
     }
 
     @Override

@@ -36,7 +36,7 @@ public class PayloadComponent implements IPayload {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
         if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY && !isPayloadDetached){
             // Detach order to the Rocket Service
-            LOGGER.log(Level.INFO, "[INTERNAL] Good orbit");
+            LOGGER.log(Level.INFO, "Good orbit");
             isPayloadDetached = true;
             payloadProxy.sendDetachOrder();
             LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
