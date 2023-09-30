@@ -10,30 +10,33 @@ else
   echo "Directory app already exists."
 fi
 
-# Check if Maven is installed; install if not
-if ! command -v mvn &> /dev/null; then
-    echo "Maven not found. Installing Maven..."
-    sudo apt update
-    sudo apt install -y maven
-else
-    echo "Maven is already installed."
-fi
+# Update and Upgrade System
+sudo apt update && sudo apt upgrade -y
 
-# Check if Docker is installed; install if not
-if ! command -v docker &> /dev/null; then
+# Install Basic Utilities
+sudo apt install -y curl wget
+
+# Directory
+[ ! -d "app" ] && mkdir app || echo "Directory app already exists."
+
+# Install Java
+command -v java &> /dev/null || { echo "Java not found. Installing Java..."; sudo apt install -y default-jdk; }
+
+# Install Maven
+command -v mvn &> /dev/null || { echo "Maven not found. Installing Maven..."; sudo apt install -y maven; }
+
+# Install Docker
+command -v docker &> /dev/null || {
     echo "Docker not found. Installing Docker..."
-    sudo apt update
-    sudo apt-get remove containerd.io
-    sudo apt install docker.io docker-compose -y
+    sudo apt install -y docker.io
     sudo systemctl enable --now docker
-    sudo systemctl start docker
-    sudo usermod -aG docker "$USER"
-    echo "gpasswd -a $USER docker"
-    sudo gpasswd -a "$USER" docker
-    echo "Docker installed."
-else
-    echo "Docker is already installed."
-fi
+    sudo usermod -aG docker "${USER:-$(whoami)}"
+    echo "Please logout and login again or restart your system for Docker group changes to take effect."
+}
+
+# Install Docker Compose
+command -v docker-compose &> /dev/null || { echo "Docker Compose not found. Installing Docker Compose..."; sudo apt install -y docker-compose; }
+
 
 if ! command -v tmux > /dev/null; then
   if command -v apt-get > /dev/null; then
