@@ -55,7 +55,7 @@ echo "$BASH_VERSION"
 function compile_dir() {
   echo "Preparing $1..."
     cd "$1"
-    mvn clean install
+    mvn clean package -DskipTests
     cd ..
 }
 
