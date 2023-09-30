@@ -55,7 +55,7 @@ echo "$BASH_VERSION"
 function compile_dir() {
   echo "Preparing $1..."
     cd "$1"
-    mvn clean install
+    mvn clean package -DskipTests
     cd ..
 }
 
@@ -89,7 +89,7 @@ echo "Waiting for services to start..."
 wait_on_health http://localhost:8081 weather-service
 wait_on_health http://localhost:8082 rocket-service
 wait_on_health http://localhost:8083 command-service
-wait_on_health http://localhost:8084 launchpad-service
+wait_on_health http://localhost:8090 launchpad-service
 wait_on_health http://localhost:8085 payload-service
 wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service

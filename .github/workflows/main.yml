@@ -3,13 +3,7 @@ name: CI
 on: [ push, pull_request ]
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
   build:
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,8 +15,20 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Stop and remove all Docker containers
+        run: |
+          docker stop $(docker ps -aq) || true
+          docker rm $(docker ps -aq) || true
+
       - name: Prepare services
-        run: sh prepare.sh
+        run: bash prepare.sh
 
       - name: Run tests
-        run: sh test.sh
+        run: bash test.sh
+
+      - name: Cleanup Docker resources
+        if: always()
+        run: |
+          docker system prune --force --all --volumes
+          docker volume prune --force
+          docker network prune --force

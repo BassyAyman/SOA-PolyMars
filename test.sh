@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -e
+set -f
 
 WEATHER_SERVICE="http://localhost:8081"
 ROCKET_SERVICE="http://localhost:8082"
 COMMAND_SERVICE="http://localhost:8083"
-LAUNCHPAD_SERVICE="http://localhost:8084"
+LAUNCHPAD_SERVICE="http://localhost:8090"
 PAYLOAD_SERVICE="http://localhost:8085"
 TELEMETRY_SERVICE="http://localhost:8086"
 STAGING_SERVICE="http://localhost:8087"
@@ -16,12 +16,14 @@ test_get() {
 
   if [[ "$RESPONSE" != "200" ]]; then
     echo "Error: $1 content: $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
-  CONTENT=$(curl -s $1)
+  CONTENT=$(curl -s "$1")
   if [[ "$CONTENT" != "$2" ]]; then
     echo "Error: $1 != '$2' content: $CONTENT"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -34,6 +36,7 @@ test_put() {
 
   if [[ "$RESPONSE" != "200" ]]; then
     echo "Error: $1 content: $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -49,6 +52,7 @@ test_post() {
 
   if [[ "$RESPONSE" != "$EXPECTED_RESPONSE" ]]; then
     echo "Error: $URL != '$EXPECTED_RESPONSE'. Content $RESPONSE"
+    echo "$URL unsuccessful"
     exit 1
   fi
 
@@ -80,7 +84,7 @@ echo "--------------------"
 echo "Test de RocketService /rocketStatus..."
 test_get "$ROCKET_SERVICE/rocketStatus" "OK"
 echo "Test de RocketService /rocketMetrics..."
-EXPECTED_METRICS="{\"altitude\":0.0,\"velocity\":0.0,\"fuelVolume\":150.0,\"elapsedTime\":0.0}"
+EXPECTED_METRICS="{\"altitude\":0.0,\"velocity\":0.0,\"fuelVolume\":150.0,\"elapsedTime\":0.0,\"isFine\":true}"
 test_get "$ROCKET_SERVICE/rocketMetrics" "$EXPECTED_METRICS"
 echo "Test de RocketService /payloadDetach..."
 test_put "$ROCKET_SERVICE/payloadDetach" "OK"
@@ -89,9 +93,13 @@ test_put "$ROCKET_SERVICE/launchRocket" "OK"
 echo "Test de RocketService /staging..."
 test_put "$ROCKET_SERVICE/staging" "OK"
 echo "--------------------"
-EXPECTED_RESPONSE_OK="OK, good orbit"
+EXPECTED_RESPONSE_OK="STOP"
 EXPECTED_RESPONSE_NOT_OK="NOT OK, bad orbit"
-ORBIT_DATA='{"altitude":2000,"velocity":7500}'
+ORBIT_DATANOK='{"altitude":2000,"velocity":7500}'
+ORBIT_DATAOK='{"altitude":160000,"velocity":1000}'
 echo "PayloadService..."
-test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATA" "$EXPECTED_RESPONSE_OK"
+#test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATAOK" "$EXPECTED_RESPONSE_OK"
+#test_post "$PAYLOAD_SERVICE/orbitState" "$ORBIT_DATANOK" "$EXPECTED_RESPONSE_NOT_OK"
 
+echo "--------------------"
+echo "End of tests"

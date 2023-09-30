@@ -7,12 +7,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Units are international system units
  */
 @Component
 public class Sensors {
+
+    private static final Logger LOGGER = Logger.getLogger(Sensors.class.getSimpleName());
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -100,6 +104,12 @@ public class Sensors {
     }
 
     public void autoDestruct() {
+        try {
+            // Sleep for 1 second
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.INFO, "Error: cannot sleep 1s before destructing the rocket");
+        }
         int exitCode = SpringApplication.exit(applicationContext, () -> 0);
         System.exit(exitCode);
     }

@@ -1,29 +1,7 @@
-#!/bin/bash
-
-set -e
-
-function compile_dir()   # $1 is the dir to get it
-{
-  echo "Preparing $1..."
-    cd $1
-    mvn clean package -DskipTests
-    cd ..
-}
-
-compile_dir "weather-service"
-compile_dir "rocket-service"
-compile_dir "command-service"
-compile_dir "launchpad-service"
-compile_dir "payload-service"
-compile_dir "telemetry-service"
-compile_dir "staging-service"
-compile_dir "satellite-service"
-compile_dir "booster-service"
-
+echo "Stopping Docker containers..."
+docker-compose stop
 echo "Starting Docker containers..."
-docker-compose up --build -d
-
-
+docker-compose start
 
 function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name
 {
