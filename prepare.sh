@@ -101,7 +101,11 @@ compile_dir "booster-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
-docker-compose up --build -d
+if ! id -nG "$USER" | grep -qw docker; then
+  sudo docker-compose up --build -d
+else
+  docker-compose up --build -d
+fi
 echo "Docker containers started."
 
 function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name
