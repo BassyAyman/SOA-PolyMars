@@ -48,6 +48,7 @@ public class CommandComponent implements ICommand {
     @Override
     public void processVerificationDestruction(boolean orderToDestroy) {
         if(!orderToDestroy){
+            LOGGER.log(Level.INFO, "Received critical rocket health");
             try {
                 LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: autodestruction");
                 restTemplate.put(ROCKET_SERVICE+"/destroy", "Detach request");
