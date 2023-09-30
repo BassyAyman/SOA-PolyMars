@@ -4,6 +4,8 @@ import com.masy.teamb.payloadservice.controllers.dto.OrbitDataDTO;
 import com.masy.teamb.payloadservice.controllers.dto.SatelliteMetricsDTO;
 import com.masy.teamb.payloadservice.interfaces.IPayload;
 import com.masy.teamb.payloadservice.interfaces.IPayloadProxy;
+import com.masy.teamb.payloadservice.models.MetricsData;
+import com.masy.teamb.payloadservice.repositories.MetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,9 @@ public class PayloadComponent implements IPayload {
     @Autowired
     private IPayloadProxy payloadProxy;
 
+    @Autowired
+    private MetricsRepository metricsRepository;
+
     @Override
     public boolean isOrbitRight(OrbitDataDTO orbitDataDTO) {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
@@ -45,7 +50,9 @@ public class PayloadComponent implements IPayload {
         // Metrics collect + store in database
         executorService.scheduleAtFixedRate( () -> {
             SatelliteMetricsDTO metrics =  payloadProxy.getSatelliteMetrics();
-            // TODO store metrics in db
+            MetricsData metricsData = new MetricsData(
+                    metrics.altitude(), metrics.velocity(), metrics.fuelVolume(), metrics.elapsedTime(), metrics.isDetached());
+            metricsRepository.save(metricsData);
         }, 0, 3, TimeUnit.SECONDS );
 
     }

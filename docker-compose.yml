@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  mongo:
+    image: mongo:6.0
+    container_name: payload-metrics
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - marsy-net
   # Weather Monitoring Service
   weather-service:
     container_name: weather-service
@@ -46,6 +54,8 @@ services:
       - "8085:8080"
     networks:
       - marsy-net
+    depends_on:
+      - mongo
 
   telemetry-service:
     container_name: telemetry-service
