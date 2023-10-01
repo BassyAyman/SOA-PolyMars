@@ -2,6 +2,7 @@ package com.marsy.teamb.telemetryservice.service;
 
 import com.marsy.teamb.telemetryservice.components.HardwareDataCollectorProxy;
 import com.marsy.teamb.telemetryservice.components.TelemetryOrchestratorMetrics;
+import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,12 +43,15 @@ public class StartCollectingData {
         LOGGER.log(Level.INFO,"Start of the Telemetry Service ---------- ***");
         executorService.scheduleAtFixedRate(() -> {
             try {
-                RocketHardwareData dataRocketMetrics = collector.retrieveRocketHardwareMetric();
                 if(!isRocketDeployed){
-                    String response = orchestrator.ProcessRocketRelatedMetrics(dataRocketMetrics);
+                    RocketHardwareData dataRocketMetrics = collector.retrieveRocketHardwareMetric();
+                    String response = orchestrator.processRocketRelatedMetrics(dataRocketMetrics);
                     isRocketDeployed = Objects.equals(response, "stop");
+                    orchestrator.processRocketMetricStorage(dataRocketMetrics);
+                }else{
+                    BoosterHardwareData dataBooster = collector.retrieveBoosterHardwareMetric();
+                    orchestrator.processBoosterMetricStorage(dataBooster);
                 }
-                orchestrator.ProcessMetricStorage(dataRocketMetrics);
             } catch (Exception e) {
                 throw new RuntimeException("Exception at launching Telemetry");
             }
