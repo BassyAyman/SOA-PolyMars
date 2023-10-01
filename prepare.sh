@@ -36,7 +36,16 @@ install_java_17() {
 }
 
 install_maven() {
-    if ! command -v mvn &> /dev/null; then
+    if command -v mvn &> /dev/null; then
+        version=$(mvn -v | grep -m1 "Apache Maven" | awk '{print $3}')
+        if [[ $(echo "$version 3.7" | awk '{print ($1 < $2)}') -eq 1 ]]; then
+            echo "Maven version is less than 3.7. Could get errors."
+            echo "export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'" >> ~/.bashrc
+            export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'
+            source ~/.bashrc
+        fi
+        echo "Maven is already installed."
+    else
         sudo apt-get install -y wget
         wget https://mirrors.estointernet.in/apache/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
         tar -xvf apache-maven-3.8.6-bin.tar.gz
@@ -63,10 +72,9 @@ install_maven() {
                 echo "Failed to install Maven."
             fi
         fi
-    else
-        echo "Maven is already installed."
     fi
 }
+
 
 install_docker() {
     if ! command -v docker &> /dev/null; then
