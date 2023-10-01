@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   # Mongo for Payload Department Service
@@ -6,8 +6,6 @@ services:
     image: mongo:6.0
     container_name: payload-metrics
     restart: always
-    ports:
-      - "27017:27017"
     networks:
       - marsy-net
 

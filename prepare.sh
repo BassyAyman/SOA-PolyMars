@@ -36,28 +36,45 @@ install_java_17() {
 }
 
 install_maven() {
-    if ! command -v mvn &> /dev/null; then
-        sudo apt install -y maven || {
-            sudo apt-get install -y wget
-            wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-            tar -xvf apache-maven-3.6.3-bin.tar.gz
-            sudo mv apache-maven-3.6.3 /opt/
-            rm apache-maven-3.6.3-bin.tar.gz
-            if [ -f ~/.bashrc ]; then
-                echo "export M2_HOME=/opt/apache-maven-3.6.3" >> ~/.bashrc
-                echo "export PATH=$M2_HOME/bin:$PATH" >> ~/.bashrc
+    if command -v mvn &> /dev/null; then
+        version=$(mvn -v | grep -m1 "Apache Maven" | awk '{print $3}')
+        if [[ $(echo "$version 3.7" | awk '{print ($1 < $2)}') -eq 1 ]]; then
+            echo "Maven version is less than 3.7. Could get errors."
+            echo "export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'" >> ~/.bashrc
+            export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'
+            source ~/.bashrc
+        fi
+        echo "Maven is already installed."
+    else
+        sudo apt-get install -y wget
+        wget https://mirrors.estointernet.in/apache/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+        tar -xvf apache-maven-3.8.6-bin.tar.gz
+        sudo mv apache-maven-3.8.6 /opt/
+        rm apache-maven-3.8.6-bin.tar.gz
+        if [ -f ~/.bashrc ]; then
+            echo "export M2_HOME=/opt/apache-maven-3.8.6" >> ~/.bashrc
+            echo "export PATH=$M2_HOME/bin:$PATH" >> ~/.bashrc
+            source ~/.bashrc
+            echo "Maven manually installed."
+        else
+            export M2_HOME=/opt/apache-maven-3.8.6
+            export PATH=$M2_HOME/bin:$PATH
+            echo "Maven manually installed without bashrc."
+        fi
+        if ! command -v mvn &> /dev/null; then
+            sudo apt install -y maven
+            if command -v mvn &> /dev/null; then
+                echo "Maven installed via apt-get."
+                echo "export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'" >> ~/.bashrc
+                export MAVEN_OPTS='--add-opens java.base/java.lang=ALL-UNNAMED'
                 source ~/.bashrc
             else
-                export M2_HOME=/opt/apache-maven-3.6.3
-                export PATH=$M2_HOME/bin:$PATH
+                echo "Failed to install Maven."
             fi
-            echo "Maven manually installed."
-        }
-        echo "Maven installed."
-    else
-        echo "Maven is already installed."
+        fi
     fi
 }
+
 
 install_docker() {
     if ! command -v docker &> /dev/null; then
