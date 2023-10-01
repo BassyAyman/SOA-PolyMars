@@ -144,7 +144,10 @@ compile_dir "booster-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
-docker-compose up --build -d
+# try without sudo and if it fails, then use sudo
+if ! docker-compose up --build -d; then
+    sudo docker-compose up --build -d
+fi
 echo "Docker containers started."
 
 echo "Waiting for services to start..."
