@@ -22,7 +22,7 @@ install_package() {
 install_java_17() {
     if ! command -v java &> /dev/null || ! update-java-alternatives --list | grep -q "17"; then
         sudo apt install -y openjdk-17-jdk || {
-            sudo apt update && sudo apt upgrade -y && sudo apt install -y openjdk-17-jdk || {
+            sudo apt update -y && sudo apt upgrade -y && sudo apt install -y openjdk-17-jdk || {
                 sudo apt-get purge openjdk-\* -y && sudo apt-get autoremove -y && sudo apt-get autoclean && sudo apt install -y openjdk-17-jdk || {
                     echo "Java 17 installation failed."
                     exit 1
@@ -85,11 +85,12 @@ install_docker() {
             echo \
             "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
             $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            sudo apt-get update
+            sudo apt-get update -y
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io || { echo "Docker installation failed."; exit 1; }
         }
         sudo systemctl enable --now docker
         sudo usermod -aG docker "${USER:-$(whoami)}"
+        newgrp docker # to avoid logout/login
         echo "Docker installed."
     else
         echo "Docker is already installed."
@@ -118,7 +119,6 @@ wait_on_health() {
     echo "Service $2 is up and running at $1"
 }
 
-# Main script execution
 create_directory "app"
 install_package "curl"
 install_package "wget"
@@ -128,7 +128,6 @@ install_maven
 install_docker
 install_docker_compose
 
-# Compile services and start Docker containers
 echo "Compiling services..."
 compile_dir "weather-service"
 compile_dir "rocket-service"
@@ -144,16 +143,6 @@ echo "Services compiled."
 echo "Starting Docker containers..."
 docker-compose up --build -d
 echo "Docker containers started."
-
-function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name
-{
-   until [ $(curl --silent "$1"/actuator/health | grep UP -c ) == 1 ]
-   do
-      echo "Service $2 is not connected yet at $1"
-      sleep 3
-   done
-   echo "Service $2 is up and running at $1"
-}
 
 echo "Waiting for services to start..."
 wait_on_health http://localhost:8081 weather-service
