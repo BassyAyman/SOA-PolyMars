@@ -47,7 +47,7 @@ install_maven() {
         echo "Maven is already installed."
     else
         sudo apt-get install -y wget
-        wget https://mirrors.estointernet.in/apache/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+        wget https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.8.6/apache-maven-3.8.6-bin.tar.gz
         tar -xvf apache-maven-3.8.6-bin.tar.gz
         sudo mv apache-maven-3.8.6 /opt/
         rm apache-maven-3.8.6-bin.tar.gz
