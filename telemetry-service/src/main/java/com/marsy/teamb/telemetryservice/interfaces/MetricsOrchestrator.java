@@ -1,5 +1,6 @@
 package com.marsy.teamb.telemetryservice.interfaces;
 
+import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
 
 public interface MetricsOrchestrator {
@@ -9,11 +10,13 @@ public interface MetricsOrchestrator {
      * service (payload, staging)
      * @return a string to know if all step of lunch succes (continue / stop)
      */
-    String ProcessRocketRelatedMetrics(RocketHardwareData dataRocketMetrics);
+    String processRocketRelatedMetrics(RocketHardwareData dataRocketMetrics);
 
     /**
      * Methode that retrieve from both Rocket and Booster the data and stock them in database
      */
-    void ProcessMetricStorage(RocketHardwareData dataRocketMetrics);
+    void processRocketMetricStorage(RocketHardwareData dataRocketMetrics);
+
+    void processBoosterMetricStorage(BoosterHardwareData boosterHardwareData);
 
 }

@@ -10,30 +10,59 @@ else
   echo "Directory app already exists."
 fi
 
-# Check if Maven is installed; install if not
+# Update and Upgrade System
+sudo apt update -y && sudo apt upgrade -y && sudo apt update -y
+
+# Install Basic Utilities
+if ! command -v curl > /dev/null; then
+  sudo apt install -y curl
+fi
+
+if ! command -v wget > /dev/null; then
+  sudo apt install -y wget
+fi
+# Directory
+[ ! -d "app" ] && mkdir app || echo "Directory app already exists."
+
+# Install Java
+command -v java &> /dev/null || {
+  echo "Java not found. Installing Java...";
+  # update to get java 17 openjdk
+  sudo apt update -y
+  sudo apt install -y openjdk-17-jdk
+  echo "Java installed."
+}
+
+# Install Maven
 if ! command -v mvn &> /dev/null; then
     echo "Maven not found. Installing Maven..."
-    sudo apt update
-    sudo apt install -y maven
+    sudo apt-get update
+    sudo apt-get install -y wget
+    wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+    tar -xvf apache-maven-3.6.3-bin.tar.gz
+    sudo mv apache-maven-3.6.3 /opt/
+    echo 'export M2_HOME=/opt/apache-maven-3.6.3' >> ~/.bashrc
+    echo 'export PATH=$M2_HOME/bin:$PATH' >> ~/.bashrc
+    source ~/.bashrc
+    # export to terminal if no bashrc
+    export M2_HOME=/opt/apache-maven-3.6.3
+    export PATH=$M2_HOME/bin:$PATH
+    echo "Maven installed."
 else
     echo "Maven is already installed."
 fi
-
-# Check if Docker is installed; install if not
-if ! command -v docker &> /dev/null; then
+# Install Docker
+command -v docker &> /dev/null || {
     echo "Docker not found. Installing Docker..."
-    sudo apt update
-    sudo apt-get remove containerd.io
-    sudo apt install docker.io docker-compose -y
+    sudo apt install -y docker.io
     sudo systemctl enable --now docker
-    sudo systemctl start docker
-    sudo usermod -aG docker "$USER"
-    echo "gpasswd -a $USER docker"
-    sudo gpasswd -a "$USER" docker
-    echo "Docker installed."
-else
-    echo "Docker is already installed."
-fi
+    sudo usermod -aG docker "${USER:-$(whoami)}"
+    echo "Please logout and login again or restart your system for Docker group changes to take effect."
+}
+
+# Install Docker Compose
+command -v docker-compose &> /dev/null || { echo "Docker Compose not found. Installing Docker Compose..."; sudo apt install -y docker-compose; }
+
 
 if ! command -v tmux > /dev/null; then
   if command -v apt-get > /dev/null; then
@@ -72,7 +101,11 @@ compile_dir "booster-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
-docker-compose up --build -d
+if ! id -nG "$USER" | grep -qw docker; then
+  sudo docker-compose up --build -d
+else
+  docker-compose up --build -d
+fi
 echo "Docker containers started."
 
 function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name
