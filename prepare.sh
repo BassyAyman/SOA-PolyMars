@@ -47,17 +47,17 @@ install_maven() {
         echo "Maven is already installed."
     else
         sudo apt-get install -y wget
-        wget https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.8.6/apache-maven-3.8.6-bin.tar.gz
-        tar -xvf apache-maven-3.8.6-bin.tar.gz
-        sudo mv apache-maven-3.8.6 /opt/
-        rm apache-maven-3.8.6-bin.tar.gz
+        wget https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.4/apache-maven-3.9.4-bin.tar.gz
+        tar -xvf apache-maven-3.9.4-bin.tar.gz
+        sudo mv apache-maven-3.9.4 /opt/
+        rm apache-maven-3.9.4-bin.tar.gz
         if [ -f ~/.bashrc ]; then
-            echo "export M2_HOME=/opt/apache-maven-3.8.6" >> ~/.bashrc
+            echo "export M2_HOME=/opt/apache-maven-3.9.4" >> ~/.bashrc
             echo "export PATH=$M2_HOME/bin:$PATH" >> ~/.bashrc
             source ~/.bashrc
             echo "Maven manually installed."
         else
-            export M2_HOME=/opt/apache-maven-3.8.6
+            export M2_HOME=/opt/apache-maven-3.9.4
             export PATH=$M2_HOME/bin:$PATH
             echo "Maven manually installed without bashrc."
         fi
