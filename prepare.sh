@@ -2,84 +2,155 @@
 
 set -e
 
-
-# Directory
 if [ ! -d "app" ]; then
   mkdir app
+  echo "Directory app created."
 else
   echo "Directory app already exists."
 fi
 
-# Update and Upgrade System
-sudo apt update -y && sudo apt upgrade -y && sudo apt update -y
-
-# Install Basic Utilities
 if ! command -v curl > /dev/null; then
   sudo apt install -y curl
+  if [ $? -ne 0 ]; then
+    echo "Curl installation failed."
+    exit 1
+  else
+    echo "Curl installed."
+  fi
 fi
 
 if ! command -v wget > /dev/null; then
   sudo apt install -y wget
+  if [ $? -ne 0 ]; then
+    echo "Wget installation failed."
+    exit 1
+  else
+    echo "Wget installed."
+  fi
 fi
-# Directory
-[ ! -d "app" ] && mkdir app || echo "Directory app already exists."
 
-# Install Java
-command -v java &> /dev/null || {
-  echo "Java not found. Installing Java...";
-  # update to get java 17 openjdk
-  sudo apt update -y
-  sudo apt install -y openjdk-17-jdk
-  echo "Java installed."
+install_java_17() {
+    sudo apt install -y openjdk-17-jdk
+    if [ $? -ne 0 ]; then
+        sudo apt update -y && sudo apt upgrade -y && sudo apt install -y openjdk-17-jdk
+        if [ $? -ne 0 ]; then
+            sudo apt-get purge openjdk-\* -y
+            sudo apt-get autoremove -y
+            sudo apt-get autoclean
+
+            sudo apt install -y openjdk-17-jdk
+            if [ $? -ne 0 ]; then
+                echo "Java 17 installation failed."
+                exit 1
+            fi
+        fi
+    fi
+    echo "Java 17 installed."
 }
 
-# Install Maven
+if ! command -v java &> /dev/null; then
+    echo "Java not found. Installing Java 17..."
+    install_java_17
+else
+    if ! update-java-alternatives --list | grep -q "17"; then
+        echo "Java 17 not found. Installing Java 17..."
+        install_java_17
+    else
+        echo "Java 17 is available."
+        if ! java -version 2>&1 | grep -q "17"; then
+            echo "Setting Java 17 as the default Java version..."
+            java_17_path=$(update-java-alternatives --list | grep "17" | awk '{print $3}')
+            sudo update-alternatives --set java "$java_17_path"
+            if [ $? -ne 0 ]; then
+                echo "Failed to set Java 17 as the default Java version."
+                exit 1
+            fi
+            echo "Java 17 is set as the default Java version."
+        else
+            echo "Java 17 is already the default Java version."
+        fi
+    fi
+fi
+
 if ! command -v mvn &> /dev/null; then
-    echo "Maven not found. Installing Maven..."
-    sudo apt-get update
-    sudo apt-get install -y wget
-    wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-    tar -xvf apache-maven-3.6.3-bin.tar.gz
-    sudo mv apache-maven-3.6.3 /opt/
-    echo 'export M2_HOME=/opt/apache-maven-3.6.3' >> ~/.bashrc
-    echo 'export PATH=$M2_HOME/bin:$PATH' >> ~/.bashrc
-    source ~/.bashrc
-    # export to terminal if no bashrc
-    export M2_HOME=/opt/apache-maven-3.6.3
-    export PATH=$M2_HOME/bin:$PATH
-    echo "Maven installed."
+    echo "Maven not found. Trying to install using apt..."
+    if sudo apt install -y maven; then
+        echo "Maven installed using apt."
+    else
+        echo "Apt method didn't work. Installing Maven manually..."
+        sudo apt-get install -y wget
+        wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+        tar -xvf apache-maven-3.6.3-bin.tar.gz
+        sudo mv apache-maven-3.6.3 /opt/
+        rm apache-maven-3.6.3-bin.tar.gz
+        if [ -f ~/.bashrc ]; then
+            echo "export M2_HOME=/opt/apache-maven-3.6.3" >> ~/.bashrc
+            echo "export PATH=$M2_HOME/bin:$PATH" >> ~/.bashrc
+            source ~/.bashrc
+        else
+            echo "No bashrc found. Exporting to terminal..."
+            export M2_HOME=/opt/apache-maven-3.6.3
+            export PATH=$M2_HOME/bin:$PATH
+        fi
+        echo "Maven manually installed."
+    fi
 else
     echo "Maven is already installed."
 fi
-# Install Docker
+
+
 command -v docker &> /dev/null || {
     echo "Docker not found. Installing Docker..."
     sudo apt install -y docker.io
+    if [ $? -ne 0 ]; then
+        echo "Docker installation failed. Trying alternative method..."
+        sudo apt-get purge docker-ce docker-ce-cli containerd.io -y
+        sudo apt-get autoremove -y
+        sudo apt-get autoclean
+
+        sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo \
+        "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update -y
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        if [ $? -ne 0 ]; then
+            echo "Docker installation failed."
+            exit 1
+        fi
+    fi
     sudo systemctl enable --now docker
     sudo usermod -aG docker "${USER:-$(whoami)}"
-    echo "Please logout and login again or restart your system for Docker group changes to take effect."
+    echo "Docker installed."
 }
 
-# Install Docker Compose
-command -v docker-compose &> /dev/null || { echo "Docker Compose not found. Installing Docker Compose..."; sudo apt install -y docker-compose; }
+command -v docker-compose &> /dev/null || {
+  echo "Docker Compose not found. Installing Docker Compose...";
+  sudo apt install -y docker-compose;
+  if [ $? -ne 0 ]; then
+    echo "Docker Compose installation failed."
+    exit 1
+  else
+    echo "Docker Compose installed."
+  fi
+}
 
 
 if ! command -v tmux > /dev/null; then
   if command -v apt-get > /dev/null; then
     sudo apt-get install -y tmux
-  elif command -v yum > /dev/null; then
-    sudo yum install -y tmux
-  elif command -v pacman > /dev/null; then
-    sudo pacman -S -y tmux
-  elif command -v brew > /dev/null; then
-    brew install -y tmux
+    if [ $? -ne 0 ]; then
+      echo "Tmux installation failed."
+      exit 1
+    else
+      echo "Tmux installed."
+    fi
   else
-    echo "No package manager found. Cannot install tmux."
+    echo "You must install tmux."
     exit 1
   fi
 fi
-
-echo "$BASH_VERSION"
 
 function compile_dir() {
   echo "Preparing $1..."
