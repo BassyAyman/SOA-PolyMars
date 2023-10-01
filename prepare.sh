@@ -100,6 +100,9 @@ install_docker() {
 install_docker_compose() {
     if ! command -v docker-compose &> /dev/null; then
         sudo apt install -y docker-compose || { echo "Docker Compose installation failed."; exit 1; }
+        sudo systemctl enable --now docker
+        sudo usermod -aG docker "${USER:-$(whoami)}"
+        newgrp docker
         echo "Docker Compose installed."
     else
         echo "Docker Compose is already installed."
