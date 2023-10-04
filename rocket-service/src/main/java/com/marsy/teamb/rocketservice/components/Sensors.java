@@ -40,6 +40,8 @@ public class Sensors {
 
     public static boolean isBoosterDropped = false;
 
+    public static boolean isPayloadDropped = false;
+
     //MOCK: fuel volume sensor in m^3
     private static double fuelVolume = 150;
 
@@ -125,5 +127,17 @@ public class Sensors {
         isBoosterDropped = true;
         LOGGER.log(Level.INFO, "Second engine starting");
         engineOn = true;
+    }
+
+    public void detachPayload() {
+        isBoosterDropped = true;
+    }
+
+    public boolean isBoosterDropped() {
+        return isBoosterDropped;
+    }
+
+    public boolean isPayloadDropped() {
+        return isPayloadDropped;
     }
 }

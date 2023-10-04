@@ -46,6 +46,7 @@ public class RocketController {
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        sensors.detachPayload();
         LOGGER.log(Level.INFO, "Fairing separation...");
         this.sensors.stopRocketEngine();
         LOGGER.log(Level.INFO, "Detaching payload...");
