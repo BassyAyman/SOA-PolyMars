@@ -25,7 +25,7 @@ public class Sensors {
 
     public static boolean engineOn = false;
 
-    public static double fuelVolume = 150;
+    public static double fuelVolume = 0; //we consider that the fuel volume is 0 when we leave the rocket
 
     public static double altitude = 0;
 
@@ -92,9 +92,6 @@ public class Sensors {
             velocity -= 1500;
         } else {
             velocity = 0;
-        }
-        if (engineOn && isDetached) {
-            fuelVolume = fuelVolume - (fuelVolume > 7.5 ? 7.5 : 0);
         }
         if (0.0 < altitude && altitude < 1001.0) {
             land();
