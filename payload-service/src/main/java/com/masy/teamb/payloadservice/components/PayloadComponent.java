@@ -37,11 +37,18 @@ public class PayloadComponent implements IPayload {
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
             payloadProxy.sendDetachOrder();
-            LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
-            startMetricsCollect();
+
+            //LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
+            //startMetricsCollect();
             return true;
         }
         return false;
+    }
+
+    public void savePayloadMetricsToDB(SatelliteMetricsDTO metrics){
+        MetricsData metricsData = new MetricsData(
+                metrics.altitude(), metrics.velocity(), metrics.fuelVolume(), metrics.elapsedTime(), metrics.isDetached());
+        metricsRepository.save(metricsData);
     }
 
     void startMetricsCollect() {

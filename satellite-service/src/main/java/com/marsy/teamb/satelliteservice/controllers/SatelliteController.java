@@ -32,6 +32,7 @@ public class SatelliteController {
 
     @PutMapping("/leaveRocket")
     public ResponseEntity<Boolean> leaveRocket() {
+        if (Sensors.leaveRocket()) sensors.startSendingMetrics();
         return ResponseEntity.ok(Sensors.leaveRocket());
     }
 
