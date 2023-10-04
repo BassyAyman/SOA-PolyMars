@@ -132,6 +132,8 @@ create_directory "app"
 install_package "curl"
 install_package "wget"
 install_package "tmux"
+install_package "bc"
+install_package "jq"
 install_java_17
 install_maven
 install_docker
