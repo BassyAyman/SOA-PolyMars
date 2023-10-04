@@ -22,9 +22,6 @@ public class CommandComponent implements ICommand {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String readinessPoll() {
-        // Telemetry
-        LOGGER.log(Level.INFO, "Start the Telemetry monitoring");
-        restTemplate.put(TELEMETRY_SERVICE+"/startTelemetryService",null);
         // Weather
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to weather-service: readiness check");
         ResponseEntity<String> response = restTemplate.getForEntity(WEATHER_SERVICE + "/checkWeather", String.class);
