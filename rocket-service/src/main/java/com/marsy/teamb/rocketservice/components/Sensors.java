@@ -87,8 +87,10 @@ public class Sensors {
         if (velocity < MAX_VELOCITY) {
             velocity += 1500;
         }
-        if (engineOn && isBoosterDropped) {
-            fuelVolume = fuelVolume - (fuelVolume > 7.5 ? 7.5 : 0);
+        if (fuelVolume > 7.5) {
+            fuelVolume = fuelVolume - 7.5;
+        } else {
+            fuelVolume = 0;
         }
     }
 
