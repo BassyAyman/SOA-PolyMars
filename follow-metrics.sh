@@ -6,7 +6,13 @@ YELLOW='\033[0;33m'
 GREEN='\033[0;92m'
 DARK_GREEN='\033[0;32m'
 NC='\033[0m'
-#
+
+terminal_width=$(tput cols)
+terminal_height=$(tput lines)
+
+running=true
+
+
 get_color_for_scale() {
     local value=$1
 
@@ -45,6 +51,7 @@ format_to_2f() {
     fi
 }
 
+
 send_get_request() {
     response=$(curl -s --connect-timeout 5 http://localhost:8082/rocketMetrics)
 
@@ -54,6 +61,14 @@ send_get_request() {
         fuelVolume="Error"
         elapsedTime="Error"
         isFine="Error"
+        tput cr
+        tput el
+        local message="Rocket is broken"
+        printf "${RED}%s${NC}" "$message"
+        printf '%*s' $((terminal_width - ${#message})) ''
+        printf "\n"
+        running=false
+        return 1
     else
         altitude=$(echo "$response" | jq -r '.altitude')
         velocity=$(echo "$response" | jq -r '.velocity')
@@ -71,21 +86,21 @@ send_get_request() {
             isFine_color=$GREEN
         fi
 
+        altitude_color=$(get_color_for_scale "$altitude" true 1 400000 700000 1000000 1500000)
+        velocity_color=$(get_color_for_scale "$velocity" true 1 100 350 700 850)
+        fuel_color=$(get_color_for_scale "$fuelVolume" true 0 20 50 90 155)
+
+        tput cr
+        printf "Altitude: ${altitude_color}%s m${NC} | " "$altitude"
+        printf "Velocity: ${velocity_color}%s m/s${NC} | " "$velocity"
+        printf "Fuel: ${fuel_color}%s m^3${NC} | " "$fuelVolume"
+        printf "Elapsed Time: %s s | IsRocketFine: ${isFine_color}%s${NC} " "$elapsedTime" "$isFine"
     fi
-
-    altitude_color=$(get_color_for_scale "$altitude" true 0 400000 700000 1000000 1500000)
-    velocity_color=$(get_color_for_scale "$velocity" true 0 100 350 700 850)
-    fuel_color=$(get_color_for_scale "$fuelVolume" true 10 40 90 120 155)
-
-    tput cr
-    printf "Altitude: ${altitude_color}%s m${NC} | " "$altitude"
-    printf "Velocity: ${velocity_color}%s m/s${NC} | " "$velocity"
-    printf "Fuel: ${fuel_color}%s m^3${NC} | " "$fuelVolume"
-    printf "Elapsed Time: %s s | IsRocketFine: ${isFine_color}%s${NC} " "$elapsedTime" "$isFine"
 }
 
 clear
-while true; do
+tput cr
+while $running; do
     send_get_request
     sleep 0.1
 done
