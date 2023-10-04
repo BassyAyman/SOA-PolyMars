@@ -35,6 +35,11 @@ public class Sensors {
     //MOCK: to simulate a problem
     public static boolean isFine = true;
 
+    //MOCK
+    public static boolean engineOn = false;
+
+    public static boolean isBoosterDropped = false;
+
     //MOCK: fuel volume sensor in m^3
     private static double fuelVolume = 150;
 
@@ -58,7 +63,7 @@ public class Sensors {
 
     public static void startRocketClock() {
         if (isLaunched) {
-            return; //to avoid parallel executions
+            LOGGER.log(Level.SEVERE, "Error: cannot launch rocket because it is already launched");
         }
         isLaunched = true;
         launchDateTime = LocalDateTime.now();
@@ -80,10 +85,8 @@ public class Sensors {
         if (velocity < MAX_VELOCITY) {
             velocity += 1500;
         }
-        if (fuelVolume > 7.5) {
-            fuelVolume -= 7.5;
-        } else {
-            fuelVolume = 0;
+        if (engineOn && isBoosterDropped) {
+            fuelVolume = fuelVolume - (fuelVolume > 7.5 ? 7.5 : 0);
         }
     }
 
@@ -111,5 +114,16 @@ public class Sensors {
         }
         int exitCode = SpringApplication.exit(applicationContext, () -> 0);
         System.exit(exitCode);
+    }
+
+    public void stopRocketEngine() {
+        LOGGER.log(Level.INFO, "Rocket engine stopped");
+    }
+
+    public void dropBooster() {
+        LOGGER.log(Level.INFO, "Staging booster");
+        isBoosterDropped = true;
+        LOGGER.log(Level.INFO, "Second engine starting");
+        engineOn = true;
     }
 }

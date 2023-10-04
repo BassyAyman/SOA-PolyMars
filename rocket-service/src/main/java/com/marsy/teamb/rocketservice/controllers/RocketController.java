@@ -46,6 +46,9 @@ public class RocketController {
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        LOGGER.log(Level.INFO, "Fairing separation...");
+        this.sensors.stopRocketEngine();
+        LOGGER.log(Level.INFO, "Detaching payload...");
         this.satelliteProxy.dropSatellite();
         return ResponseEntity.ok("OK");
     }
@@ -59,8 +62,8 @@ public class RocketController {
 
     @PutMapping("/staging")
     public ResponseEntity<String> staging() {
-        LOGGER.log(Level.INFO, "Staging booster");
         this.boosterProxy.dropBooster();
+        this.sensors.dropBooster();
         return ResponseEntity.ok("OK");
     }
 
