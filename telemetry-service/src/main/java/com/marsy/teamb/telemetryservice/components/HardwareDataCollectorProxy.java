@@ -3,10 +3,9 @@ package com.marsy.teamb.telemetryservice.components;
 import com.marsy.teamb.telemetryservice.interfaces.HardwareDataCollector;
 import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
-
 
 import java.util.logging.Logger;
 
@@ -25,7 +24,7 @@ public class HardwareDataCollectorProxy implements HardwareDataCollector {
                     restTemplate.getForEntity(ROCKET_API_SERVICE+"/rocketMetrics", RocketHardwareData.class);
             return collected.getBody();
         } catch (Exception e) {
-            LOGGER.severe("Error while retrieving rocket metrics");
+            LOGGER.severe("Error while retrieving rocket metrics, is the rocket alive?");
             return null;
         }
     }

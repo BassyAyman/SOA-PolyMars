@@ -20,6 +20,12 @@ install_package() {
 }
 
 install_java_17() {
+    # if arch linux, pass
+    if [ -f /etc/arch-release ]; then
+        echo "Arch Linux detected. Skipping Java 17 installation."
+        return
+    fi
+
     if ! command -v java &> /dev/null || ! update-java-alternatives --list | grep -q "17"; then
         sudo apt install -y openjdk-17-jdk || {
             sudo apt update -y && sudo apt upgrade -y && sudo apt install -y openjdk-17-jdk || {
