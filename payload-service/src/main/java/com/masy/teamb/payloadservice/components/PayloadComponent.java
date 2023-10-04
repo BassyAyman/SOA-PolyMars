@@ -22,7 +22,6 @@ public class PayloadComponent implements IPayload {
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
 
-    private boolean isPayloadDetached = false;
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     @Autowired
@@ -34,10 +33,9 @@ public class PayloadComponent implements IPayload {
     @Override
     public boolean isOrbitRight(OrbitDataDTO orbitDataDTO) {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
-        if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY && !isPayloadDetached){
+        if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit");
-            isPayloadDetached = true;
             payloadProxy.sendDetachOrder();
             LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
             startMetricsCollect();
