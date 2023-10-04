@@ -11,6 +11,11 @@ create_directory() {
 }
 
 install_package() {
+    # if arch linux, pass
+    if [ -f /etc/arch-release ]; then
+        echo "Arch Linux detected. Skipping Java 17 installation."
+        return
+    fi
     if ! command -v "$1" > /dev/null; then
         sudo apt install -y "$1" || { echo "$1 installation failed."; exit 1; }
         echo "$1 installed."
@@ -25,7 +30,6 @@ install_java_17() {
         echo "Arch Linux detected. Skipping Java 17 installation."
         return
     fi
-
     if ! command -v java &> /dev/null || ! update-java-alternatives --list | grep -q "17"; then
         sudo apt install -y openjdk-17-jdk || {
             sudo apt update -y && sudo apt upgrade -y && sudo apt install -y openjdk-17-jdk || {
@@ -132,6 +136,9 @@ create_directory "app"
 install_package "curl"
 install_package "wget"
 install_package "tmux"
+install_package "bc"
+install_package "jq"
+install_package "ncurses-bin"
 install_java_17
 install_maven
 install_docker
