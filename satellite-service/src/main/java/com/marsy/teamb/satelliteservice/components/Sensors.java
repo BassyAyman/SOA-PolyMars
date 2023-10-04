@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Units are international system units
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Component
 public class Sensors {
+
+    private static final Logger LOGGER = Logger.getLogger("SatelliteService");
 
     public static LocalDateTime launchDateTime;
 
@@ -48,9 +52,15 @@ public class Sensors {
      *
      * @return percentage of fuel remaining
      */
-    public static void leaveRocket() {
+    public static boolean leaveRocket() {
+        if (isDetached) {
+            LOGGER.log(Level.INFO, "Received order to leave but already detached");
+            return false; // If already detached ignoring detach order
+        }
         launchDateTime = LocalDateTime.now();
         isDetached = true;
+        LOGGER.log(Level.INFO, "Leaving rocket");
+        return !isDetached;
     }
 
     public double consultElapsedTime() {

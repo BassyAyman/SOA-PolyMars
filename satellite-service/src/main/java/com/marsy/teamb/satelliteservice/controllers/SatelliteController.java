@@ -31,10 +31,8 @@ public class SatelliteController {
     }
 
     @PutMapping("/leaveRocket")
-    public ResponseEntity<Void> leaveRocket() {
-        LOGGER.log(Level.INFO, "Leaving rocket");
-        sensors.leaveRocket();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> leaveRocket() {
+        return ResponseEntity.ok(Sensors.leaveRocket());
     }
 
 

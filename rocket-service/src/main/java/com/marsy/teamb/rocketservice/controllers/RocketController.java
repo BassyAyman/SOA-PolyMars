@@ -46,7 +46,6 @@ public class RocketController {
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
-        LOGGER.log(Level.INFO, "Detaching payload...");
         this.satelliteProxy.dropSatellite();
         return ResponseEntity.ok("OK");
     }
