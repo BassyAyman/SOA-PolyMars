@@ -9,9 +9,6 @@ import com.masy.teamb.payloadservice.repositories.MetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +19,6 @@ public class PayloadComponent implements IPayload {
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
 
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private IPayloadProxy payloadProxy;
@@ -37,9 +33,6 @@ public class PayloadComponent implements IPayload {
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
             payloadProxy.sendDetachOrder();
-
-            //LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
-            //startMetricsCollect();
             return true;
         }
         return false;
@@ -51,14 +44,4 @@ public class PayloadComponent implements IPayload {
         metricsRepository.save(metricsData);
     }
 
-    void startMetricsCollect() {
-        // Metrics collect + store in database
-        executorService.scheduleAtFixedRate( () -> {
-            SatelliteMetricsDTO metrics =  payloadProxy.getSatelliteMetrics();
-            MetricsData metricsData = new MetricsData(
-                    metrics.altitude(), metrics.velocity(), metrics.fuelVolume(), metrics.elapsedTime(), metrics.isDetached());
-            metricsRepository.save(metricsData);
-        }, 0, 3, TimeUnit.SECONDS );
-
-    }
 }
