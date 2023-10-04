@@ -104,3 +104,8 @@ while $running; do
     send_get_request
     sleep 0.1
 done
+
+# boum
+tput bel
+sleep 0.01
+tput bel
