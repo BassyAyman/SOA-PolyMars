@@ -1,10 +1,10 @@
 #!/bin/bash
 
 BLACK='\033[1;30m'
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-GREEN='\033[0;92m'
-DARK_GREEN='\033[0;32m'
+DARK_RED='\033[0;31m'         # Dark Red
+DARK_ORANGE='\033[0;91m'      # Dark Orange
+DARK_GREEN='\033[0;32m'       # Dark Green
+DARKER_GREEN='\033[0;92m'     # Darker Green
 NC='\033[0m'
 
 terminal_width=$(tput cols)
@@ -12,40 +12,50 @@ terminal_height=$(tput lines)
 
 running=true
 
-
 get_color_for_scale() {
     local value=$1
+    local min=$2
+    local max=$3
 
-    if ! [[ $value =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
-        printf '%s' "$NC"
-        return
+    if (( value < min )); then
+        value=$min
+    elif (( value > max )); then
+        value=$max
     fi
 
-    local invert_scale=$2
-    shift 2
-    local -a breakpoints=("$@")
-    local -a colors
+    local range=$((max - min))
+    local offset=$((value - min))
 
-    if [ "$invert_scale" == "true" ]; then
-        colors=($BLACK $RED $YELLOW $GREEN $DARK_GREEN)
-    else
-        colors=($DARK_GREEN $GREEN $YELLOW $RED $BLACK)
+    # Custom color map for high contrast: red -> yellow -> green
+    local color_map=(88 94 100 106 112 118 22)
+
+    local map_idx=$(( (offset * ${#color_map[@]}) / range ))
+
+    if (( map_idx < 0 )); then
+        map_idx=0
+    elif (( map_idx >= ${#color_map[@]} )); then
+        map_idx=$((${#color_map[@]} - 1))
     fi
 
-    for ((i=0; i<${#breakpoints[@]}; i++)); do
-        if (( $(echo "$value <= ${breakpoints[$i]}" | bc -l) )); then
-            printf '%s' "${colors[$i]}"
-            return
-        fi
-    done
-    printf '%s' "${colors[-1]}"
+    color_idx=${color_map[$map_idx]}
+    echo "\033[38;5;${color_idx}m"
 }
+
 
 
 format_to_2f() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
         printf "%.2f" "$input"
+    else
+        echo "Error"
+    fi
+}
+
+format_to_int() {
+    local input="$1"
+    if [[ $input =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
+        printf "%.0f" "$input"
     else
         echo "Error"
     fi
@@ -64,7 +74,7 @@ send_get_request() {
         tput cr
         tput el
         local message="Rocket is broken"
-        printf "${RED}%s${NC}" "$message"
+        printf "${DARK_RED}%s${NC}" "$message"
         printf '%*s' $((terminal_width - ${#message})) ''
         printf "\n"
         running=false
@@ -76,19 +86,19 @@ send_get_request() {
         elapsedTime=$(echo "$response" | jq -r '.elapsedTime')
         isFine=$(echo "$response" | jq -r '.isFine')
 
-        altitude=$(format_to_2f "$altitude")
-        velocity=$(format_to_2f "$velocity")
-        fuelVolume=$(format_to_2f "$fuelVolume")
-        elapsedTime=$(format_to_2f "$elapsedTime")
+        altitude=$(format_to_int "$altitude")
+        velocity=$(format_to_int "$velocity")
+        fuelVolume=$(format_to_int "$fuelVolume")
+        elapsedTime=$(format_to_int "$elapsedTime")
         if [ "$isFine" == "false" ]; then
-            isFine_color=$RED
+            isFine_color=$DARK_RED
         else
-            isFine_color=$GREEN
+            isFine_color=$DARKER_GREEN
         fi
 
-        altitude_color=$(get_color_for_scale "$altitude" true 1 400000 700000 1000000 1500000)
-        velocity_color=$(get_color_for_scale "$velocity" true 1 100 350 700 850)
-        fuel_color=$(get_color_for_scale "$fuelVolume" true 0 20 50 90 155)
+        altitude_color=$(get_color_for_scale "$altitude" 0 2000000)
+        velocity_color=$(get_color_for_scale "$velocity" 0 30000)
+        fuel_color=$(get_color_for_scale "$fuelVolume" 0 150)
 
         tput cr
         printf "Altitude: ${altitude_color}%s m${NC} | " "$altitude"
@@ -107,5 +117,5 @@ done
 
 # boum
 tput bel
-sleep 0.01
+sleep 1
 tput bel
