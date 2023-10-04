@@ -8,7 +8,7 @@ send_get_request() {
     elapsedTime=$(echo "$response" | sed -n 's/.*"elapsedTime":\([^,]*\).*/\1/p')
     isFine=$(echo "$response" | sed -n 's/.*"isFine":\([^}]*\).*/\1/p')
     tput cr
-    printf "Altitude: %.2f m | Velocity: %.2f m/s | Fuel: %.2f m cubed | Elapsed Time: %.2f s | IsRocketFine: %s" "$altitude" "$velocity" "$fuelVolume" "$elapsedTime" "$isFine"
+    printf "Altitude: %s m | Velocity: %s m/s | Fuel: %s m^3 | Elapsed Time: %s s | IsRocketFine: %s" "$altitude" "$velocity" "$fuelVolume" "$elapsedTime" "$isFine"
 }
 
 
