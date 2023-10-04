@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,72 +22,69 @@ public class Sensors {
 
     @Autowired
     private ApplicationContext applicationContext;
-    public static double MAX_FUEL_VOLUME = 150; //in m^3
 
-    public static double LAUNCH_DURATION = 20; //planned launch duration in s
-
+    //MOCK: a clock in the rocket
     public static LocalDateTime launchDateTime;
 
+    public static final double MAX_ALTITUDE = 2000000; // in m
+
+    public static final double MAX_VELOCITY = 30000; // in m/s
+
+    public static boolean isLaunched = false;
+
+    //MOCK: to simulate a problem
     public static boolean isFine = true;
 
-    /**
-     * return altitude in m
-     * @return
-     */
+    //MOCK: fuel volume sensor in m^3
+    private static double fuelVolume = 150;
+
+    //MOCK: altitude sensor in m
+    private static double altitude = 0;
+
+    //MOCK: velocity sensor in m/s
+    private static double velocity = 0;
+
     public double consultAltitude() {
-        // The target altitude is 2000000 meters at the end of LAUNCH_DURATION
-        double altitudeIncreaseRate = 2000000 / LAUNCH_DURATION;
-
-        // Determine how many seconds have passed since the launch
-        double elapsedSeconds = Math.min(consultElapsedTime(), LAUNCH_DURATION);
-
-        // Altitude is the integral of velocity w.r.t time. But for simplicity, we're considering altitude to increase linearly.
-        return altitudeIncreaseRate * elapsedSeconds;
+        return altitude;
     }
 
-    /**
-     * return speed in m/s
-     * @return
-     */
     public double consultVelocity() {
-        // The target velocity is 1000 m/s at the end of LAUNCH_DURATION
-        double velocityIncreaseRate = 1000 / LAUNCH_DURATION;
-
-        // Determine how many seconds have passed since the launch
-        double elapsedSeconds = Math.min(consultElapsedTime(), LAUNCH_DURATION);
-
-        // Calculate and return the current velocity
-        return velocityIncreaseRate * elapsedSeconds;
+        return velocity;
     }
 
-    /**
-     *
-     * @return volume in m^3
-     */
     public double consultFuelVolume() {
-        // Calculate the rate of fuel consumption per second
-        double fuelConsumptionRate = (MAX_FUEL_VOLUME - 8) / LAUNCH_DURATION;
-
-        // Determine how many seconds have passed since the launch
-        double elapsedSeconds = Math.min(consultElapsedTime(), LAUNCH_DURATION);
-
-        // Calculate fuel consumed so far
-        double fuelConsumed = fuelConsumptionRate * elapsedSeconds;
-
-        // Calculate and return remaining fuel
-        return MAX_FUEL_VOLUME - fuelConsumed;
-    }
-
-    /**
-     *
-     * @return percentage of fuel remaining
-     */
-    public double consultFuelPercentage() {
-        return 100*consultFuelVolume()/MAX_FUEL_VOLUME;
+        return fuelVolume;
     }
 
     public static void startRocketClock() {
+        if (isLaunched) {
+            return; //to avoid parallel executions
+        }
+        isLaunched = true;
         launchDateTime = LocalDateTime.now();
+        Timer timer = new Timer();
+        TimerTask updateMetricsTask = new TimerTask() {
+            @Override
+            public void run() {
+                updateMetrics();
+            }
+        };
+        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
+    }
+
+    //MOCK: update metrics (called every second)
+    private static void updateMetrics() {
+        if (altitude < MAX_ALTITUDE) {
+            altitude += 100000;
+        }
+        if (velocity < MAX_VELOCITY) {
+            velocity += 1500;
+        }
+        if (fuelVolume > 7.5) {
+            fuelVolume -= 7.5;
+        } else {
+            fuelVolume = 0;
+        }
     }
 
     public double consultElapsedTime() {
