@@ -1,6 +1,6 @@
-package com.marsy.teamb.launchpadservice.config;
+package com.marsy.teamb.rocketservice.config;
 
-import com.marsy.teamb.launchpadservice.modele.MarsyLog;
+import com.marsy.teamb.rocketservice.modele.MarsyLog;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

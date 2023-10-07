@@ -1,5 +1,6 @@
 package com.marsy.teamb.boosterservice.components;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -14,6 +15,8 @@ import java.util.logging.Logger;
  */
 @Component
 public class Sensors {
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     private static final Logger LOGGER = Logger.getLogger(Sensors.class.getSimpleName());
 
@@ -63,11 +66,13 @@ public class Sensors {
      *
      * @return percentage of fuel remaining
      */
-    public static void leaveRocket() {
+    public void leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.SEVERE, "Error: cannot detach booster because it is already detach");
+            producerComponent.sendToCommandLogs("Error: cannot detach booster because it is already detach");
         }
         LOGGER.log(Level.INFO, "Leaving rocket");
+        producerComponent.sendToCommandLogs("Leaving rocket");
         isDetached = true;
         engineOn = true;
         detachDateTime = LocalDateTime.now();
@@ -82,7 +87,7 @@ public class Sensors {
         timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
     }
 
-    public static void updateMetrics() {
+    public void updateMetrics() {
         if (altitude > 10000) {
             altitude -= 10000;
         } else {
@@ -98,13 +103,19 @@ public class Sensors {
         }
     }
 
-    public static void land() {
+    public void land() {
         LOGGER.log(Level.INFO, "Booster flip maneuver...");
+        producerComponent.sendToCommandLogs("Booster flip maneuver...");
         LOGGER.log(Level.INFO, "Booster entry burn....");
+        producerComponent.sendToCommandLogs("Booster entry burn....");
         LOGGER.log(Level.INFO, "Booster Guidance...");
+        producerComponent.sendToCommandLogs("Booster Guidance...");
         LOGGER.log(Level.INFO, "Booster landing burn...");
+        producerComponent.sendToCommandLogs("Booster landing burn...");
         LOGGER.log(Level.INFO, "Booster landing legs deployment...");
+        producerComponent.sendToCommandLogs("Booster landing legs deployment...");
         LOGGER.log(Level.INFO, "Booster is landing...");
+        producerComponent.sendToCommandLogs("Booster is landing...");
         isLanded = true;
     }
 

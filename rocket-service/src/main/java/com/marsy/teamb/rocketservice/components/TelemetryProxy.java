@@ -15,6 +15,8 @@ public class TelemetryProxy {
 
     @Autowired
     Sensors sensors;
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     private static final Logger LOGGER = Logger.getLogger(TelemetryProxy.class.getSimpleName());
 
@@ -36,6 +38,7 @@ public class TelemetryProxy {
             return; //do not send data when payload and booster detached
         }
         LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
+        //producerComponent.sendToCommandLogs("Sending metrics to telemetry service");
         try {
             restTemplate.postForEntity(TELEMETRY_API_URL + "/rocketMetrics",
                     new RocketMetricsDTO(
@@ -48,6 +51,7 @@ public class TelemetryProxy {
                     ), null);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while sending metrics to telemetry service. Verify if the service is running.");
+            //producerComponent.sendToCommandLogs("Error while sending metrics to telemetry service. Verify if the service is running.");
         }
     }
 }

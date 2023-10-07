@@ -1,6 +1,7 @@
 package com.marsy.teamb.rocketservice.controllers;
 
 import com.marsy.teamb.rocketservice.components.BoosterProxy;
+import com.marsy.teamb.rocketservice.components.KafkaProducerComponent;
 import com.marsy.teamb.rocketservice.components.SatelliteProxy;
 import com.marsy.teamb.rocketservice.components.Sensors;
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
@@ -32,10 +33,13 @@ public class RocketController {
 
     @Autowired
     SatelliteProxy satelliteProxy;
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     @GetMapping("/rocketStatus")
     public ResponseEntity<String> rocketStatus() {
         LOGGER.log(Level.INFO, "Rocket status is ok");
+        producerComponent.sendToCommandLogs("Rocket status is ok");
         return ResponseEntity.ok("OK");
     }
 
@@ -48,8 +52,10 @@ public class RocketController {
     public ResponseEntity<String> payloadDetach() {
         sensors.detachPayload();
         LOGGER.log(Level.INFO, "Fairing separation...");
+        producerComponent.sendToCommandLogs("Fairing separation...");
         this.sensors.stopRocketEngine();
         LOGGER.log(Level.INFO, "Detaching payload...");
+        producerComponent.sendToCommandLogs("Detaching payload...");
         this.satelliteProxy.dropSatellite();
         return ResponseEntity.ok("OK");
     }
@@ -57,6 +63,7 @@ public class RocketController {
     @PutMapping("/launchRocket")
     public ResponseEntity<String> launchRocket() {
         LOGGER.log(Level.INFO, "Ignition...");
+        producerComponent.sendToCommandLogs("Ignition...");
         Sensors.startRocketClock();
         return ResponseEntity.ok("OK");
     }
@@ -71,12 +78,14 @@ public class RocketController {
     @PutMapping("/mockProblem")
     public void mockProblem() {
         LOGGER.log(Level.INFO, "There is a problem with the rocket");
+        producerComponent.sendToCommandLogs("There is a problem with the rocket");
         this.sensors.detectProblem();
     }
 
     @PutMapping("/destroy")
     public void destroy() {
         LOGGER.log(Level.INFO, "Self-destruct...");
+        producerComponent.sendToCommandLogs("Self-destruct...");
         this.sensors.autoDestruct();
     }
 

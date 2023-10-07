@@ -18,8 +18,8 @@ public class PayloadComponent implements IPayload {
     private final double AIMED_VELOCITY = 900;
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
-
-
+    @Autowired
+    private KafkaProducerComponent producerComponent;
     @Autowired
     private IPayloadProxy payloadProxy;
 
@@ -32,6 +32,7 @@ public class PayloadComponent implements IPayload {
         if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
+            producerComponent.sendToCommandLogs("Good orbit reached");
             payloadProxy.sendDetachOrder();
             return true;
         }

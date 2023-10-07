@@ -22,6 +22,8 @@ public class Sensors {
 
     @Autowired
     ISensorsProxy sensorsProxy;
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -63,15 +65,18 @@ public class Sensors {
      *
      * @return percentage of fuel remaining
      */
-    public static boolean leaveRocket() {
+    public boolean leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.INFO, "Received order to leave but already detached");
+            producerComponent.sendToCommandLogs("Received order to leave but already detached");
             return false; // If already detached ignoring detach order
         }
         launchDateTime = LocalDateTime.now();
         isDetached = true;
         LOGGER.log(Level.INFO, "[INTERNAL] Leaving rocket");
         LOGGER.log(Level.INFO, "[INTERNAL] Start to send metrics data to Payload Department");
+        producerComponent.sendToCommandLogs("[INTERNAL(to satelite)] Leaving rocket");
+        producerComponent.sendToCommandLogs("[INTERNAL(to satelite)] Start to send metrics data to Payload Department");
         return !isDetached;
     }
 
