@@ -10,7 +10,7 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic commandTopic(){
-        return TopicBuilder.name("commandPipe")
+        return TopicBuilder.name("commandLog")
                 .build();
     }
 }

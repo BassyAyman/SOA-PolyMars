@@ -1,6 +1,9 @@
 package com.marsy.teamb.commandservice.components;
 
-import com.marsy.teamb.commandservice.controllers.CommandController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marsy.teamb.commandservice.modele.MarsyLog;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +14,13 @@ import java.util.logging.Logger;
 public class KafkaListeners {
 
     private static final Logger LOGGER = Logger.getLogger(KafkaListeners.class.getSimpleName());
-    @KafkaListener(topics = "commandPipe", groupId = "commandGroup")
-    void listener(String data){
-        LOGGER.log(Level.INFO, "bien recu : "+data);
+    @KafkaListener(topics = "commandLog")
+    void listener(String log) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        MarsyLog marsyLog = objectMapper.readValue(log, MarsyLog.class);
+        LOGGER.log(Level.INFO, "LISTENER BIEN APPELLER");
+        LOGGER.log(Level.INFO, "bien recu : "+ log);
+        LOGGER.log(Level.INFO, "bien recu OBJECT: "+ marsyLog.toString());
     }
 }

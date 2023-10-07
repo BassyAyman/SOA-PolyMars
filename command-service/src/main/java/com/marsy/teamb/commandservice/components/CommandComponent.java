@@ -28,12 +28,12 @@ public class CommandComponent implements ICommand {
         if (!Objects.equals(response.getBody(), "OK")) {
             return "NO GO - Something wrong with weather !";
         }
-//        // Launchpad - Rocket
-//        LOGGER.log(Level.INFO, "[EXTERNAL CALL] to launchpad-service: readiness check");
-//        response = restTemplate.getForEntity(LAUNCHPAD_SERVICE + "/rocketCheck", String.class);
-//        if (!Objects.equals(response.getBody(), "OK")) {
-//            return "NO GO - Something wrong with rocket or launchpad !";
-//        }
+        // Launchpad - Rocket
+        LOGGER.log(Level.INFO, "[EXTERNAL CALL] to launchpad-service: readiness check");
+        response = restTemplate.getForEntity(LAUNCHPAD_SERVICE + "/rocketCheck", String.class);
+        if (!Objects.equals(response.getBody(), "OK")) {
+            return "NO GO - Something wrong with rocket or launchpad !";
+        }
         return "GO Order, everything ok";
     }
 

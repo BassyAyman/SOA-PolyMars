@@ -12,10 +12,11 @@ function compile_dir()   # $1 is the dir to get it
 
 compile_dir "weather-service"
 compile_dir "command-service"
+compile_dir "launchpad-service"
 
 
 echo "Starting Docker containers..."
-docker-compose up --build -d zookeeper kafka weather-service command-service
+docker-compose up --build -d zookeeper kafka weather-service command-service launchpad-service
 
 
 
@@ -31,3 +32,4 @@ function wait_on_health()  # $1 is URL of the Spring service with actuator on, $
 
 wait_on_health http://localhost:8081 weather-service
 wait_on_health http://localhost:8083 command-service
+wait_on_health http://localhost:8090 launchpad-service
