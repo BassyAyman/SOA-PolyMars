@@ -43,6 +43,7 @@ public class TelemetryProxy {
                             sensors.consultVelocity(),
                             sensors.consultFuelVolume(),
                             sensors.consultElapsedTime(),
+                            sensors.consultPressure(),
                             sensors.isFine()
                     ), null);
         } catch (Exception e) {

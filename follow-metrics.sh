@@ -17,19 +17,29 @@ get_color_for_scale() {
     local min=$2
     local max=$3
 
-    if (( value < min )); then
+    if ! [[ $value =~ ^-?[0-9]+(\.[0-9]+)?$ ]]; then
+        if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
+            echo "$DARK_RED"
+            return
+        else
+            echo "$NC"
+            return
+        fi
+    fi
+
+    if [ $(echo "$value < $min" | bc -l) -eq 1 ]; then
         value=$min
-    elif (( value > max )); then
+    elif [ $(echo "$value > $max" | bc -l) -eq 1 ]; then
         value=$max
     fi
 
-    local range=$((max - min))
-    local offset=$((value - min))
+    local range=$(echo "$max - $min" | bc -l)
+    local offset=$(echo "$value - $min" | bc -l)
 
     # Custom color map for high contrast: red -> yellow -> green
     local color_map=(88 94 100 106 112 118 22)
 
-    local map_idx=$(( (offset * ${#color_map[@]}) / range ))
+    local map_idx=$(echo "scale=0; ($offset * ${#color_map[@]}) / $range" | bc -l)
 
     if (( map_idx < 0 )); then
         map_idx=0
@@ -45,16 +55,21 @@ get_color_for_scale() {
 
 format_to_2f() {
     local input="$1"
-    if [[ $input =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
-        printf "%.2f" "$input"
+    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
+        if (( $(echo "$input < 0.01" | bc -l) )); then
+            printf "%e" "$input"
+        else
+            printf "%.2f" "$input"
+        fi
     else
         echo "Error"
     fi
 }
 
+
 format_to_int() {
     local input="$1"
-    if [[ $input =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
+    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
         printf "%.0f" "$input"
     else
         echo "Error"
@@ -64,11 +79,11 @@ format_to_int() {
 
 send_get_request() {
     response=$(curl -s --connect-timeout 5 http://localhost:8082/rocketMetrics)
-
     if [ $? -ne 0 ]; then
         altitude="Error"
         velocity="Error"
         fuelVolume="Error"
+        pressure="Error"
         elapsedTime="Error"
         isFine="Error"
         tput cr
@@ -84,12 +99,14 @@ send_get_request() {
         velocity=$(echo "$response" | jq -r '.velocity')
         fuelVolume=$(echo "$response" | jq -r '.fuelVolume')
         elapsedTime=$(echo "$response" | jq -r '.elapsedTime')
+        pressure=$(echo "$response" | jq -r '.pressure')
         isFine=$(echo "$response" | jq -r '.isFine')
 
         altitude=$(format_to_int "$altitude")
         velocity=$(format_to_int "$velocity")
         fuelVolume=$(format_to_int "$fuelVolume")
         elapsedTime=$(format_to_int "$elapsedTime")
+        pressure=$(format_to_2f "$pressure")
         if [ "$isFine" == "false" ]; then
             isFine_color=$DARK_RED
         else
@@ -99,10 +116,12 @@ send_get_request() {
         altitude_color=$(get_color_for_scale "$altitude" 0 2000000)
         velocity_color=$(get_color_for_scale "$velocity" 0 30000)
         fuel_color=$(get_color_for_scale "$fuelVolume" 0 150)
+        pressure_color=$(get_color_for_scale "$pressure" 0 100000)
 
         tput cr
         printf "Altitude: ${altitude_color}%s m${NC} | " "$altitude"
         printf "Velocity: ${velocity_color}%s m/s${NC} | " "$velocity"
+        printf "Pressure: ${pressure_color}%s Pa${NC} | " "$pressure"
         printf "Fuel: ${fuel_color}%s m^3${NC} | " "$fuelVolume"
         printf "Elapsed Time: %s s | IsRocketFine: ${isFine_color}%s${NC} " "$elapsedTime" "$isFine"
     fi

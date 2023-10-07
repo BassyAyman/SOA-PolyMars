@@ -41,7 +41,7 @@ public class RocketController {
 
     @GetMapping("/rocketMetrics")
     public ResponseEntity<RocketMetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.isFine()));
+        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultPressure(), sensors.isFine()));
     }
 
     @PutMapping("/payloadDetach")
@@ -80,4 +80,13 @@ public class RocketController {
         this.sensors.autoDestruct();
     }
 
+    @PutMapping("/handleMaxQ")
+    public ResponseEntity<String> handleMaxQ() {
+        if (this.sensors.isMaxQReached()) {
+            LOGGER.log(Level.INFO, "MaxQ reached...");
+            sensors.throttleDownEngine();
+            return ResponseEntity.ok("Engine throttled down for Max Q phase.");
+        }
+        return ResponseEntity.ok("Max Q not reached.");
+    }
 }
