@@ -1,12 +1,15 @@
 package com.marsy.teamb.boosterservice.modele;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Builder
+@Data
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MarsyLog implements Serializable {
     private String service;
     private String message;

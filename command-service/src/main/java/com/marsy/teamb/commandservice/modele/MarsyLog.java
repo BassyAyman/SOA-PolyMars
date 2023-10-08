@@ -3,12 +3,16 @@ package com.marsy.teamb.commandservice.modele;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-@Builder
+@Data
 @Getter
+@Setter
+@Builder
 @JsonDeserialize(using = MarsyLogDeserializer.class)
 public class MarsyLog implements Serializable {
     private String service;
