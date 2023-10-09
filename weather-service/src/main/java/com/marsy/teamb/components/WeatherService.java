@@ -1,9 +1,7 @@
 package com.marsy.teamb.components;
 
 import com.marsy.teamb.interfaces.WeatherStatus;
-import com.marsy.teamb.modele.MarsyLog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Random;
@@ -15,9 +13,8 @@ public class WeatherService implements WeatherStatus {
 
     private static final Logger LOGGER = Logger.getLogger(WeatherService.class.getSimpleName());
     private static final String[] WEATHER_CONDITIONS = {"Sunny"};
-
     @Autowired
-    private KafkaTemplate<String, MarsyLog> kafkaTemplate;
+    private KafkaProducer producer;
 
     private String currentWeather() {
         try {
@@ -32,19 +29,17 @@ public class WeatherService implements WeatherStatus {
 
         String weather = WEATHER_CONDITIONS[index];
         LOGGER.log(Level.INFO, "Current weather: " + weather);
-        //LOGGER.getHandlers()[0].getEncoding()
-        kafkaTemplate.send(
-                "commandLog",
-                MarsyLog.builder().service("weather").message("Current weather: " + weather).build());
+        producer.sendLogToCommand("Current weather: " + weather);
+        producer.sendMsgToWebCaster(
+                "today is a beatifull day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
+        );
         return weather;
     }
 
     @Override
     public String getWeather() {
         LOGGER.log(Level.INFO, "Fetching the weather...");
-        kafkaTemplate.send(
-                "commandLog",
-                MarsyLog.builder().service("weather").message("Fetching the weather...").build());
+        producer.sendLogToCommand("Fetching the weather...");
         String weather = currentWeather();
         if (weather.equals("Sunny"))
             return "OK";

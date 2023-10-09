@@ -12,15 +12,12 @@ import java.util.logging.Logger;
 
 @Component
 public class KafkaListeners {
-
     private static final Logger LOGGER = Logger.getLogger(KafkaListeners.class.getSimpleName());
     @KafkaListener(topics = "commandLog")
     void listener(String log) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MarsyLog marsyLog = objectMapper.readValue(log, MarsyLog.class);
-        LOGGER.log(Level.INFO, "LISTENER BIEN APPELLER");
-        LOGGER.log(Level.INFO, "bien recu : "+ log);
-        LOGGER.log(Level.INFO, "bien recu OBJECT: "+ marsyLog.toString());
+        LOGGER.log(Level.INFO, "nouveau message systeme: "+ marsyLog.toString());
     }
 }

@@ -131,6 +131,15 @@ services:
     networks:
       - marsy-net
 
+  webcaster-service:
+    container_name: webcaster-service
+    build:
+      context: ./webcaster-service
+    ports:
+      - "8091:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge
