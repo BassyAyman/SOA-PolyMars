@@ -154,6 +154,7 @@ compile_dir "telemetry-service"
 compile_dir "staging-service"
 compile_dir "satellite-service"
 compile_dir "booster-service"
+compile_dir "webcaster-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
