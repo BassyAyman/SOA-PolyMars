@@ -13,7 +13,7 @@ create_directory() {
 install_package() {
     # if arch linux, pass
     if [ -f /etc/arch-release ]; then
-        echo "Arch Linux detected. Skipping Java 17 installation."
+        echo "Arch Linux detected. Skipping..."
         return
     fi
     if ! command -v "$1" > /dev/null; then

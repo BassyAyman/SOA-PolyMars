@@ -5,7 +5,6 @@ tmux kill-session -t mysession 2>/dev/null
 
 tmux new-session -d -s mysession
 
-tmux split-window -v
 tmux split-window -h
 tmux resize-pane -y 0
 tmux set -g status off
