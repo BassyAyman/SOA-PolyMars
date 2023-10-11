@@ -6,6 +6,7 @@ import com.marsy.teamb.rocketservice.components.SatelliteProxy;
 import com.marsy.teamb.rocketservice.components.Sensors;
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,6 +39,9 @@ public class RocketController {
 
     @GetMapping("/rocketStatus")
     public ResponseEntity<String> rocketStatus() {
+        if (sensors.isDestroyed()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
         LOGGER.log(Level.INFO, "Rocket status is ok");
         producerComponent.sendToCommandLogs("Rocket status is ok");
         return ResponseEntity.ok("OK");
@@ -45,11 +49,17 @@ public class RocketController {
 
     @GetMapping("/rocketMetrics")
     public ResponseEntity<RocketMetricsDTO> rocketMetrics() {
+        if (sensors.isDestroyed()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
         return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultPressure(), sensors.isFine()));
     }
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        if (sensors.isDestroyed()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
         sensors.detachPayload();
         LOGGER.log(Level.INFO, "Fairing separation...");
         producerComponent.sendToCommandLogs("Fairing separation...");
@@ -70,6 +80,9 @@ public class RocketController {
 
     @PutMapping("/staging")
     public ResponseEntity<String> staging() {
+        if (sensors.isDestroyed()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
         this.boosterProxy.dropBooster();
         this.sensors.dropBooster();
         return ResponseEntity.ok("OK");
@@ -84,6 +97,9 @@ public class RocketController {
 
     @PutMapping("/destroy")
     public void destroy() {
+        if (sensors.isDestroyed()) {
+            return;
+        }
         LOGGER.log(Level.INFO, "Self-destruct...");
         producerComponent.sendToCommandLogs("Self-destruct...");
         this.sensors.autoDestruct();
@@ -91,6 +107,9 @@ public class RocketController {
 
     @PutMapping("/handleMaxQ")
     public ResponseEntity<String> handleMaxQ() {
+        if (this.sensors.isDestroyed()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
         if (this.sensors.isMaxQReached()) {
             LOGGER.log(Level.INFO, "MaxQ reached...");
             sensors.throttleDownEngine();

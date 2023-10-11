@@ -35,6 +35,9 @@ public class Sensors {
     //MOCK: to simulate a problem
     public static boolean isFine = true;
 
+    //MOCK: to simulate rocket destruction
+    public static boolean isDestroyed = false;
+
     //MOCK
     public static boolean engineOn = false;
 
@@ -127,15 +130,12 @@ public class Sensors {
         return isFine;
     }
 
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
     public void autoDestruct() {
-        try {
-            // Sleep for 1 second
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.INFO, "Error: cannot sleep 1s before destructing the rocket");
-        }
-        int exitCode = SpringApplication.exit(applicationContext, () -> 0);
-        System.exit(exitCode);
+        isDestroyed = true;
     }
 
     public void stopRocketEngine() {

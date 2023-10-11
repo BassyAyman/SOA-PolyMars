@@ -26,10 +26,14 @@ public class StagingController {
     @PostMapping(path = "/fuelState")
     public ResponseEntity<String> shouldWeStage(@RequestBody FuelDataDTO fuelDto) {
         if (fuelDto.getFuelVolume() <= 8) {
-            LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: stage rocket");
-            producerComponent.sendToCommandLogs("[EXTERNAL CALL] to rocket-service: stage rocket");
-            restTemplate.put("http://rocket-service:8080/staging", null);
-            return ResponseEntity.ok("Asked rocket to stage");
+            try {
+                LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: stage rocket");
+                producerComponent.sendToCommandLogs("[EXTERNAL CALL] to rocket-service: stage rocket");
+                restTemplate.put("http://rocket-service:8080/staging", null);
+                return ResponseEntity.ok("Asked rocket to stage");
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Could not call rocket service to stage rocket");
+            }
         }
         return ResponseEntity.ok("Not staged");
     }
