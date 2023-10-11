@@ -8,6 +8,13 @@ services:
     networks:
       - marsy-net
 
+  mongo-logs:
+    image: mongo:6.0
+    container_name: logs-storage
+    restart: always
+    networks:
+      - marsy-net
+
   # PostGresDB for Telemetry Service
   postgres:
     image: postgres:latest
