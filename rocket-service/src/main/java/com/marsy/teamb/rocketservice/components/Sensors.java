@@ -1,5 +1,6 @@
 package com.marsy.teamb.rocketservice.components;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -59,6 +60,33 @@ public class Sensors {
     //MOCK: pressure sensor in Pa
     private static double pressure = 0;
 
+    public void reset(){
+        launchDateTime = null;
+        isLaunched = false;
+        isFine = true;
+        isDestroyed = false;
+        engineOn = false;
+        isEngineThrottledDown = false;
+        isBoosterDropped = false;
+        isPayloadDropped = false;
+        fuelVolume = 150;
+        altitude = 0;
+        velocity = 0;
+        pressure = 0;
+    }
+
+    @PostConstruct
+    public void init() {
+        Timer timer = new Timer();
+        TimerTask updateMetricsTask = new TimerTask() {
+            @Override
+            public void run() {
+                updateMetrics();
+            }
+        };
+        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
+    }
+
     public double consultAltitude() {
         return altitude;
     }
@@ -79,6 +107,9 @@ public class Sensors {
 
     //MOCK: update metrics (called every second)
     private static void updateMetrics() {
+        if (!isLaunched) {
+            return;
+        }
         if (altitude < MAX_ALTITUDE) {
             altitude += 100000;
         }
@@ -99,14 +130,6 @@ public class Sensors {
         }
         isLaunched = true;
         launchDateTime = LocalDateTime.now();
-        Timer timer = new Timer();
-        TimerTask updateMetricsTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateMetrics();
-            }
-        };
-        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
     }
 
     public double consultPressure() {

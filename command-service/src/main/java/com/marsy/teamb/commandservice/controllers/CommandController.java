@@ -1,5 +1,6 @@
 package com.marsy.teamb.commandservice.controllers;
 
+import com.marsy.teamb.commandservice.components.KafkaProducerComponent;
 import com.marsy.teamb.commandservice.interfaces.ICommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +23,12 @@ public class CommandController {
     @Autowired
     private ICommand command;
 
-    @GetMapping("/launch")
+    @Autowired
+    KafkaProducerComponent producerComponent;
+
+    @GetMapping("/startMission")
     public ResponseEntity<String> rocketLaunch() {
+        producerComponent.startMission(new Date());
         LOGGER.log(Level.INFO, "Preparing for launching...");
         String result = command.readinessPoll();
         LOGGER.log(Level.INFO, "Command center decision: \"" + result + "\"");
