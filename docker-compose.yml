@@ -5,7 +5,6 @@ services:
   mongo:
     image: mongo:6.0
     container_name: payload-metrics
-    restart: always
     networks:
       - marsy-net
 
