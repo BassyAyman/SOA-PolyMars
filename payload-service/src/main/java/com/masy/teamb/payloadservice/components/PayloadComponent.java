@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 
 @Component
 public class PayloadComponent implements IPayload {
-    private final double AIMED_ALTITUDE = 150000;
-    private final double AIMED_VELOCITY = 900;
+    private final double AIMED_ALTITUDE = 1800000;
+    private final double MAX_ALTITUDE = 1950000;
+    private final double AIMED_VELOCITY = 12000;
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
     @Autowired
@@ -29,7 +30,9 @@ public class PayloadComponent implements IPayload {
     @Override
     public boolean isOrbitRight(OrbitDataDTO orbitDataDTO) {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
-        if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY){
+        if (orbitDataDTO.altitude() > AIMED_ALTITUDE &&
+                orbitDataDTO.altitude() < MAX_ALTITUDE &&
+                orbitDataDTO.velocity() > AIMED_VELOCITY ){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
             try {
