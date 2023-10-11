@@ -9,9 +9,6 @@ import com.masy.teamb.payloadservice.repositories.MetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,10 +18,8 @@ public class PayloadComponent implements IPayload {
     private final double AIMED_VELOCITY = 900;
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
-
-    private boolean isPayloadDetached = false;
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-
+    @Autowired
+    private KafkaProducerComponent producerComponent;
     @Autowired
     private IPayloadProxy payloadProxy;
 
@@ -34,26 +29,28 @@ public class PayloadComponent implements IPayload {
     @Override
     public boolean isOrbitRight(OrbitDataDTO orbitDataDTO) {
         // process calculations and decide if orbit is correct to send detach msg to Rocket Service
-        if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY && !isPayloadDetached){
+        if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY){
             // Detach order to the Rocket Service
-            LOGGER.log(Level.INFO, "Good orbit");
-            isPayloadDetached = true;
-            payloadProxy.sendDetachOrder();
-            LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: start receiving satellite telemetry");
-            startMetricsCollect();
-            return true;
+            LOGGER.log(Level.INFO, "Good orbit reached");
+            try {
+                producerComponent.sendToCommandLogs("Good orbit reached");
+                payloadProxy.sendDetachOrder();
+                return true;
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error sending detach order to Rocket Service");
+                producerComponent.sendToCommandLogs("Error sending detach order to Rocket Service");
+
+                e.printStackTrace();
+                throw new RuntimeException("Error sending detach order to Rocket Service");
+            }
         }
         return false;
     }
 
-    void startMetricsCollect() {
-        // Metrics collect + store in database
-        executorService.scheduleAtFixedRate( () -> {
-            SatelliteMetricsDTO metrics =  payloadProxy.getSatelliteMetrics();
-            MetricsData metricsData = new MetricsData(
-                    metrics.altitude(), metrics.velocity(), metrics.fuelVolume(), metrics.elapsedTime(), metrics.isDetached());
-            metricsRepository.save(metricsData);
-        }, 0, 3, TimeUnit.SECONDS );
-
+    public void savePayloadMetricsToDB(SatelliteMetricsDTO metrics){
+        MetricsData metricsData = new MetricsData(
+                metrics.altitude(), metrics.velocity(), metrics.fuelVolume(), metrics.elapsedTime(), metrics.isDetached());
+        metricsRepository.save(metricsData);
     }
+
 }

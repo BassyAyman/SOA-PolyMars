@@ -29,4 +29,10 @@
     </logger>
 
     <logger name="org.hibernate.SQL" level="INFO" />
+
+    <!-- Kafka and Spring Kafka loggers -->
+    <logger name="org.apache.kafka" level="ERROR"/>
+    <logger name="org.springframework.kafka" level="ERROR"/>
+    <logger name="org.springframework.integration.kafka" level="ERROR"/>
+    <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="ERROR"/>
 </configuration>

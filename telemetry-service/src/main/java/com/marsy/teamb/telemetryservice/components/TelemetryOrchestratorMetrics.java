@@ -21,7 +21,6 @@ public class TelemetryOrchestratorMetrics implements MetricsOrchestrator {
 
     @Override
     public String processRocketRelatedMetrics(RocketHardwareData dataRocketMetrics) {
-        //LOGGER.log(Level.INFO, "collected data from rocket: " + dataRocketMetrics.toString());
         sender.sendFuelMetric(dataRocketMetrics);
         sender.sendCrashValue(dataRocketMetrics);
         return sender.sendOrbitMetric(dataRocketMetrics);

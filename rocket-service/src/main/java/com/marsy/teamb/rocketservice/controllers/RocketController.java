@@ -1,6 +1,7 @@
 package com.marsy.teamb.rocketservice.controllers;
 
 import com.marsy.teamb.rocketservice.components.BoosterProxy;
+import com.marsy.teamb.rocketservice.components.KafkaProducerComponent;
 import com.marsy.teamb.rocketservice.components.SatelliteProxy;
 import com.marsy.teamb.rocketservice.components.Sensors;
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
@@ -32,21 +33,29 @@ public class RocketController {
 
     @Autowired
     SatelliteProxy satelliteProxy;
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     @GetMapping("/rocketStatus")
     public ResponseEntity<String> rocketStatus() {
         LOGGER.log(Level.INFO, "Rocket status is ok");
+        producerComponent.sendToCommandLogs("Rocket status is ok");
         return ResponseEntity.ok("OK");
     }
 
     @GetMapping("/rocketMetrics")
     public ResponseEntity<RocketMetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.isFine()));
+        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultPressure(), sensors.isFine()));
     }
 
     @PutMapping("/payloadDetach")
     public ResponseEntity<String> payloadDetach() {
+        sensors.detachPayload();
+        LOGGER.log(Level.INFO, "Fairing separation...");
+        producerComponent.sendToCommandLogs("Fairing separation...");
+        this.sensors.stopRocketEngine();
         LOGGER.log(Level.INFO, "Detaching payload...");
+        producerComponent.sendToCommandLogs("Detaching payload...");
         this.satelliteProxy.dropSatellite();
         return ResponseEntity.ok("OK");
     }
@@ -54,27 +63,39 @@ public class RocketController {
     @PutMapping("/launchRocket")
     public ResponseEntity<String> launchRocket() {
         LOGGER.log(Level.INFO, "Ignition...");
+        producerComponent.sendToCommandLogs("Ignition...");
         Sensors.startRocketClock();
         return ResponseEntity.ok("OK");
     }
 
     @PutMapping("/staging")
     public ResponseEntity<String> staging() {
-        LOGGER.log(Level.INFO, "Staging booster");
         this.boosterProxy.dropBooster();
+        this.sensors.dropBooster();
         return ResponseEntity.ok("OK");
     }
 
     @PutMapping("/mockProblem")
     public void mockProblem() {
         LOGGER.log(Level.INFO, "There is a problem with the rocket");
+        producerComponent.sendToCommandLogs("There is a problem with the rocket");
         this.sensors.detectProblem();
     }
 
     @PutMapping("/destroy")
     public void destroy() {
-        LOGGER.log(Level.INFO, "Autodestruction...");
+        LOGGER.log(Level.INFO, "Self-destruct...");
+        producerComponent.sendToCommandLogs("Self-destruct...");
         this.sensors.autoDestruct();
     }
 
+    @PutMapping("/handleMaxQ")
+    public ResponseEntity<String> handleMaxQ() {
+        if (this.sensors.isMaxQReached()) {
+            LOGGER.log(Level.INFO, "MaxQ reached...");
+            sensors.throttleDownEngine();
+            return ResponseEntity.ok("Engine throttled down for Max Q phase.");
+        }
+        return ResponseEntity.ok("Max Q not reached.");
+    }
 }

@@ -1,6 +1,7 @@
 package com.marsy.teamb.components;
 
 import com.marsy.teamb.interfaces.WeatherStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.Random;
@@ -12,8 +13,10 @@ public class WeatherService implements WeatherStatus {
 
     private static final Logger LOGGER = Logger.getLogger(WeatherService.class.getSimpleName());
     private static final String[] WEATHER_CONDITIONS = {"Sunny"};
+    @Autowired
+    private KafkaProducer producer;
 
-    private static String currentWeather() {
+    private String currentWeather() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -26,13 +29,17 @@ public class WeatherService implements WeatherStatus {
 
         String weather = WEATHER_CONDITIONS[index];
         LOGGER.log(Level.INFO, "Current weather: " + weather);
+        producer.sendLogToCommand("Current weather: " + weather);
+        producer.sendMsgToWebCaster(
+                "today is a beatifull day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
+        );
         return weather;
     }
 
     @Override
     public String getWeather() {
         LOGGER.log(Level.INFO, "Fetching the weather...");
-
+        producer.sendLogToCommand("Fetching the weather...");
         String weather = currentWeather();
         if (weather.equals("Sunny"))
             return "OK";

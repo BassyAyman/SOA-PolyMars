@@ -1,5 +1,6 @@
 package com.marsy.teamb.boosterservice.controllers;
 
+import com.marsy.teamb.boosterservice.components.TelemetryProxy;
 import com.marsy.teamb.boosterservice.dto.BoosterMetricsDTO;
 import com.marsy.teamb.boosterservice.components.Sensors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class BoosterController {
     @Autowired
     Sensors sensors;
 
+    @Autowired
+    TelemetryProxy telemetryProxy;
+
     @GetMapping("/boosterMetrics")
     public ResponseEntity<BoosterMetricsDTO> rocketMetrics() {
         return ResponseEntity.ok(new BoosterMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultDetachState()));
@@ -31,6 +35,7 @@ public class BoosterController {
 
     @PutMapping("/leaveRocket")
     public ResponseEntity<Void> leaveRocket() {
+        telemetryProxy.sendMetricsToTelemetryService();
         sensors.leaveRocket();
         return ResponseEntity.ok().build();
     }

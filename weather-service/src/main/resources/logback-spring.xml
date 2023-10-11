@@ -27,4 +27,10 @@
     <logger name="org.springframework" level="ERROR" additivity="false">
         <appender-ref ref="SPRING_LOG"/>
     </logger>
+
+    <!-- Kafka and Spring Kafka loggers -->
+    <logger name="org.apache.kafka" level="ERROR"/>
+    <logger name="org.springframework.kafka" level="ERROR"/>
+    <logger name="org.springframework.integration.kafka" level="ERROR"/>
+    <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="ERROR"/>
 </configuration>

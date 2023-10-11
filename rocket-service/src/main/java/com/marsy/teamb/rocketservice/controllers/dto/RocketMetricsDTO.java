@@ -10,13 +10,16 @@ public class RocketMetricsDTO {
 
     public final double elapsedTime;
 
+    public final double pressure;
+
     public final boolean isFine;
 
-    public RocketMetricsDTO(double altitude, double velocity, double fuelVolume, double elapsedTime, boolean isFine) {
+    public RocketMetricsDTO(double altitude, double velocity, double fuelVolume, double elapsedTime, double pressure, boolean isFine) {
         this.altitude = altitude;
         this.velocity = velocity;
         this.fuelVolume = fuelVolume;
         this.elapsedTime = elapsedTime;
+        this.pressure = pressure;
         this.isFine = isFine;
     }
 }
