@@ -1,6 +1,8 @@
 package com.marsy.teamb.stagingservice.controllers;
 
 import com.marsy.teamb.stagingservice.components.dto.FuelDataDTO;
+import com.marsy.teamb.stagingservice.components.dto.KafkaProducerComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,13 +20,14 @@ public class StagingController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private boolean isRocketStaged = false;
+    @Autowired
+    KafkaProducerComponent producerComponent;
 
     @PostMapping(path = "/fuelState")
     public ResponseEntity<String> shouldWeStage(@RequestBody FuelDataDTO fuelDto) {
-        if (fuelDto.getFuelVolume() <= 8 && !isRocketStaged) {
+        if (fuelDto.getFuelVolume() <= 8) {
             LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: stage rocket");
-            isRocketStaged = true;
+            producerComponent.sendToCommandLogs("[EXTERNAL CALL] to rocket-service: stage rocket");
             restTemplate.put("http://rocket-service:8080/staging", null);
             return ResponseEntity.ok("Asked rocket to stage");
         }

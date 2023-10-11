@@ -19,6 +19,7 @@ compile_dir "telemetry-service"
 compile_dir "staging-service"
 compile_dir "satellite-service"
 compile_dir "booster-service"
+compile_dir "webcaster-service"
 
 echo "Starting Docker containers..."
 docker-compose up --build -d
@@ -44,3 +45,4 @@ wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
+wait_on_health http://localhost:8090 webcaster-service

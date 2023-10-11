@@ -18,8 +18,8 @@ public class PayloadComponent implements IPayload {
     private final double AIMED_VELOCITY = 900;
 
     private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
-
-
+    @Autowired
+    private KafkaProducerComponent producerComponent;
     @Autowired
     private IPayloadProxy payloadProxy;
 
@@ -32,8 +32,17 @@ public class PayloadComponent implements IPayload {
         if (orbitDataDTO.altitude() > AIMED_ALTITUDE && orbitDataDTO.velocity() > AIMED_VELOCITY){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
-            payloadProxy.sendDetachOrder();
-            return true;
+            try {
+                producerComponent.sendToCommandLogs("Good orbit reached");
+                payloadProxy.sendDetachOrder();
+                return true;
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error sending detach order to Rocket Service");
+                producerComponent.sendToCommandLogs("Error sending detach order to Rocket Service");
+
+                e.printStackTrace();
+                throw new RuntimeException("Error sending detach order to Rocket Service");
+            }
         }
         return false;
     }
