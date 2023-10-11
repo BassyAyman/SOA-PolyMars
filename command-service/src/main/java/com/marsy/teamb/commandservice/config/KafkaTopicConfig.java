@@ -19,4 +19,9 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("missionStatus")
                 .build();
     }
+
+    @Bean NewTopic anomaliesTriggers(){
+        return TopicBuilder.name("MissionError")
+                .build();
+    }
 }

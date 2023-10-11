@@ -15,8 +15,14 @@ import java.util.logging.Logger;
 @Component
 public class KafkaListeners {
 
+    private final String HARD_ERROR = "hard";
+    private final String RELATIVE_ERROR = "relative";
+
     @Autowired
     private LogsRepository logsRepository;
+
+    @Autowired
+    private CommandComponent command;
 
     private static final Logger LOGGER = Logger.getLogger(KafkaListeners.class.getSimpleName());
     @KafkaListener(topics = "commandLog")
@@ -27,5 +33,14 @@ public class KafkaListeners {
         LOGGER.log(Level.INFO, "nouveau message systeme: "+ marsyLog.toString());
         // store to mongo db
         logsRepository.save(marsyLog);
+    }
+
+    @KafkaListener(topics = "MissionError")
+    void listenerOnError(String error){  // TODO jspa si j'envoie pas sur le bus le tick de destruction
+        if(error.equals(HARD_ERROR)){
+            command.processDestruction();
+        } else if (error.equals(RELATIVE_ERROR)) {
+            LOGGER.log(Level.INFO,"an relative issues came from the rocket, care on what is going on");
+        }
     }
 }

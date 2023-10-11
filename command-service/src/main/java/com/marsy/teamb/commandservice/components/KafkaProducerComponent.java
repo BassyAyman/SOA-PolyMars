@@ -19,4 +19,8 @@ public class KafkaProducerComponent {
         long numberDate = Long.parseLong(formattedDate); //for example: 11/10/2023 15h19:36 ==> 231011151936
         stringKafkaTemplate.send("missionStatus", "start " + numberDate);
     }
+
+    public void sendMessageCaster(String msg){
+        stringKafkaTemplate.send("messageToCaster",msg);
+    }
 }

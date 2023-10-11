@@ -2,6 +2,7 @@ package com.marsy.teamb.commandservice.components;
 
 import com.marsy.teamb.commandservice.controllers.CommandController;
 import com.marsy.teamb.commandservice.interfaces.ICommand;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,9 @@ public class CommandComponent implements ICommand {
 
     private static final Logger LOGGER = Logger.getLogger(CommandController.class.getSimpleName());
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private KafkaProducerComponent producerComponent;
 
     public String readinessPoll() {
         // Weather
@@ -43,15 +47,14 @@ public class CommandComponent implements ICommand {
     }
 
     @Override
-    public void processVerificationDestruction(boolean orderToDestroy) {
-        if(!orderToDestroy){
-            LOGGER.log(Level.INFO, "Received critical rocket health");
-            try {
-                LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: autodestruction");
-                restTemplate.put(ROCKET_SERVICE+"/destroy", "Detach request");
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error while receiving autodestruction response of rocket-service");
-            }
+    public void processDestruction() {
+        LOGGER.log(Level.INFO, "Received critical rocket health");
+        try {
+            LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: autodestruction");
+            restTemplate.put(ROCKET_SERVICE+"/destroy", "Detach request");
+            producerComponent.sendMessageCaster("oh no, an issue has occurred, and the rocket has exposed, cringe");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while receiving autodestruction response of rocket-service");
         }
     }
 
