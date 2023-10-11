@@ -93,6 +93,11 @@ public class Sensors {
         }, 0, 3, TimeUnit.SECONDS );
     }
 
+    private void startNewMission(){
+        isDetached = false;
+        executorService.shutdown();
+    }
+
     public double consultElapsedTime() {
         if (launchDateTime == null) {
             return 0;
