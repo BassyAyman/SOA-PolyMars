@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,10 +37,10 @@ public class KafkaListeners {
     }
 
     @KafkaListener(topics = "MissionError")
-    void listenerOnError(String error){  // TODO jspa si j'envoie pas sur le bus le tick de destruction
-        if(error.equals(HARD_ERROR)){
+    void listenerOnError(String error){
+        if(error.toLowerCase(Locale.ROOT).equals(HARD_ERROR)){
             command.processDestruction();
-        } else if (error.equals(RELATIVE_ERROR)) {
+        } else if (error.toLowerCase(Locale.ROOT).equals(RELATIVE_ERROR)) {
             LOGGER.log(Level.INFO,"an relative issues came from the rocket, care on what is going on");
         }
     }

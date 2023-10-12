@@ -37,11 +37,4 @@ public class CommandController {
         }
         return ResponseEntity.ok(result);
     }
-
-//    @PostMapping(path = "/anyTrouble", consumes = APPLICATION_JSON_VALUE)
-//    public void rocketDestroy(@RequestBody boolean isFine){
-//        //LOGGER.log(Level.INFO, "Received rocket health state. Is rocket fine: "+isFine);
-//        command.processVerificationDestruction(isFine);
-//    }
-
 }

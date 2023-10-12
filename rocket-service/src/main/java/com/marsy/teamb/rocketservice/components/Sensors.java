@@ -161,6 +161,8 @@ public class Sensors {
         isDestroyed = true;
     }
 
+    public void mockVelocityGettingLess(){velocity = velocity - 2500;}
+
     public void stopRocketEngine() {
         LOGGER.log(Level.INFO, "Rocket engine stopped");
     }

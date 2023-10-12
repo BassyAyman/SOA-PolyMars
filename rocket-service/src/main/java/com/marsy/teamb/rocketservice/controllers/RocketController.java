@@ -95,6 +95,13 @@ public class RocketController {
         this.sensors.detectProblem();
     }
 
+    @PutMapping("/mockProblemOnVelocity")
+    public void mockProblemTwo() {
+        LOGGER.log(Level.INFO, "There is a problem with the velocity rocket");
+        producerComponent.sendToCommandLogs("There is a problem with the velocity rocket");
+        this.sensors.mockVelocityGettingLess();
+    }
+
     @PutMapping("/destroy")
     public void destroy() {
         if (sensors.isDestroyed()) {

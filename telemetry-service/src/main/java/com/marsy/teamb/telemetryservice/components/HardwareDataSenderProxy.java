@@ -4,9 +4,12 @@ import com.marsy.teamb.telemetryservice.interfaces.HardwareRocketSender;
 import com.marsy.teamb.telemetryservice.components.DTO.FuelDataDTO;
 import com.marsy.teamb.telemetryservice.components.DTO.OrbiteDataDTO;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +21,8 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     private final static String PAYLOAD_API_URL = "http://payload-service:8080";
     private final static String COMMAND_API_URL = "http://command-service:8080";
     private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private KafkaProducerComponent producer;
     @Override
     public void sendFuelMetric(RocketHardwareData data) {
         //LOGGER.log(Level.INFO," sending the level of fuel "+data.getFuelVolume()+" to the staging");
@@ -35,9 +40,16 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     }
 
     @Override
-    public void sendCrashValue(RocketHardwareData data) {
-        boolean isFineValue = data.isFine();
-        //LOGGER.log(Level.INFO, "Sending rocket health to command center. Is rocket fine: "+isFineValue);
-        restTemplate.postForEntity(COMMAND_API_URL+"/anyTrouble", isFineValue, String.class);
+    public void sendCrashValue(List<RocketHardwareData> listDataRocket) {
+        if (listDataRocket.size() >= 2) {
+            RocketHardwareData lastData = listDataRocket.get(0);
+            RocketHardwareData secondLastData = listDataRocket.get(1);
+
+            if(!lastData.isFine()){
+                producer.sendErrorCommand("hard");
+            }else if(lastData.getVelocity() < secondLastData.getVelocity()){
+                producer.sendErrorCommand("relative");
+            }
+        }
     }
 }
