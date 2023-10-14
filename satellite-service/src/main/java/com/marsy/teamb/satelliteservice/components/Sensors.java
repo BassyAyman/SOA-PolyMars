@@ -75,9 +75,9 @@ public class Sensors {
         isDetached = true;
         LOGGER.log(Level.INFO, "[INTERNAL] Leaving rocket");
         LOGGER.log(Level.INFO, "[INTERNAL] Start to send metrics data to Payload Department");
-        producerComponent.sendToCommandLogs("[INTERNAL(to satelite)] Leaving rocket");
-        producerComponent.sendToCommandLogs("[INTERNAL(to satelite)] Start to send metrics data to Payload Department");
-        return !isDetached;
+        producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Leaving rocket");
+        producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Start to send metrics data to Payload Department");
+        return isDetached;
     }
 
     public void startSendingMetrics() {
@@ -90,6 +90,12 @@ public class Sensors {
                             this.consultElapsedTime(),
                             this.consultDetachState())
             );
+            if (this.consultElapsedTime() > 10) {
+                // End of this mission and get ready for the next one
+                LOGGER.log(Level.INFO, "[INTERNAL] Mission is finished with success");
+                producerComponent.sendToCommandLogs("[INTERNAL] Mission is finished with success");
+                this.startNewMission();
+            }
         }, 0, 3, TimeUnit.SECONDS );
     }
 
