@@ -1,6 +1,6 @@
-package com.marsy.teamb.rocketservice.components;
+package com.marsy.teamb.satelliteservice.components;
 
-import com.fasterxml.jackson.core.JsonProcessingException;;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class KafkaListeners {
     void listener(String status) throws JsonProcessingException {
         LOGGER.info("Received mission status: " + status);
         if ((status.split(" ")[0]).equals("start")) {
-            this.sensors.reset();
+            // todo: reset sensors
         }
     }
 }

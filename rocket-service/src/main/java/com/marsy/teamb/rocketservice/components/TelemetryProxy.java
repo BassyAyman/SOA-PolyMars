@@ -37,7 +37,7 @@ public class TelemetryProxy {
         if (sensors.isBoosterDropped() && sensors.isPayloadDropped()) {
             return; //do not send data when payload and booster detached
         }
-        LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
+        //LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
         //producerComponent.sendToCommandLogs("Sending metrics to telemetry service");
         try {
             restTemplate.postForEntity(TELEMETRY_API_URL + "/rocketMetrics",

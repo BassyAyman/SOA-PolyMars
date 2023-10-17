@@ -61,6 +61,7 @@ public class Sensors {
     private static double pressure = 0;
 
     public void reset(){
+        LOGGER.log(Level.INFO, "Resetting rocket");
         launchDateTime = null;
         isLaunched = false;
         isFine = true;

@@ -27,7 +27,7 @@ public class TelemetryService implements TelemetryProcessing {
 
     @Override
     public void processBoosterTelemetry(BoosterHardwareData dataBooster) {
-        LOGGER.log(Level.INFO,"Telemetry booster support contacted for process");
+        //LOGGER.log(Level.INFO,"Telemetry booster support contacted for process");
         orchestrator.processBoosterMetricStorage(dataBooster);
     }
 }
