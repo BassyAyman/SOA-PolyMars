@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- Appender for Console Output -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+
+        <!-- Define a filter for IGOR Marker using EvaluatorFilter -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator name="markerEvaluator">
+                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("IGOR");</expression>
+            </evaluator>
+            <OnMismatch>DENY</OnMismatch>
+        </filter>
     </appender>
 
     <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
-
 </configuration>

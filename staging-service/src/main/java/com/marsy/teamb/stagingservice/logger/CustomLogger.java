@@ -1,4 +1,5 @@
-package com.marsy.teamb.commandservice.logger;
+package com.marsy.teamb.stagingservice.logger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;

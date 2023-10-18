@@ -1,7 +1,9 @@
 package com.marsy.teamb.satelliteservice.components;
 
+import com.marsy.teamb.satelliteservice.SatelliteServiceApplication;
 import com.marsy.teamb.satelliteservice.dto.SatelliteMetricsDTO;
 import com.marsy.teamb.satelliteservice.interfaces.ISensorsProxy;
+import com.marsy.teamb.satelliteservice.logger.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,8 @@ public class Sensors {
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     private static final Logger LOGGER = Logger.getLogger("SatelliteService");
+
+    private static final CustomLogger DISPLAY = new CustomLogger(SatelliteServiceApplication.class);
 
     public static LocalDateTime launchDateTime;
 
@@ -68,13 +72,16 @@ public class Sensors {
     public boolean leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.INFO, "Received order to leave but already detached");
+            DISPLAY.logIgor("Received order to leave but already detached");
             producerComponent.sendToCommandLogs("Received order to leave but already detached");
             return false; // If already detached ignoring detach order
         }
         launchDateTime = LocalDateTime.now();
         isDetached = true;
         LOGGER.log(Level.INFO, "[INTERNAL] Leaving rocket");
+        DISPLAY.logIgor("[INTERNAL] Leaving rocket");
         LOGGER.log(Level.INFO, "[INTERNAL] Start to send metrics data to Payload Department");
+        DISPLAY.logIgor("[INTERNAL] Start to send metrics data to Payload Department");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Leaving rocket");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Start to send metrics data to Payload Department");
         return isDetached;
@@ -93,6 +100,7 @@ public class Sensors {
             if (this.consultElapsedTime() > 10) {
                 // End of this mission and get ready for the next one
                 LOGGER.log(Level.INFO, "[INTERNAL] Mission is finished with success");
+                DISPLAY.logIgor("[INTERNAL] Mission is finished with success");
                 producerComponent.sendToCommandLogs("[INTERNAL] Mission is finished with success");
                 this.startNewMission();
             }
@@ -100,7 +108,8 @@ public class Sensors {
     }
 
     private void startNewMission(){
-        LOGGER.log(Level.INFO, "[INTERNAL] Ready for new mission");
+        LOGGER.log(Level.INFO, "[INTERNAL] Start new mission");
+        DISPLAY.logIgor("[INTERNAL] Start new mission");
         isDetached = false;
         launchDateTime = null;
         executorService.shutdown();
