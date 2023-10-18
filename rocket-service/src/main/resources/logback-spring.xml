@@ -1,20 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Appender for Console Output -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator name="igorMarkerEvaluator">
+                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("IGOR");</expression>
+            </evaluator>
+            <onMismatch>DENY</onMismatch>
+            <onMatch>NEUTRAL</onMatch>
+        </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-
-        <!-- Define a filter for IGOR Marker using EvaluatorFilter -->
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator name="markerEvaluator">
-                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("IGOR");</expression>
-            </evaluator>
-            <OnMismatch>DENY</OnMismatch>
-        </filter>
     </appender>
 
-    <root level="ERROR">
+    <!-- Appender for all other Logs -->
+    <appender name="ALL_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>all_logs.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger settings -->
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ALL_LOGS"/>
     </root>
+
+    <logger name="com.marsy.teamb" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
+
+    <logger name="org.springframework" level="ERROR" additivity="false">
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
+
+    <!-- Kafka and Spring Kafka loggers -->
+    <logger name="org.apache.kafka" level="ERROR">
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
+    <logger name="org.springframework.kafka" level="ERROR">
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
+    <logger name="org.springframework.integration.kafka" level="ERROR">
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
+    <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="ERROR">
+        <appender-ref ref="ALL_LOGS"/>
+    </logger>
 </configuration>
