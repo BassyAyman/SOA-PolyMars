@@ -4,6 +4,7 @@ import com.masy.teamb.payloadservice.controllers.dto.OrbitDataDTO;
 import com.masy.teamb.payloadservice.controllers.dto.SatelliteMetricsDTO;
 import com.masy.teamb.payloadservice.interfaces.IPayload;
 import com.masy.teamb.payloadservice.interfaces.IPayloadProxy;
+import com.masy.teamb.payloadservice.logger.CustomLogger;
 import com.masy.teamb.payloadservice.models.MetricsData;
 import com.masy.teamb.payloadservice.repositories.MetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,13 @@ import java.util.logging.Logger;
 
 @Component
 public class PayloadComponent implements IPayload {
+
+    private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
+    private static final CustomLogger DISPLAY = new CustomLogger(PayloadComponent.class);
     private final double AIMED_ALTITUDE = 1800000;
     private final double MAX_ALTITUDE = 1950000;
     private final double AIMED_VELOCITY = 12000;
 
-    private static final Logger LOGGER = Logger.getLogger(PayloadComponent.class.getSimpleName());
     @Autowired
     private KafkaProducerComponent producerComponent;
     @Autowired
@@ -35,6 +38,7 @@ public class PayloadComponent implements IPayload {
                 orbitDataDTO.velocity() > AIMED_VELOCITY ){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
+            DISPLAY.logIgor("Good orbit reached");
             try {
                 producerComponent.sendToCommandLogs("Good orbit reached");
                 payloadProxy.sendDetachOrder();

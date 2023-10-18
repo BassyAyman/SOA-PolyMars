@@ -2,6 +2,7 @@ package com.masy.teamb.payloadservice.components;
 
 import com.masy.teamb.payloadservice.controllers.dto.SatelliteMetricsDTO;
 import com.masy.teamb.payloadservice.interfaces.IPayloadProxy;
+import com.masy.teamb.payloadservice.logger.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,9 @@ import java.util.logging.Logger;
 public class PayloadProxy implements IPayloadProxy {
 
     private static final Logger LOGGER = Logger.getLogger(PayloadProxy.class.getSimpleName());
+
+    private static final CustomLogger DISPLAY = new CustomLogger(PayloadProxy.class);
+
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
     KafkaProducerComponent producerComponent;
@@ -21,6 +25,7 @@ public class PayloadProxy implements IPayloadProxy {
     @Override
     public void sendDetachOrder() {
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: detach payload");
+        DISPLAY.logIgor("[EXTERNAL CALL] to rocket-service: detach payload");
         producerComponent.sendToCommandLogs("[EXTERNAL CALL] to rocket-service: detach payload");
         try {
             restTemplate.put(ROCKET_SERVICE+"/payloadDetach", "Detach request");
