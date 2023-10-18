@@ -27,7 +27,7 @@ public class KafkaListeners {
         LOGGER.info("Received mission status: " + status);
         DISPLAY.logIgor("Received mission status: " + status);
         if ((status.split(" ")[0]).equals("start")) {
-            // todo: reset sensors
+            sensors.startNewMission();
         }
     }
 }

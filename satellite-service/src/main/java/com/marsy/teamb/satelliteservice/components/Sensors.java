@@ -111,7 +111,7 @@ public class Sensors {
         }, 0, 3, TimeUnit.SECONDS );
     }
 
-    private void startNewMission(){
+    public void startNewMission(){
         LOGGER.log(Level.INFO, "[INTERNAL] Start new mission");
         DISPLAY.logIgor("[INTERNAL] Start new mission");
         isDetached = false;
