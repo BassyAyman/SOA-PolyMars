@@ -100,8 +100,9 @@ public class Sensors {
     }
 
     private void startNewMission(){
-        LOGGER.log(Level.INFO, "[INTERNAL] Start new mission");
+        LOGGER.log(Level.INFO, "[INTERNAL] Ready for new mission");
         isDetached = false;
+        launchDateTime = null;
         executorService.shutdown();
     }
 
