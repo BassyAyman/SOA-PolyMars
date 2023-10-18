@@ -32,7 +32,7 @@ public class SatelliteController {
 
     @PutMapping("/leaveRocket")
     public ResponseEntity<String> leaveRocket() {
-        if (sensors.leaveRocket()) sensors.startSendingMetrics();
+        sensors.leaveRocket();
         return ResponseEntity.ok("Detach message received");
     }
 

@@ -25,7 +25,7 @@ public class Sensors {
     @Autowired
     KafkaProducerComponent producerComponent;
 
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
     private static final Logger LOGGER = Logger.getLogger("SatelliteService");
 
@@ -63,13 +63,12 @@ public class Sensors {
 
     /**
      *
-     * @return percentage of fuel remaining
      */
-    public boolean leaveRocket() {
+    public void leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.INFO, "Received order to leave but already detached");
             producerComponent.sendToCommandLogs("Received order to leave but already detached");
-            return false; // If already detached ignoring detach order
+            return; // If already detached ignoring detach order
         }
         launchDateTime = LocalDateTime.now();
         isDetached = true;
@@ -77,19 +76,24 @@ public class Sensors {
         LOGGER.log(Level.INFO, "[INTERNAL] Start to send metrics data to Payload Department");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Leaving rocket");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Start to send metrics data to Payload Department");
-        return isDetached;
+        startSendingMetrics();
     }
 
     public void startSendingMetrics() {
         executorService.scheduleAtFixedRate( () -> {
-            sensorsProxy.sendMetrics(
-                    new SatelliteMetricsDTO(
-                            this.consultAltitude(),
-                            this.consultVelocity(),
-                            this.consultFuelVolume(),
-                            this.consultElapsedTime(),
-                            this.consultDetachState())
-            );
+            try {
+                sensorsProxy.sendMetrics(
+                        new SatelliteMetricsDTO(
+                                this.consultAltitude(),
+                                this.consultVelocity(),
+                                this.consultFuelVolume(),
+                                this.consultElapsedTime(),
+                                this.consultDetachState())
+                );
+            } catch (Exception e){
+                LOGGER.log(Level.INFO, "[INTERNAL] Something went wrong : " + e.getMessage());
+            }
+
             if (this.consultElapsedTime() > 10) {
                 // End of this mission and get ready for the next one
                 LOGGER.log(Level.INFO, "[INTERNAL] Mission is finished with success");
