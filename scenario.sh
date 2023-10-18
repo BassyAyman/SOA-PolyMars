@@ -12,8 +12,7 @@ sleep 35
 echo "Simulating a problem with the rocket... at $(date +"%T")"
 curl -X PUT http://localhost:8082/mockProblem
 
-echo -e "Start second mission at $(date +"%T")"
-curl http://localhost:8082/startMission
+sleep 10
 
-sleep 1
+echo -e "Start second mission at $(date +"%T")"
 curl http://localhost:8083/startMission

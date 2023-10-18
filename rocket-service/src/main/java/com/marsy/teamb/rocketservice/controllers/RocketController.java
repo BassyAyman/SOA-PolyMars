@@ -83,6 +83,9 @@ public class RocketController {
         if (sensors.isDestroyed()) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
         }
+        if (sensors.isBoosterDropped()) {
+            return ResponseEntity.ok("Booster already dropped");
+        }
         this.boosterProxy.dropBooster();
         this.sensors.dropBooster();
         return ResponseEntity.ok("OK");

@@ -20,7 +20,7 @@ public class TelemetryService implements TelemetryProcessing {
 
     @Override
     public void processRocketTelemetry(RocketHardwareData dataRocketMetrics) {
-        LOGGER.log(Level.INFO,"Telemetry rocket support contacted for process");
+        //LOGGER.log(Level.INFO,"Telemetry rocket support contacted for process");
         orchestrator.processRocketMetricStorage(dataRocketMetrics);
         orchestrator.processRocketRelatedMetrics(dataRocketMetrics);
     }

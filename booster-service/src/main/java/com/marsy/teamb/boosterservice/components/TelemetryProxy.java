@@ -30,7 +30,7 @@ public class TelemetryProxy {
         if (!sensors.consultDetachState()) {
             return;
         }
-        LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
+        //LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
         try {
             restTemplate.postForEntity(TELEMETRY_API_URL + "/boosterMetrics",
                     new BoosterMetricsDTO(
