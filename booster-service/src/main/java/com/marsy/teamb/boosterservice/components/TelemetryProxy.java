@@ -1,7 +1,6 @@
 package com.marsy.teamb.boosterservice.components;
 
 import com.marsy.teamb.boosterservice.dto.BoosterMetricsDTO;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,7 @@ public class TelemetryProxy {
 
     private final static String TELEMETRY_API_URL = "http://telemetry-service:8080";
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     /**
      * Send metrics to telemetry every 1000ms
