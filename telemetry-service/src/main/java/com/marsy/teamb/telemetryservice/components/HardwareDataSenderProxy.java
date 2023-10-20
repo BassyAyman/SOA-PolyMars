@@ -32,6 +32,7 @@ public class HardwareDataSenderProxy implements HardwareRocketSender {
     @Override
     public String sendOrbitMetric(RocketHardwareData data) {
         OrbiteDataDTO orbiteDataDto = OrbiteDataDTO.builder()
+                .missionID(data.getMissionID())
                 .velocity(data.getVelocity())
                 .altitude(data.getAltitude())
                 .build();

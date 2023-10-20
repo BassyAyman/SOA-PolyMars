@@ -16,6 +16,8 @@ public class RocketHardwareData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column
+    private String missionID;
+    @Column
     private double altitude;
     @Column
     private double velocity;
@@ -29,7 +31,8 @@ public class RocketHardwareData {
 
     public RocketHardwareData() {}
 
-    public RocketHardwareData(long id, double altitude, double velocity, double fuelVolume, double elapsedTime, boolean isFine){
+    public RocketHardwareData(long id, String missionID, double altitude, double velocity, double fuelVolume, double elapsedTime, boolean isFine){
+        this.missionID = missionID;
         this.altitude = altitude;
         this.velocity = velocity;
         this.fuelVolume = fuelVolume;

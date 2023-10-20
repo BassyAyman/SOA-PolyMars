@@ -83,6 +83,10 @@ public class Sensors {
         timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
     }
 
+    public String consultMissionID() {
+        return launchDateTime.toString();
+    }
+
     public double consultAltitude() {
         return altitude;
     }

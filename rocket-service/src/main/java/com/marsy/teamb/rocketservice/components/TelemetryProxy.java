@@ -45,6 +45,7 @@ public class TelemetryProxy {
         try {
             restTemplate.postForEntity(TELEMETRY_API_URL + "/rocketMetrics",
                     new RocketMetricsDTO(
+                            sensors.consultMissionID(),
                             sensors.consultAltitude(),
                             sensors.consultVelocity(),
                             sensors.consultFuelVolume(),

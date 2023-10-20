@@ -56,7 +56,7 @@ public class RocketController {
         if (sensors.isDestroyed()) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
         }
-        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultPressure(), sensors.isFine()));
+        return ResponseEntity.ok(new RocketMetricsDTO(sensors.consultMissionID(), sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultPressure(), sensors.isFine()));
     }
 
     @PutMapping("/payloadDetach")
@@ -71,7 +71,8 @@ public class RocketController {
         this.sensors.stopRocketEngine();
         LOGGER.log(Level.INFO, "Detaching payload...");
         producerComponent.sendToCommandLogs("Detaching payload...");
-        this.satelliteProxy.dropSatellite();
+        DISPLAY.logIgor("Mission ID is : " + sensors.consultMissionID());
+        this.satelliteProxy.dropSatellite(sensors.consultMissionID()); // MissionID is sent here
         return ResponseEntity.ok("OK");
     }
 

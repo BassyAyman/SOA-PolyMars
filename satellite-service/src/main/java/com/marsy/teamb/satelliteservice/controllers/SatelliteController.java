@@ -1,13 +1,12 @@
 package com.marsy.teamb.satelliteservice.controllers;
 
+import com.marsy.teamb.satelliteservice.SatelliteServiceApplication;
 import com.marsy.teamb.satelliteservice.components.Sensors;
 import com.marsy.teamb.satelliteservice.dto.SatelliteMetricsDTO;
+import com.marsy.teamb.satelliteservice.logger.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,17 +20,21 @@ public class SatelliteController {
     public static final String BASE_URI = "/";
 
     private static final Logger LOGGER = Logger.getLogger(SatelliteController.class.getSimpleName());
+    private static final CustomLogger DISPLAY = new CustomLogger(SatelliteServiceApplication.class);
 
     @Autowired
     Sensors sensors;
 
     @GetMapping("/satelliteMetrics")
     public ResponseEntity<SatelliteMetricsDTO> rocketMetrics() {
-        return ResponseEntity.ok(new SatelliteMetricsDTO(sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultDetachState()));
+        return ResponseEntity.ok(new SatelliteMetricsDTO(
+                sensors.consultMissionID(), sensors.consultAltitude(), sensors.consultVelocity(), sensors.consultFuelVolume(), sensors.consultElapsedTime(), sensors.consultDetachState()));
     }
 
     @PutMapping("/leaveRocket")
-    public ResponseEntity<String> leaveRocket() {
+    public ResponseEntity<String> leaveRocket(@RequestBody String missionID) {
+        DISPLAY.logIgor("Mission ID that was received by controller : " + missionID);
+        sensors.setMissionID(missionID);
         sensors.leaveRocket();
         return ResponseEntity.ok("Detach message received");
     }

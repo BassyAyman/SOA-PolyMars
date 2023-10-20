@@ -27,7 +27,7 @@ public class Sensors {
     @Autowired
     KafkaProducerComponent producerComponent;
 
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
     private static final Logger LOGGER = Logger.getLogger("SatelliteService");
 
@@ -35,7 +35,13 @@ public class Sensors {
 
     public static LocalDateTime launchDateTime;
 
+    private String missionID;
+
     public static boolean isDetached = false;
+
+    public String consultMissionID(){
+        return this.missionID;
+    }
 
     /**
      * return altitude in m
@@ -87,10 +93,12 @@ public class Sensors {
     }
 
     public void startSendingMetrics() {
+        executorService = Executors.newScheduledThreadPool(2);
         executorService.scheduleAtFixedRate( () -> {
             try {
                 sensorsProxy.sendMetrics(
                         new SatelliteMetricsDTO(
+                                this.consultMissionID(),
                                 this.consultAltitude(),
                                 this.consultVelocity(),
                                 this.consultFuelVolume(),
@@ -103,20 +111,23 @@ public class Sensors {
 
             if (this.consultElapsedTime() > 10) {
                 // End of this mission and get ready for the next one
-                LOGGER.log(Level.INFO, "[INTERNAL] Mission is finished with success");
-                DISPLAY.logIgor("[INTERNAL] Mission is finished with success");
-                producerComponent.sendToCommandLogs("[INTERNAL] Mission is finished with success");
+                LOGGER.log(Level.INFO, "[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
+                DISPLAY.logIgor("[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
+                producerComponent.sendToCommandLogs("[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
                 this.startNewMission();
             }
         }, 0, 3, TimeUnit.SECONDS );
     }
 
     public void startNewMission(){
-        LOGGER.log(Level.INFO, "[INTERNAL] Start new mission");
-        DISPLAY.logIgor("[INTERNAL] Start new mission");
-        isDetached = false;
-        launchDateTime = null;
-        executorService.shutdown();
+        if (isDetached) {
+            LOGGER.log(Level.INFO, "[INTERNAL] Get ready for a new mission");
+            DISPLAY.logIgor("[INTERNAL] Get ready for a new mission");
+            isDetached = false;
+            launchDateTime = null;
+            missionID = "";
+            executorService.shutdown();
+        }
     }
 
     public double consultElapsedTime() {
@@ -126,4 +137,7 @@ public class Sensors {
         return Duration.between(launchDateTime, LocalDateTime.now()).toSeconds();
     }
 
+    public void setMissionID(String missionID) {
+        this.missionID = missionID;
+    }
 }

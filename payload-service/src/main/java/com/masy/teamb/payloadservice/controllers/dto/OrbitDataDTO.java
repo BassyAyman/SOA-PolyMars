@@ -1,4 +1,4 @@
 package com.masy.teamb.payloadservice.controllers.dto;
 
-public record OrbitDataDTO(double altitude, double velocity) {
+public record OrbitDataDTO(String missionID, double altitude, double velocity) {
 }
