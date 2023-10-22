@@ -3,12 +3,15 @@ package com.marsy.teamb.commandservice.controllers;
 import com.marsy.teamb.commandservice.components.KafkaProducerComponent;
 import com.marsy.teamb.commandservice.interfaces.ICommand;
 import com.marsy.teamb.commandservice.logger.CustomLogger;
+import com.marsy.teamb.commandservice.modele.MarsyLogForDB;
+import com.marsy.teamb.commandservice.repositories.LogsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +24,9 @@ public class CommandController {
 
     @Autowired
     private ICommand command;
+
+    @Autowired
+    private LogsRepository logsRepository;
 
     @Autowired
     KafkaProducerComponent producerComponent;
@@ -37,5 +43,16 @@ public class CommandController {
             command.launchRocket();
         }
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/missionLogs")
+    public ResponseEntity<String> getMissionLogs(String missionID) {
+        List<MarsyLogForDB> missionLogs = logsRepository.getMarsyLogForDBByMissionID(missionID);
+        StringBuilder result = new StringBuilder();
+        for (MarsyLogForDB marsyLogDB : missionLogs) {
+            result.append(marsyLogDB.toString());
+        }
+        DISPLAY.logIgor("Request for logs received");
+        return ResponseEntity.ok(result.toString());
     }
 }

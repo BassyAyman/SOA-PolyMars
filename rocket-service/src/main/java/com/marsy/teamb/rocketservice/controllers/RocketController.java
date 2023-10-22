@@ -82,6 +82,7 @@ public class RocketController {
         DISPLAY.logIgor("Ignition...");
         producerComponent.sendToCommandLogs("Ignition...");
         Sensors.startRocketClock();
+        producerComponent.sendMissionIDToCommandService(sensors.consultMissionID());
         return ResponseEntity.ok("OK");
     }
 
