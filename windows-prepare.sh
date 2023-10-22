@@ -20,10 +20,20 @@ compile_dir "staging-service"
 compile_dir "satellite-service"
 compile_dir "booster-service"
 compile_dir "webcaster-service"
+compile_dir "calculator-service"
 
 echo "Starting Docker containers..."
 docker-compose up --build -d
-
+echo "waiting the database run"
+sleep 5
+# Configure PostgreSQL and restart containers
+echo "Setting up PostgreSQL..."
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "CREATE USER reading_user WITH PASSWORD 'reading_pass';"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT CONNECT ON DATABASE telemetry_db TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT USAGE ON SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reading_user;"
 
 
 function wait_on_health()  # $1 is URL of the Spring service with actuator on, $2 is the service name

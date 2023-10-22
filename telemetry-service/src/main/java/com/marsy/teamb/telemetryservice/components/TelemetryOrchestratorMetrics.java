@@ -22,7 +22,6 @@ public class TelemetryOrchestratorMetrics implements MetricsOrchestrator {
     @Override
     public String processRocketRelatedMetrics(RocketHardwareData dataRocketMetrics) {
         sender.sendFuelMetric(dataRocketMetrics);
-        sender.sendCrashValue(repositoryRocket.findTop2ByOrderByElapsedTimeDesc());
         return sender.sendOrbitMetric(dataRocketMetrics);
     }
 

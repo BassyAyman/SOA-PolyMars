@@ -18,12 +18,4 @@ public interface HardwareRocketSender {
      * @param data the Hardware data related to the rocket
      */
     String sendOrbitMetric(RocketHardwareData data);
-
-    /**
-     * Send to the topic "MissionError" two possible value, the HARD error one if
-     * the isFine value hardware metric from rocket is false, and the RELATIVE one if
-     * the rocket speed is getting slower
-     * @param dataListRocket a list of the two latest data coming from rocket
-     */
-    void sendCrashValue(List<RocketHardwareData> dataListRocket);
 }
