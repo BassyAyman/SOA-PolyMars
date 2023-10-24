@@ -26,6 +26,9 @@ public class Sensors {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private KafkaProducerComponent kafkaProducerComponent;
+
     //MOCK: a clock in the rocket
     public static LocalDateTime launchDateTime;
 
@@ -156,6 +159,7 @@ public class Sensors {
 
     public void detectProblem() {
         isFine = false;
+        kafkaProducerComponent.sendErrorCommand("hard");
     }
 
     public boolean isFine() {
