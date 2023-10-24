@@ -155,6 +155,7 @@ compile_dir "staging-service"
 compile_dir "satellite-service"
 compile_dir "booster-service"
 compile_dir "webcaster-service"
+compile_dir "calculator-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
@@ -163,6 +164,19 @@ if ! docker-compose up --build -d; then
     sudo docker-compose up --build -d
 fi
 echo "Docker containers started."
+
+echo "waiting the database run"
+sleep 5
+# Configure PostgreSQL and restart containers
+echo "Setting up PostgreSQL..."
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "CREATE USER reading_user WITH PASSWORD 'reading_pass';"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT CONNECT ON DATABASE telemetry_db TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT USAGE ON SCHEMA public TO reading_user;"
+docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reading_user;"
+echo "PostgreSQL configured."
+
 
 echo "Waiting for services to start..."
 wait_on_health http://localhost:8081 weather-service
@@ -174,4 +188,5 @@ wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
+wait_on_health http://localhost:8091 calculator-service
 echo "All services are up and running."
