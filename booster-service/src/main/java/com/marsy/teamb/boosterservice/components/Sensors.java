@@ -1,5 +1,6 @@
 package com.marsy.teamb.boosterservice.components;
 
+import com.marsy.teamb.boosterservice.logger.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,8 @@ public class Sensors {
     KafkaProducerComponent producerComponent;
 
     private static final Logger LOGGER = Logger.getLogger(Sensors.class.getSimpleName());
+
+    private static final CustomLogger DISPLAY = new CustomLogger(Sensors.class);
 
     public static LocalDateTime detachDateTime;
 
@@ -69,9 +72,11 @@ public class Sensors {
     public void leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.SEVERE, "Error: cannot detach booster because it is already detach");
+            DISPLAY.logIgor("Error: cannot detach booster because it is already detach");
             producerComponent.sendToCommandLogs("Error: cannot detach booster because it is already detach");
         }
         LOGGER.log(Level.INFO, "Leaving rocket");
+        DISPLAY.logIgor("Leaving rocket");
         producerComponent.sendToCommandLogs("Leaving rocket");
         isDetached = true;
         engineOn = true;
@@ -104,6 +109,7 @@ public class Sensors {
     }
 
     public void land() {
+        DISPLAY.logIgor("Landing...");
         LOGGER.log(Level.INFO, "Booster flip maneuver...");
         producerComponent.sendToCommandLogs("Booster flip maneuver...");
         LOGGER.log(Level.INFO, "Booster entry burn....");

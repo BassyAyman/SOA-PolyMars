@@ -4,8 +4,13 @@ import lombok.Builder;
 
 @Builder
 public class OrbiteDataDTO {
+    private String missionID;
     private double altitude;
     private double velocity;
+
+    public String getMissionID(){
+        return this.missionID;
+    }
 
     public double getAltitude() {
         return altitude;

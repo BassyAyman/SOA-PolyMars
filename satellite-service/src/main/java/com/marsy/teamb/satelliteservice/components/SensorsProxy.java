@@ -14,7 +14,7 @@ public class SensorsProxy implements ISensorsProxy {
     @Override
     public void sendMetrics(SatelliteMetricsDTO satelliteMetricsDTO) {
         restTemplate.postForEntity(
-                PAYLOAD_DEP_URL + "/satelliteMetrics", satelliteMetricsDTO, SatelliteMetricsDTO.class
+                PAYLOAD_DEP_URL + "/satelliteMetrics", satelliteMetricsDTO, null
         );
     }
 

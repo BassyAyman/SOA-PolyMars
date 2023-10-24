@@ -69,7 +69,7 @@ echo "Launchpad Service..."
 test_get "$LAUNCHPAD_SERVICE/rocketCheck" "OK"
 echo "--------------------"
 echo "Command Service..."
-test_get "$COMMAND_SERVICE/launch" "GO Order, everything ok"
+test_get "$COMMAND_SERVICE/startMission" "GO Order, everything ok"
 echo "--------------------"
 #FUEL_DATA='{"fuelVolume":8}'
 #echo "StagingService avec fuelVolume <= 8..."

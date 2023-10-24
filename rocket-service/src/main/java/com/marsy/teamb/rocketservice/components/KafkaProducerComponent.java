@@ -14,11 +14,18 @@ public class KafkaProducerComponent {
     @Autowired
     private KafkaTemplate<String, String> stringKafkaTemplate;
 
+    @Autowired
+    private KafkaTemplate<String, String> missionInfoKafkaTemplate;
+
     public void sendToCommandLogs(String log){
         kafkaTemplate.send("commandLog", MarsyLog.builder().service("rocket").message(log).build());
     }
 
     public void sendMsgToWebCaster(String msg){
         stringKafkaTemplate.send("messageToCaster", msg);
+    }
+
+    public void sendMissionIDToCommandService(String missionID) {
+        missionInfoKafkaTemplate.send("missionInfo", missionID);
     }
 }

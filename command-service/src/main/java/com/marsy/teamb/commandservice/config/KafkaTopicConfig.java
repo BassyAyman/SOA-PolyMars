@@ -13,4 +13,15 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("commandLog")
                 .build();
     }
+
+    @Bean
+    public NewTopic missionStatusTopic(){
+        return TopicBuilder.name("missionStatus")
+                .build();
+    }
+
+    @Bean NewTopic anomaliesTriggers(){
+        return TopicBuilder.name("MissionError")
+                .build();
+    }
 }

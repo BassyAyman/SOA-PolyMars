@@ -1,7 +1,8 @@
 package com.marsy.teamb.rocketservice.components;
 
+import com.marsy.teamb.rocketservice.logger.CustomLogger;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,8 @@ public class Sensors {
 
     private static final Logger LOGGER = Logger.getLogger(Sensors.class.getSimpleName());
 
+    private final static CustomLogger DISPLAY = new CustomLogger(Sensors.class);
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -34,6 +37,9 @@ public class Sensors {
 
     //MOCK: to simulate a problem
     public static boolean isFine = true;
+
+    //MOCK: to simulate rocket destruction
+    public static boolean isDestroyed = false;
 
     //MOCK
     public static boolean engineOn = false;
@@ -56,6 +62,31 @@ public class Sensors {
     //MOCK: pressure sensor in Pa
     private static double pressure = 0;
 
+    public static void startRocketClock() {
+        if (isLaunched) {
+            LOGGER.log(Level.SEVERE, "Error: cannot launch rocket because it is already launched");
+            DISPLAY.logIgor("Error: cannot launch rocket because it is already launched");
+        }
+        isLaunched = true;
+        launchDateTime = LocalDateTime.now();
+    }
+
+    @PostConstruct
+    public void init() {
+        Timer timer = new Timer();
+        TimerTask updateMetricsTask = new TimerTask() {
+            @Override
+            public void run() {
+                updateMetrics();
+            }
+        };
+        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
+    }
+
+    public String consultMissionID() {
+        return launchDateTime.toString();
+    }
+
     public double consultAltitude() {
         return altitude;
     }
@@ -76,6 +107,9 @@ public class Sensors {
 
     //MOCK: update metrics (called every second)
     private static void updateMetrics() {
+        if (!isLaunched) {
+            return;
+        }
         if (altitude < MAX_ALTITUDE) {
             altitude += 100000;
         }
@@ -90,20 +124,21 @@ public class Sensors {
         pressure = 0.5 * getAirDensity() * Math.pow(velocity, 2);
     }
 
-    public static void startRocketClock() {
-        if (isLaunched) {
-            LOGGER.log(Level.SEVERE, "Error: cannot launch rocket because it is already launched");
-        }
-        isLaunched = true;
-        launchDateTime = LocalDateTime.now();
-        Timer timer = new Timer();
-        TimerTask updateMetricsTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateMetrics();
-            }
-        };
-        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
+    public void reset(){
+        LOGGER.log(Level.INFO, "Resetting rocket");
+        DISPLAY.logIgor("Resetting rocket");
+        launchDateTime = null;
+        isLaunched = false;
+        isFine = true;
+        isDestroyed = false;
+        engineOn = false;
+        isEngineThrottledDown = false;
+        isBoosterDropped = false;
+        isPayloadDropped = false;
+        fuelVolume = 150;
+        altitude = 0;
+        velocity = 0;
+        pressure = 0;
     }
 
     public double consultPressure() {
@@ -127,25 +162,27 @@ public class Sensors {
         return isFine;
     }
 
-    public void autoDestruct() {
-        try {
-            // Sleep for 1 second
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.INFO, "Error: cannot sleep 1s before destructing the rocket");
-        }
-        int exitCode = SpringApplication.exit(applicationContext, () -> 0);
-        System.exit(exitCode);
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
+
+    public void autoDestruct() {
+        isDestroyed = true;
+    }
+
+    public void mockVelocityGettingLess(){velocity = velocity - 2500;}
 
     public void stopRocketEngine() {
         LOGGER.log(Level.INFO, "Rocket engine stopped");
+        DISPLAY.logIgor("Rocket engine stopped");
     }
 
     public void dropBooster() {
         LOGGER.log(Level.INFO, "Staging booster");
+        DISPLAY.logIgor("Staging booster");
         isBoosterDropped = true;
         LOGGER.log(Level.INFO, "Second engine starting");
+        DISPLAY.logIgor("Second engine starting");
         engineOn = true;
     }
 
@@ -164,27 +201,32 @@ public class Sensors {
     public void throttleDownEngine() {
         if (!isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling down engine for Max Q phase.");
+            DISPLAY.logIgor("Throttling down engine for Max Q phase.");
             isEngineThrottledDown = true;
 
             velocity *= 0.8;
         } else {
             LOGGER.log(Level.WARNING, "Engine is already throttled down.");
+            DISPLAY.logIgor("Engine is already throttled down.");
         }
     }
 
     public void throttleUpEngine() {
         if (isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling up engine after Max Q phase.");
+            DISPLAY.logIgor("Throttling up engine after Max Q phase.");
             isEngineThrottledDown = false;
 
             velocity *= 1.25;
         } else {
             LOGGER.log(Level.WARNING, "Engine is not in throttled down state.");
+            DISPLAY.logIgor("Engine is not in throttled down state.");
         }
     }
 
     public boolean isMaxQReached() {
         LOGGER.log(Level.INFO, "Checking if Max Q is reached...");
+        DISPLAY.logIgor("Checking if Max Q is reached...");
         // pressure equivalent for MAX_VELOCITY * 0.95
         double maxPressure = 0.5 * 1.225 * Math.pow(MAX_VELOCITY * 0.95, 2);
         double pressure = consultPressure();
@@ -192,8 +234,10 @@ public class Sensors {
         boolean maxQ = pressure >= maxPressure;
         if (maxQ) {
             LOGGER.log(Level.INFO, "Max Q reached.");
+            DISPLAY.logIgor("Max Q reached.");
         } else {
             LOGGER.log(Level.INFO, "Max Q not reached.");
+            DISPLAY.logIgor("Max Q not reached.");
         }
         return maxQ;
     }

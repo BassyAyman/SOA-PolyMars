@@ -11,22 +11,47 @@ services:
   mongo-logs:
     image: mongo:6.0
     container_name: logs-storage
-    restart: always
     networks:
       - marsy-net
 
   # PostGresDB for Telemetry Service
-  postgres:
-    image: postgres:latest
+  postgres-master:
+    image: docker.io/bitnami/postgresql:11-debian-10
     container_name: telemetry-database
     environment:
-      - POSTGRES_PASSWORD=postgrespass
-      - POSTGRES_USER=postgresuser
-      - POSTGRES_DB=telemetry-db
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=telemetry_db
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "5432:5432"
     volumes:
-      - backend:/home/telemetry/data/bd
+      - postgresql_master_data:/bitnami/postgresql
+    networks:
+      - marsy-net
+
+  # PostGresDB slave read only for Calculator service
+  postgres-slave:
+    image: docker.io/bitnami/postgresql:11-debian-10
+    container_name: telemetry-database-slave
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_MASTER_HOST=postgres-master
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    depends_on:
+      - postgres-master
     networks:
       - marsy-net
 
@@ -108,7 +133,7 @@ services:
     networks:
       - marsy-net
     depends_on:
-      - postgres
+      - postgres-master
 
   staging-service:
     container_name: staging-service
@@ -146,10 +171,21 @@ services:
     networks:
       - marsy-net
 
+  calculator-service:
+    container_name: calculator-service
+    build:
+      context: ./calculator-service
+    ports:
+      - "8092:8080"
+    networks:
+      - marsy-net
+    depends_on:
+      - postgres-slave
+
 networks:
   marsy-net:
     driver: bridge
 
 volumes:
-  backend:
+  postgresql_master_data:
 

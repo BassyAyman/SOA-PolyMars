@@ -1,6 +1,7 @@
 package com.marsy.teamb.rocketservice.components;
 
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
+import com.marsy.teamb.rocketservice.logger.CustomLogger;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,9 +21,11 @@ public class TelemetryProxy {
 
     private static final Logger LOGGER = Logger.getLogger(TelemetryProxy.class.getSimpleName());
 
+    private static final CustomLogger DISPLAY = new CustomLogger(TelemetryProxy.class);
+
     private final static String TELEMETRY_API_URL = "http://telemetry-service:8080";
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @PostConstruct
     public void init() {
@@ -37,11 +40,12 @@ public class TelemetryProxy {
         if (sensors.isBoosterDropped() && sensors.isPayloadDropped()) {
             return; //do not send data when payload and booster detached
         }
-        LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
+        //LOGGER.log(Level.INFO, "Sending metrics to telemetry service");
         //producerComponent.sendToCommandLogs("Sending metrics to telemetry service");
         try {
             restTemplate.postForEntity(TELEMETRY_API_URL + "/rocketMetrics",
                     new RocketMetricsDTO(
+                            sensors.consultMissionID(),
                             sensors.consultAltitude(),
                             sensors.consultVelocity(),
                             sensors.consultFuelVolume(),

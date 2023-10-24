@@ -3,6 +3,8 @@ package com.marsy.teamb.telemetryservice.interfaces;
 import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
 
+import java.util.List;
+
 public interface HardwareRocketSender {
 
     /**
@@ -16,11 +18,4 @@ public interface HardwareRocketSender {
      * @param data the Hardware data related to the rocket
      */
     String sendOrbitMetric(RocketHardwareData data);
-
-    /**
-     * send boolean value of a probleme in the rocket to the command center so they decide on
-     * if they explose or not the rocket
-     * @param data the Hardware data related to the rocket
-     */
-    void sendCrashValue(RocketHardwareData data);
 }
