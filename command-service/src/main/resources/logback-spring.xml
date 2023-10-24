@@ -14,11 +14,10 @@
         </encoder>
     </appender>
 
-    <!--
     <appender name="STDOUT2" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator name="igorMarkerEvaluator">
-                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("ALL</expression>
+            <evaluator name="debugMarkerEvaluator">
+                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("ALL");</expression>
             </evaluator>
             <onMismatch>DENY</onMismatch>
             <onMatch>NEUTRAL</onMatch>
@@ -26,15 +25,14 @@
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-    </appender> -->
+    </appender>
 
     <!-- Just the relevant parts are shown -->
-    <logger name="com.marsy.teamb.commandservice" level="INFO" additivity="false">
+    <logger name="com.marsy.teamb" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <!-- <appender-ref ref="STDOUT2"/> -->
     </logger>
     <!-- deny all other logs -->
     <root level="OFF">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDOUT2"/>
     </root>
 </configuration>
