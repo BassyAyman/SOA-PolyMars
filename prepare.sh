@@ -132,6 +132,19 @@ wait_on_health() {
     echo "Service $2 is up and running at $1"
 }
 
+configure_db() {
+  sleep 5
+  # Configure PostgreSQL and restart containers
+  echo "Setting up PostgreSQL..."
+  # CREATE USER IF NOT EXISTS
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "CREATE USER reading_user WITH PASSWORD 'reading_pass';"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT CONNECT ON DATABASE telemetry_db TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT USAGE ON SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reading_user;"
+}
+
 create_directory "app"
 install_package "curl"
 install_package "wget"
@@ -166,15 +179,7 @@ fi
 echo "Docker containers started."
 
 echo "waiting the database run"
-sleep 5
-# Configure PostgreSQL and restart containers
-echo "Setting up PostgreSQL..."
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "CREATE USER reading_user WITH PASSWORD 'reading_pass';"
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT CONNECT ON DATABASE telemetry_db TO reading_user;"
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO reading_user;"
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO reading_user;"
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT USAGE ON SCHEMA public TO reading_user;"
-docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reading_user;"
+configure_db
 echo "PostgreSQL configured."
 
 
@@ -188,5 +193,5 @@ wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
-wait_on_health http://localhost:8091 calculator-service
+# wait_on_health http://localhost:8091 calculator-service
 echo "All services are up and running."

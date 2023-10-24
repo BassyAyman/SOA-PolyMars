@@ -25,7 +25,7 @@ public class PayloadProxy implements IPayloadProxy {
     @Override
     public void sendDetachOrder() {
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: detach payload");
-        DISPLAY.logIgor("[EXTERNAL CALL] to rocket-service: detach payload");
+        DISPLAY.log("[EXTERNAL CALL] to rocket-service: detach payload");
         producerComponent.sendToCommandLogs("[EXTERNAL CALL] to rocket-service: detach payload");
         try {
             restTemplate.put(ROCKET_SERVICE+"/payloadDetach", "Detach request");

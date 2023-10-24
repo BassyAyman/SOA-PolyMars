@@ -1,6 +1,7 @@
 package com.marsy.teamb.controllers;
 
 import com.marsy.teamb.components.WeatherService;
+import com.marsy.teamb.logger.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +22,9 @@ public class WeatherServiceController {
     public static final String BASE_URI = "/";
     private static final String WEATHER_CHECK = "/checkWeather";
     private static final Logger LOGGER = Logger.getLogger(WeatherServiceController.class.getSimpleName());
+
+    private static final CustomLogger DISPLAY = new CustomLogger(WeatherServiceController.class);
+
     @Autowired
     WeatherService weatherService;
 
@@ -33,7 +37,8 @@ public class WeatherServiceController {
     public ResponseEntity<String> checkLaunching() {
         if (weatherService == null) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "Weather service is null");
+                // LOGGER.log(Level.SEVERE, "Weather service is null");
+                DISPLAY.log("Weather service is null");
             }
             return ResponseEntity.ok("Ko");
         }

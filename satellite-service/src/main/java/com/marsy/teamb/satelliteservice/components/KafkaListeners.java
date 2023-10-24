@@ -25,7 +25,7 @@ public class KafkaListeners {
     @KafkaListener(topics = "missionStatus")
     void listener(String status) throws JsonProcessingException {
         LOGGER.info("Received mission status: " + status);
-        DISPLAY.logIgor("Received mission status: " + status);
+        DISPLAY.log("Received mission status: " + status);
         if ((status.split(" ")[0]).equals("start")) {
             sensors.startNewMission();
         }

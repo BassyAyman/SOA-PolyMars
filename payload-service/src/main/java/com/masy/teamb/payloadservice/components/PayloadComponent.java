@@ -38,7 +38,7 @@ public class PayloadComponent implements IPayload {
                 orbitDataDTO.velocity() > AIMED_VELOCITY ){
             // Detach order to the Rocket Service
             LOGGER.log(Level.INFO, "Good orbit reached");
-            DISPLAY.logIgor("Good orbit reached");
+            DISPLAY.log("Good orbit reached");
             try {
                 producerComponent.sendToCommandLogs("Good orbit reached");
                 payloadProxy.sendDetachOrder();

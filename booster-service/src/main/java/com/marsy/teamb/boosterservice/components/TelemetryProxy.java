@@ -45,7 +45,7 @@ public class TelemetryProxy {
                     ), null);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while sending metrics to telemetry service. Verify if the service is running.");
-            DISPLAY.logIgor("Error while sending metrics to telemetry service. Verify if the service is running.");
+            DISPLAY.log("Error while sending metrics to telemetry service. Verify if the service is running.");
         }
     }
 }

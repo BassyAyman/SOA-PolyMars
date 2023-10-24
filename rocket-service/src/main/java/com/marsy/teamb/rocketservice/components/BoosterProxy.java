@@ -24,7 +24,7 @@ public class BoosterProxy {
 
     public void dropBooster() {
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to boster-service: leave rocket");
-        DISPLAY.logIgor("[EXTERNAL CALL] to boster-service: leave rocket");
+        DISPLAY.log("[EXTERNAL CALL] to boster-service: leave rocket");
         producerComponent.sendToCommandLogs("[EXTERNAL CALL] to boster-service: leave rocket");
         restTemplate.put(BOOSTER_API_URL + "/leaveRocket", null);
     }

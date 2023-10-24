@@ -77,16 +77,16 @@ public class Sensors {
     public void leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.INFO, "Received order to leave but already detached");
-            DISPLAY.logIgor("Received order to leave but already detached");
+            DISPLAY.log("Received order to leave but already detached");
             producerComponent.sendToCommandLogs("Received order to leave but already detached");
             return; // If already detached ignoring detach order
         }
         launchDateTime = LocalDateTime.now();
         isDetached = true;
         LOGGER.log(Level.INFO, "[INTERNAL] Leaving rocket");
-        DISPLAY.logIgor("[INTERNAL] Leaving rocket");
+        DISPLAY.log("[INTERNAL] Leaving rocket");
         LOGGER.log(Level.INFO, "[INTERNAL] Start to send metrics data to Payload Department");
-        DISPLAY.logIgor("[INTERNAL] Start to send metrics data to Payload Department");
+        DISPLAY.log("[INTERNAL] Start to send metrics data to Payload Department");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Leaving rocket");
         producerComponent.sendToCommandLogs("[INTERNAL(to satellite)] Start to send metrics data to Payload Department");
         startSendingMetrics();
@@ -112,7 +112,7 @@ public class Sensors {
             if (this.consultElapsedTime() > 10) {
                 // End of this mission and get ready for the next one
                 LOGGER.log(Level.INFO, "[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
-                DISPLAY.logIgor("[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
+                DISPLAY.log("[INTERNAL] Mission " + this.consultMissionID() + " is finished with success");
                 producerComponent.sendToCommandLogs("[INTERNAL] Mission " + this.consultMissionID() +" is finished with success");
                 this.startNewMission();
             }
@@ -122,7 +122,7 @@ public class Sensors {
     public void startNewMission(){
         if (isDetached) {
             LOGGER.log(Level.INFO, "[INTERNAL] Get ready for a new mission");
-            DISPLAY.logIgor("[INTERNAL] Get ready for a new mission");
+            DISPLAY.log("[INTERNAL] Get ready for a new mission");
             isDetached = false;
             launchDateTime = null;
             missionID = "";
