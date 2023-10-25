@@ -126,7 +126,7 @@ install_docker_compose() {
 compile_dir() {
     echo "Preparing $1..."
     (cd "$1" && mvn clean package -DskipTests)
-    cd ..
+    echo "$1 prepared."
 }
 
 wait_on_health() {
