@@ -13,8 +13,8 @@ create_directory() {
 install_package() {
     # if arch linux, pass
     if [ -f /etc/arch-release ]; then
-        echo "Arch Linux detected. Skipping..."
-        return
+        sudo pacman -S "$1" || { echo "$1 installation failed."; exit 1; }
+        echo "$1 installed."
     fi
     if ! command -v "$1" > /dev/null; then
         sudo apt install -y "$1" || { echo "$1 installation failed."; exit 1; }
