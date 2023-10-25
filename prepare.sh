@@ -167,6 +167,7 @@ install_docker
 install_docker_compose
 
 echo "Compiling services..."
+compile_dir "calculator-service"
 compile_dir "weather-service"
 compile_dir "rocket-service"
 compile_dir "command-service"
@@ -177,7 +178,6 @@ compile_dir "staging-service"
 compile_dir "satellite-service"
 compile_dir "booster-service"
 compile_dir "webcaster-service"
-compile_dir "calculator-service"
 echo "Services compiled."
 
 echo "Starting Docker containers..."
