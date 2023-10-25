@@ -13,8 +13,12 @@ create_directory() {
 install_package() {
     # if arch linux, pass
     if [ -f /etc/arch-release ]; then
-        sudo pacman -S "$1" || { echo "$1 installation failed."; exit 1; }
-        echo "$1 installed."
+        if ! command -v "$1" > /dev/null; then
+            sudo pacman -S "$1" || { echo "$1 installation failed."; exit 1; }
+            echo "$1 installed."
+        else
+            echo "$1 is already installed."
+        fi
     fi
     if ! command -v "$1" > /dev/null; then
         sudo apt install -y "$1" || { echo "$1 installation failed."; exit 1; }
@@ -146,12 +150,16 @@ configure_db() {
 }
 
 create_directory "app"
+
 install_package "curl"
 install_package "wget"
 install_package "tmux"
 install_package "bc"
 install_package "jq"
-install_package "ncurses-bin"
+# if ubuntu, install ncurses-bin
+if ! command -v tput &> /dev/null; then
+    install_package "ncurses-bin"
+fi
 install_java_17
 install_maven
 install_docker

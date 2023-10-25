@@ -10,8 +10,10 @@ tmux kill-session -t mysession 2>/dev/null
 tmux new-session -d -s mysession
 
 tmux split-window -v
-tmux resize-pane -y 0
+tmux resize-pane -y 1
 tmux set -g status off
+
+tmux set-hook -g pane-resized 'select-pane -t 1; resize-pane -y 1'
 
 tmux send-keys -t mysession:0.0 './scripts/log_displayIgor.sh' C-m
 tmux send-keys -t mysession:0.1 C-l
