@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -o pipefail
 
 create_directory() {
     if [ ! -d "$1" ]; then
@@ -117,7 +117,7 @@ install_docker_compose() {
         sudo systemctl enable --now docker
         sudo usermod -aG docker "${USER:-$(whoami)}"
         newgrp docker
-        echo "Docker Compose installed."
+        echo "Docker Compose installed."ocker Compose installed.
     else
         echo "Docker Compose is already installed."
     fi
