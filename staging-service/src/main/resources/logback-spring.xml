@@ -2,26 +2,28 @@
 <configuration>
     <!-- Appender for Console Output -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator name="igorMarkerEvaluator">
                 <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("IGOR");</expression>
             </evaluator>
             <onMismatch>DENY</onMismatch>
             <onMatch>NEUTRAL</onMatch>
-        </filter>
+        </filter> -->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT2" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator name="debugMarkerEvaluator">
                 <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("ALL");</expression>
             </evaluator>
             <onMismatch>DENY</onMismatch>
             <onMatch>NEUTRAL</onMatch>
-        </filter>
+        </filter> -->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
@@ -32,7 +34,7 @@
         <appender-ref ref="STDOUT"/>
     </logger>
     <!-- deny all other logs -->
-    <root level="OFF">
-        <appender-ref ref="STDOUT2"/>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

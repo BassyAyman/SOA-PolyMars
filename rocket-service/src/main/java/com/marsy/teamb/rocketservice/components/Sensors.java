@@ -87,6 +87,9 @@ public class Sensors {
     }
 
     public String consultMissionID() {
+        if (launchDateTime == null) {
+            return "No mission ID";
+        }
         return launchDateTime.toString();
     }
 

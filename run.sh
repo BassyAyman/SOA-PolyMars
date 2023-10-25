@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Starting the demo..."
+sleep 2
+echo "Okay let's go..."
+
 set -f
 tmux kill-session -t mysession 2>/dev/null
 
