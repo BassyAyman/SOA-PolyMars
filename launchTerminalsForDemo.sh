@@ -42,3 +42,7 @@ screen_height=$(xdpyinfo | awk '/dimensions/{print $2}' | awk -Fx '{print $2}')
 
 wmctrl -r "Webcaster" -e 0,0,0,$((screen_width*40/100)),"$screen_height"
 wmctrl -r "IGOR_Corporation" -e 0,$((screen_width*40/100)),0,$((screen_width*60/100)),"$screen_height"
+
+# Move the terminals to top
+wmctrl -r "Webcaster" -b add,above
+wmctrl -r "IGOR_Corporation" -b add,above
