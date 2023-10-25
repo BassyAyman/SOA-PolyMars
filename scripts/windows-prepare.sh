@@ -56,3 +56,4 @@ wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
 wait_on_health http://localhost:8090 webcaster-service
+# wait_on_health http://localhost:8091 calculator-service

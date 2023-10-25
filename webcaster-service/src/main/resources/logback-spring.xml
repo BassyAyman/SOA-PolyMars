@@ -3,8 +3,9 @@
     <!-- Appender for Console Output -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator name="igorMarkerEvaluator">
-                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("IGOR");</expression>
+            <evaluator name="webcasterMarkerEvaluator">
+                <expression>return event.getMarker() != null &amp;&amp; event.getMarker().contains("webcaster");
+                </expression>
             </evaluator>
             <onMismatch>DENY</onMismatch>
             <onMatch>NEUTRAL</onMatch>

@@ -9,7 +9,7 @@ tmux split-window -v
 tmux resize-pane -y 0
 tmux set -g status off
 
-tmux send-keys -t mysession:0.0 './scripts/follow-logs.sh' C-m
+tmux send-keys -t mysession:0.0 './scripts/log_displayIgor.sh' C-m
 tmux send-keys -t mysession:0.1 C-l
 tmux send-keys -t mysession:0.1 './scripts/follow-metrics.sh' C-m
 

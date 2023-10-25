@@ -11,9 +11,9 @@ public class CustomLogger {
         this.logger = LoggerFactory.getLogger(clazz);
     }
 
-    public void logIgor(String message) {
+    public void log(String message) {
         if (logger.isDebugEnabled()) {
-            logger.debug(MarkerFactory.getMarker("ALL"), "[DEBUG] " + message);
+            logger.debug(MarkerFactory.getMarker("webcaster"), "[webcaster] " + message);
         }
     }
 }
