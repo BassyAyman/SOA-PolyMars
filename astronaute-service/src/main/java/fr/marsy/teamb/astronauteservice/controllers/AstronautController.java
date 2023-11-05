@@ -27,7 +27,7 @@ public class AstronautController {
     public ResponseEntity<String> startAstroHealth(){
         LOGGER.log(Level.INFO, "Astronaut equipment install OK...");
         producerComponent.sendToCommandLogs("Astronaut equipment install OK...");
-        // TODO : send to kafka
+        // TODO : send to kafka (modele metier)
         return ResponseEntity.ok("OK");
     }
 }
