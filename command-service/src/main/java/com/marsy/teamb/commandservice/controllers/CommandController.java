@@ -35,7 +35,7 @@ public class CommandController {
     public ResponseEntity<String> rocketLaunch() {
         producerComponent.startMission(new Date());
         LOGGER.log(Level.INFO, "Preparing for launching...");
-        DISPLAY.logIgor("Preparing for launching...");
+        DISPLAY.logIgor("\n---------------------\nPreparing for launching...");
         String result = command.readinessPoll();
         LOGGER.log(Level.INFO, "Command center decision: \"" + result + "\"");
         DISPLAY.logIgor("Command center decision: \"" + result + "\"");
