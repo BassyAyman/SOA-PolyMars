@@ -35,7 +35,7 @@ public class WeatherService implements WeatherStatus {
         DISPLAY.log("Current weather: " + weather);
         producer.sendLogToCommand("Current weather: " + weather);
         producer.sendMsgToWebCaster(
-                "today is a beatifull day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
+                "Today is a beautiful day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
         );
         return weather;
     }
