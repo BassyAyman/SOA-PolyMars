@@ -128,6 +128,12 @@ public class Sensors {
             fuelVolume = 0;
         }
         pressure = 0.5 * getAirDensity() * Math.pow(velocity, 2);
+
+        // is maxQ reached?
+        boolean maxQReached = isMaxQReached();
+        if (maxQReached) {
+            throttleDownEngine();
+        }
     }
 
     public void reset(){
@@ -147,7 +153,7 @@ public class Sensors {
         pressure = 0;
     }
 
-    public double consultPressure() {
+    public static double consultPressure() {
         double rho = getAirDensity();
         pressure = 0.5 * rho * Math.pow(velocity, 2);  // dynamic pressure formula and store the value
         return pressure;
@@ -205,16 +211,17 @@ public class Sensors {
         return isPayloadDropped;
     }
 
-    public void throttleDownEngine() {
+    public static void throttleDownEngine() {
         if (!isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling down engine for Max Q phase.");
-            DISPLAY.log("Throttling down engine for Max Q phase.");
+            DISPLAY.log("MaxQ is reached --> Throttling down engine for Max Q phase.");
             isEngineThrottledDown = true;
 
+            int oldVelocity = (int) velocity;
             velocity *= 0.8;
+            DISPLAY.log("Velocity decreased from " + oldVelocity + " to " + (int) velocity);
         } else {
-            LOGGER.log(Level.WARNING, "Engine is already throttled down.");
-            DISPLAY.log("Engine is already throttled down.");
+            LOGGER.log(Level.INFO, "Engine is already throttled down.");
         }
     }
 
@@ -231,20 +238,18 @@ public class Sensors {
         }
     }
 
-    public boolean isMaxQReached() {
+    public static boolean isMaxQReached() {
         LOGGER.log(Level.INFO, "Checking if Max Q is reached...");
-        DISPLAY.log("Checking if Max Q is reached...");
         // pressure equivalent for MAX_VELOCITY * 0.95
-        double maxPressure = 0.5 * 1.225 * Math.pow(MAX_VELOCITY * 0.95, 2);
+        double maxPressure = Math.pow(10, -50);
         double pressure = consultPressure();
 
-        boolean maxQ = pressure >= maxPressure;
+        boolean maxQ = pressure <= maxPressure;
+        LOGGER.log(Level.INFO, "Max Q: " + maxQ + " current pressure: " + pressure + " max pressure: " + maxPressure);
         if (maxQ) {
             LOGGER.log(Level.INFO, "Max Q reached.");
-            DISPLAY.log("Max Q reached.");
         } else {
             LOGGER.log(Level.INFO, "Max Q not reached.");
-            DISPLAY.log("Max Q not reached.");
         }
         return maxQ;
     }

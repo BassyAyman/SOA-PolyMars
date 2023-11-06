@@ -5,7 +5,7 @@ import com.masy.teamb.payloadservice.controllers.dto.SatelliteMetricsDTO;
 
 public interface IPayload {
 
-    public boolean isOrbitRight(OrbitDataDTO orbitDataDTO);
+    boolean isOrbitRight(OrbitDataDTO orbitDataDTO);
 
     void savePayloadMetricsToDB(SatelliteMetricsDTO metrics);
 
