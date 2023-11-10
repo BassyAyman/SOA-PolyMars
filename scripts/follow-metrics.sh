@@ -70,11 +70,13 @@ format_to_2f() {
 format_to_int() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
-        echo "$input" | awk '{printf "%.0f", $0}'
+        local rounded=$(echo "($input+0.5)/1" | bc) 2>/dev/null
+        echo $rounded
     else
         echo "Error"
     fi
 }
+
 
 
 send_get_request() {
