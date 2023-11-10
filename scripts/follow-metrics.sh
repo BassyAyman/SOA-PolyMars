@@ -55,16 +55,11 @@ get_color_for_scale() {
 
 format_to_2f() {
     local input="$1"
-    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
-        if [[ $input =~ [eE] ]]; then
-            # if the exponent is -100 or less, then print 0.00
-            if (( $(echo "$input < 1e-95" | bc -l 2>/dev/null) )); then
-                printf "~0"
-            else
-                printf "%s" "$input"
-            fi
+    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then            # if the exponent is -100 or less, then print 0.00
+        if (( $(echo "$input < 1e-95" | bc -l 2>/dev/null) )); then
+            printf "~0"
         else
-            printf "%.2f" "$input"
+            echo "$input" | awk '{printf "%.2e", $1}'
         fi
     else
         echo "Error"
