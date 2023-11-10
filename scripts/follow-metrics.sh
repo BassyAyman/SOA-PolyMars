@@ -126,8 +126,6 @@ send_get_request() {
 
 clear
 tput cr
-sleep 1
-tput cr
 while $running; do
     send_get_request
     sleep 0.1
