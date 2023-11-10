@@ -3,7 +3,7 @@
 sleep 5
 echo "Start first mission at $(date +"%T")"
 
-sleep 1
+sleep 2
 curl http://localhost:8083/startMission
 
 echo -e "Wait for 35 seconds to simulate a problem with the rocket... at $(date +"%T")"
