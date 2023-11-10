@@ -57,10 +57,15 @@ format_to_2f() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
         if [[ $input =~ [eE] ]]; then
-            printf "%e" "$input"
+            # if the exponent is -100 or less, then print 0.00
+            if (( $(echo "$input < 1e-95" | bc -l) )); then
+                printf "~0"
+            else
+                printf "%s" "$input"
+            fi
         else
             if (( $(echo "$input < 0.01" | bc -l) )); then
-                printf "%e" "$input"
+                printf "%s" "$input"
             else
                 printf "%.2f" "$input"
             fi
