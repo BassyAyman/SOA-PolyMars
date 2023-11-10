@@ -51,16 +51,13 @@ get_color_for_scale() {
     echo "\033[38;5;${color_idx}m"
 }
 
-
-
 format_to_2f() {
     local input="$1"
-    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then            # if the exponent is -100 or less, then print 0.00
-        if (( $(echo "$input < 1e-95" | bc -l 2>/dev/null) )); then
-            printf "~0"
-        else
-            echo "$input" | awk '{printf "%.2e", $1}'
-        fi
+    if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
+        echo "$input" | awk '{
+            if ($1 < 1e-90) print "~0";
+            else print $1;
+        }'
     else
         echo "Error"
     fi
@@ -71,13 +68,11 @@ format_to_int() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
         local rounded=$(echo "($input+0.5)/1" | bc) 2>/dev/null
-        echo $rounded
+        echo "$rounded"
     else
         echo "Error"
     fi
 }
-
-
 
 send_get_request() {
     response=$(curl -s --connect-timeout 5 http://localhost:8082/rocketMetrics)
@@ -138,7 +133,3 @@ while $running; do
     sleep 0.1
 done
 
-# boum
-tput bel
-sleep 1
-tput bel
