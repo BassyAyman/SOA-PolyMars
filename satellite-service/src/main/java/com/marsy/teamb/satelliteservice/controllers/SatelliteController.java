@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -33,7 +32,7 @@ public class SatelliteController {
 
     @PutMapping("/leaveRocket")
     public ResponseEntity<String> leaveRocket(@RequestBody String missionID) {
-        DISPLAY.logIgor("Mission ID that was received by controller : " + missionID);
+        DISPLAY.log("Mission ID that was received by controller : " + missionID);
         sensors.setMissionID(missionID);
         sensors.leaveRocket();
         return ResponseEntity.ok("Detach message received");

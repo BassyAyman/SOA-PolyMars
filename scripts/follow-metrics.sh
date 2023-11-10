@@ -56,10 +56,14 @@ get_color_for_scale() {
 format_to_2f() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
-        if (( $(echo "$input < 0.01" | bc -l) )); then
+        if [[ $input =~ [eE] ]]; then
             printf "%e" "$input"
         else
-            printf "%.2f" "$input"
+            if (( $(echo "$input < 0.01" | bc -l) )); then
+                printf "%e" "$input"
+            else
+                printf "%.2f" "$input"
+            fi
         fi
     else
         echo "Error"
@@ -70,7 +74,7 @@ format_to_2f() {
 format_to_int() {
     local input="$1"
     if [[ $input =~ ^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?$ ]]; then
-        printf "%.0f" "$input"
+        echo "$input" | awk '{printf "%.0f", $0}'
     else
         echo "Error"
     fi
@@ -128,6 +132,8 @@ send_get_request() {
 }
 
 clear
+tput cr
+sleep 1
 tput cr
 while $running; do
     send_get_request

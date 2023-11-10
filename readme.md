@@ -21,9 +21,6 @@
 * `follow-logs.sh` displays logs of all services from the moment the script is launched
 * `follow-metrics.sh` display the metrics of the rocket in real time
 
-#### For Windows users
-* use `windows-prepare.sh` to build and starts all the services
-* use `windows-run.sh` to execute the rocket launch scenario
 
 ## When Running
 When the `run.sh` is executed, the first scenario is launched, during this one, the basics flow of success
@@ -32,8 +29,10 @@ after a while, the booster is detached and the payload after. After 30 second, t
 scenario come next, with a rocket issue detected by telemetry that send message to commander,
 so they order the destruction of the rocket.
 
-## Scenario
-* The scenario consists in the following steps:
+## Scenarios
+
+### Scenario 1
+The scenario consists in the following steps:
 * Poll from the command center to check if everything is ok (weather and rocket)
 * Rocket launch
 * Booster stage from the rocket
@@ -41,6 +40,9 @@ so they order the destruction of the rocket.
 * Booster landing
 * Simulated critical problem on the rocket (an external call directly on the rocket service)
 * Order of command center to destroy the rocket and then auto-destruction (rocket-service auto-shutdown)
+
+### Scenario 2
+
 
 ## Distribution of points (400 in total)
 * Ayman Bassy: 100 points  

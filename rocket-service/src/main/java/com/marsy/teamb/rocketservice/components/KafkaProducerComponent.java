@@ -28,4 +28,8 @@ public class KafkaProducerComponent {
     public void sendMissionIDToCommandService(String missionID) {
         missionInfoKafkaTemplate.send("missionInfo", missionID);
     }
+
+    public void sendErrorCommand(String error) {
+        stringKafkaTemplate.send("MissionError", error);
+    }
 }

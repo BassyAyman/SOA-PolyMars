@@ -168,6 +168,8 @@ services:
       context: ./webcaster-service
     ports:
       - "8091:8080"
+    expose:
+      - "3000"
     networks:
       - marsy-net
 

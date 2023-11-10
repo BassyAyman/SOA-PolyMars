@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -o pipefail
 
 create_directory() {
     if [ ! -d "$1" ]; then
@@ -13,8 +13,12 @@ create_directory() {
 install_package() {
     # if arch linux, pass
     if [ -f /etc/arch-release ]; then
-        echo "Arch Linux detected. Skipping..."
-        return
+        if ! command -v "$1" > /dev/null; then
+            sudo pacman -S "$1" || { echo "$1 installation failed."; exit 1; }
+            echo "$1 installed."
+        else
+            echo "$1 is already installed."
+        fi
     fi
     if ! command -v "$1" > /dev/null; then
         sudo apt install -y "$1" || { echo "$1 installation failed."; exit 1; }
@@ -113,7 +117,7 @@ install_docker_compose() {
         sudo systemctl enable --now docker
         sudo usermod -aG docker "${USER:-$(whoami)}"
         newgrp docker
-        echo "Docker Compose installed."
+        echo "Docker Compose installed."ocker Compose installed.
     else
         echo "Docker Compose is already installed."
     fi
@@ -122,6 +126,7 @@ install_docker_compose() {
 compile_dir() {
     echo "Preparing $1..."
     (cd "$1" && mvn clean package -DskipTests)
+    echo "$1 prepared."
 }
 
 wait_on_health() {
@@ -132,19 +137,37 @@ wait_on_health() {
     echo "Service $2 is up and running at $1"
 }
 
+configure_db() {
+  sleep 5
+  # Configure PostgreSQL and restart containers
+  echo "Setting up PostgreSQL..."
+  # CREATE USER IF NOT EXISTS
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "CREATE USER reading_user WITH PASSWORD 'reading_pass';"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT CONNECT ON DATABASE telemetry_db TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "GRANT USAGE ON SCHEMA public TO reading_user;"
+  docker exec -it telemetry-database psql -U postgres -d telemetry_db -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO reading_user;"
+}
+
 create_directory "app"
+
 install_package "curl"
 install_package "wget"
 install_package "tmux"
 install_package "bc"
 install_package "jq"
-install_package "ncurses-bin"
+# if ubuntu, install ncurses-bin
+if ! command -v tput &> /dev/null; then
+    install_package "ncurses-bin"
+fi
 install_java_17
 install_maven
 install_docker
 install_docker_compose
 
 echo "Compiling services..."
+compile_dir "calculator-service"
 compile_dir "weather-service"
 compile_dir "rocket-service"
 compile_dir "command-service"
@@ -164,6 +187,11 @@ if ! docker-compose up --build -d; then
 fi
 echo "Docker containers started."
 
+echo "waiting the database run"
+configure_db
+echo "PostgreSQL configured."
+
+
 echo "Waiting for services to start..."
 wait_on_health http://localhost:8081 weather-service
 wait_on_health http://localhost:8082 rocket-service
@@ -174,4 +202,5 @@ wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
+# wait_on_health http://localhost:8091 calculator-service
 echo "All services are up and running."

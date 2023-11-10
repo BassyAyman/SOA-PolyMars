@@ -11,9 +11,9 @@ public class CustomLogger {
         this.logger = LoggerFactory.getLogger(clazz);
     }
 
-    public void logIgor(String message) {
-        if (logger.isErrorEnabled()) {
-            logger.error(MarkerFactory.getMarker("IGOR"), "[IGOR-CORP] " + message);
+    public void log(String message) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(MarkerFactory.getMarker("ALL"), "[DEBUG] " + message);
         }
     }
 }

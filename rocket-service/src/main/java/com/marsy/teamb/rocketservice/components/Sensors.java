@@ -26,6 +26,9 @@ public class Sensors {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private KafkaProducerComponent kafkaProducerComponent;
+
     //MOCK: a clock in the rocket
     public static LocalDateTime launchDateTime;
 
@@ -65,7 +68,7 @@ public class Sensors {
     public static void startRocketClock() {
         if (isLaunched) {
             LOGGER.log(Level.SEVERE, "Error: cannot launch rocket because it is already launched");
-            DISPLAY.logIgor("Error: cannot launch rocket because it is already launched");
+            DISPLAY.log("Error: cannot launch rocket because it is already launched");
         }
         isLaunched = true;
         launchDateTime = LocalDateTime.now();
@@ -84,6 +87,9 @@ public class Sensors {
     }
 
     public String consultMissionID() {
+        if (launchDateTime == null) {
+            return "No mission ID";
+        }
         return launchDateTime.toString();
     }
 
@@ -122,11 +128,17 @@ public class Sensors {
             fuelVolume = 0;
         }
         pressure = 0.5 * getAirDensity() * Math.pow(velocity, 2);
+
+        // is maxQ reached?
+        boolean maxQReached = isMaxQReached();
+        if (maxQReached) {
+            throttleDownEngine();
+        }
     }
 
     public void reset(){
         LOGGER.log(Level.INFO, "Resetting rocket");
-        DISPLAY.logIgor("Resetting rocket");
+        DISPLAY.log("Resetting rocket");
         launchDateTime = null;
         isLaunched = false;
         isFine = true;
@@ -141,7 +153,7 @@ public class Sensors {
         pressure = 0;
     }
 
-    public double consultPressure() {
+    public static double consultPressure() {
         double rho = getAirDensity();
         pressure = 0.5 * rho * Math.pow(velocity, 2);  // dynamic pressure formula and store the value
         return pressure;
@@ -156,6 +168,7 @@ public class Sensors {
 
     public void detectProblem() {
         isFine = false;
+        kafkaProducerComponent.sendErrorCommand("hard");
     }
 
     public boolean isFine() {
@@ -174,15 +187,15 @@ public class Sensors {
 
     public void stopRocketEngine() {
         LOGGER.log(Level.INFO, "Rocket engine stopped");
-        DISPLAY.logIgor("Rocket engine stopped");
+        DISPLAY.log("Rocket engine stopped");
     }
 
     public void dropBooster() {
         LOGGER.log(Level.INFO, "Staging booster");
-        DISPLAY.logIgor("Staging booster");
+        DISPLAY.log("Staging booster");
         isBoosterDropped = true;
         LOGGER.log(Level.INFO, "Second engine starting");
-        DISPLAY.logIgor("Second engine starting");
+        DISPLAY.log("Second engine starting");
         engineOn = true;
     }
 
@@ -198,46 +211,45 @@ public class Sensors {
         return isPayloadDropped;
     }
 
-    public void throttleDownEngine() {
+    public static void throttleDownEngine() {
         if (!isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling down engine for Max Q phase.");
-            DISPLAY.logIgor("Throttling down engine for Max Q phase.");
+            DISPLAY.log("MaxQ is reached --> Throttling down engine for Max Q phase.");
             isEngineThrottledDown = true;
 
+            int oldVelocity = (int) velocity;
             velocity *= 0.8;
+            DISPLAY.log("Velocity decreased from " + oldVelocity + " to " + (int) velocity);
         } else {
-            LOGGER.log(Level.WARNING, "Engine is already throttled down.");
-            DISPLAY.logIgor("Engine is already throttled down.");
+            LOGGER.log(Level.INFO, "Engine is already throttled down.");
         }
     }
 
     public void throttleUpEngine() {
         if (isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling up engine after Max Q phase.");
-            DISPLAY.logIgor("Throttling up engine after Max Q phase.");
+            DISPLAY.log("Throttling up engine after Max Q phase.");
             isEngineThrottledDown = false;
 
             velocity *= 1.25;
         } else {
             LOGGER.log(Level.WARNING, "Engine is not in throttled down state.");
-            DISPLAY.logIgor("Engine is not in throttled down state.");
+            DISPLAY.log("Engine is not in throttled down state.");
         }
     }
 
-    public boolean isMaxQReached() {
+    public static boolean isMaxQReached() {
         LOGGER.log(Level.INFO, "Checking if Max Q is reached...");
-        DISPLAY.logIgor("Checking if Max Q is reached...");
         // pressure equivalent for MAX_VELOCITY * 0.95
-        double maxPressure = 0.5 * 1.225 * Math.pow(MAX_VELOCITY * 0.95, 2);
+        double maxPressure = Math.pow(10, -50);
         double pressure = consultPressure();
 
-        boolean maxQ = pressure >= maxPressure;
+        boolean maxQ = pressure <= maxPressure;
+        LOGGER.log(Level.INFO, "Max Q: " + maxQ + " current pressure: " + pressure + " max pressure: " + maxPressure);
         if (maxQ) {
             LOGGER.log(Level.INFO, "Max Q reached.");
-            DISPLAY.logIgor("Max Q reached.");
         } else {
             LOGGER.log(Level.INFO, "Max Q not reached.");
-            DISPLAY.logIgor("Max Q not reached.");
         }
         return maxQ;
     }

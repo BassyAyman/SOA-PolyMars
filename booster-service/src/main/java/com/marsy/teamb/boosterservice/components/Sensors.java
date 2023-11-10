@@ -72,11 +72,11 @@ public class Sensors {
     public void leaveRocket() {
         if (isDetached) {
             LOGGER.log(Level.SEVERE, "Error: cannot detach booster because it is already detach");
-            DISPLAY.logIgor("Error: cannot detach booster because it is already detach");
+            DISPLAY.log("Error: cannot detach booster because it is already detach");
             producerComponent.sendToCommandLogs("Error: cannot detach booster because it is already detach");
         }
         LOGGER.log(Level.INFO, "Leaving rocket");
-        DISPLAY.logIgor("Leaving rocket");
+        DISPLAY.log("Leaving rocket");
         producerComponent.sendToCommandLogs("Leaving rocket");
         isDetached = true;
         engineOn = true;
@@ -109,7 +109,7 @@ public class Sensors {
     }
 
     public void land() {
-        DISPLAY.logIgor("Landing...");
+        DISPLAY.log("Landing...");
         LOGGER.log(Level.INFO, "Booster flip maneuver...");
         producerComponent.sendToCommandLogs("Booster flip maneuver...");
         LOGGER.log(Level.INFO, "Booster entry burn....");

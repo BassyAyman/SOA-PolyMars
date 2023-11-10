@@ -23,7 +23,7 @@ public class WeatherService implements WeatherStatus {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Interrupted while simulating weather fetch delay", e);
-            DISPLAY.logIgor("Interrupted while simulating weather fetch delay");
+            DISPLAY.log("Interrupted while simulating weather fetch delay");
         }
 
         // Simulate fetching weather data
@@ -32,10 +32,10 @@ public class WeatherService implements WeatherStatus {
 
         String weather = WEATHER_CONDITIONS[index];
         LOGGER.log(Level.INFO, "Current weather: " + weather);
-        DISPLAY.logIgor("Current weather: " + weather);
+        DISPLAY.log("Current weather: " + weather);
         producer.sendLogToCommand("Current weather: " + weather);
         producer.sendMsgToWebCaster(
-                "today is a beatifull day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
+                "Today is a beautiful day, that quite a good thing, indeed the SpaceShip can GO TO MARS YOUHOU !!!!"
         );
         return weather;
     }
@@ -43,7 +43,7 @@ public class WeatherService implements WeatherStatus {
     @Override
     public String getWeather() {
         LOGGER.log(Level.INFO, "Fetching the weather...");
-        DISPLAY.logIgor("Fetching the weather...");
+        DISPLAY.log("Fetching the weather...");
         producer.sendLogToCommand("Fetching the weather...");
         String weather = currentWeather();
         if (weather.equals("Sunny"))

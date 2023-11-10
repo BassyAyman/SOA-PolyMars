@@ -26,7 +26,7 @@ public class SatelliteProxy {
 
     public void dropSatellite(String missionID) {
         LOGGER.log(Level.INFO, "[EXTERNAL CALL] to satellite-service: leave rocket");
-        DISPLAY.logIgor("[EXTERNAL CALL] to satellite-service: leave rocket");
+        DISPLAY.log("[EXTERNAL CALL] to satellite-service: leave rocket");
         producerComponent.sendToCommandLogs("[EXTERNAL CALL] to satellite-service: leave rocket");
 
         HttpEntity<String> requestEntity = new HttpEntity<>(missionID);
