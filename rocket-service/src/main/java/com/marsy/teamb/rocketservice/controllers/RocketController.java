@@ -1,9 +1,6 @@
 package com.marsy.teamb.rocketservice.controllers;
 
-import com.marsy.teamb.rocketservice.components.BoosterProxy;
-import com.marsy.teamb.rocketservice.components.KafkaProducerComponent;
-import com.marsy.teamb.rocketservice.components.SatelliteProxy;
-import com.marsy.teamb.rocketservice.components.Sensors;
+import com.marsy.teamb.rocketservice.components.*;
 import com.marsy.teamb.rocketservice.controllers.dto.RocketMetricsDTO;
 import com.marsy.teamb.rocketservice.logger.CustomLogger;
 import com.marsy.teamb.rocketservice.services.SocketCom;
@@ -40,10 +37,11 @@ public class RocketController {
 
     @Autowired
     BoosterProxy boosterProxy;
-
     @Autowired
     SatelliteProxy satelliteProxy;
 
+    @Autowired
+    AstronautProxy astronautProxy;
     @Autowired
     KafkaProducerComponent producerComponent;
 
@@ -93,6 +91,7 @@ public class RocketController {
         producerComponent.sendToCommandLogs("Ignition...");
         Sensors.startRocketClock();
         producerComponent.sendMissionIDToCommandService(sensors.consultMissionID());
+        astronautProxy.startAstroHealth();
         return ResponseEntity.ok("OK");
     }
 
@@ -114,6 +113,7 @@ public class RocketController {
         LOGGER.log(Level.INFO, "There is a problem with the rocket");
         DISPLAY.log("There is a problem with the rocket");
         producerComponent.sendToCommandLogs("There is a problem with the rocket");
+        astronautProxy.ejectAstronaut();
         this.sensors.detectProblem();
     }
 

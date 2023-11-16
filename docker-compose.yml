@@ -184,6 +184,15 @@ services:
     depends_on:
       - postgres-slave
 
+  astronaute-service:
+    container_name: astronaute-service
+    build:
+      context: ./astronaute-service
+    ports:
+      - "8093:8080"
+    networks:
+      - marsy-net
+
 networks:
   marsy-net:
     driver: bridge
