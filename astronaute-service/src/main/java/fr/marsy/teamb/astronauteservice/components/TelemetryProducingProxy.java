@@ -30,17 +30,24 @@ public class TelemetryProducingProxy {
 
     public void stopAstroHealthSend() {
         scheduler.shutdown();
+        astroHealthSensor.ejectAstronaut();
+    }
+
+    public void startAstroHealthOclock() {
+        astroHealthSensor.startAstroClock();
     }
 
     private void sendAstroHealthToTelemetryViaKafka(){
-        producerComponent.sendToAstroHealth(
-                new AstronautHealth(
-                        astroHealthSensor.consultMissionID(),
-                        astroHealthSensor.consultAstronauteName(),
-                        astroHealthSensor.consultHeartBeats(),
-                        astroHealthSensor.consultBloodPressure(),
-                        astroHealthSensor.consultElapsedTime()
-                )
-        );
+        if(astroHealthSensor.isIsLaunched()){
+            producerComponent.sendToAstroHealth(
+                    new AstronautHealth(
+                            astroHealthSensor.consultMissionID(),
+                            astroHealthSensor.consultAstronauteName(),
+                            astroHealthSensor.consultHeartBeats(),
+                            astroHealthSensor.consultBloodPressure(),
+                            astroHealthSensor.consultElapsedTime()
+                    )
+            );
+        }
     }
 }

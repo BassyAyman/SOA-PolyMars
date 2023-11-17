@@ -30,6 +30,7 @@ public class AstronautController {
     public ResponseEntity<String> startAstroHealth(){
         LOGGER.log(Level.INFO, "Astronaut equipment install OK...");
         producerComponent.sendToCommandLogs("Astronaut equipment install OK...");
+        telemetryProducingProxy.startAstroHealthOclock();
         telemetryProducingProxy.sendAstroHealth();
         return ResponseEntity.ok("OK");
     }

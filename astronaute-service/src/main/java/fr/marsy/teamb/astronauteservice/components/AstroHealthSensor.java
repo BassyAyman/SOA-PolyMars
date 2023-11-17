@@ -25,11 +25,20 @@ public class AstroHealthSensor {
     private static boolean isAstronauteEjected = false;
     private static final String astronauteName = "John Doe";
 
+    public void ejectAstronaut(){
+        LOGGER.log(Level.INFO, "Astronaut ejected from rocket...");
+        isAstronauteEjected = true;
+    }
+
+    public boolean isIsLaunched() {
+        return isLaunched;
+    }
+
     public int consultHeartBeats() {
-        return heartbeats;
+        return generateHeartBeats(heartbeats);
     }
     public int consultBloodPressure() {
-        return bloodPressure;
+        return generateBloodPresure(bloodPressure);
     }
     public String consultAstronauteName() {
         return astronauteName;
@@ -56,34 +65,7 @@ public class AstroHealthSensor {
         isAstronauteEjected = false;
     }
 
-    @PostConstruct
-    public void init() {
-        Timer timer = new Timer();
-        TimerTask updateMetricsTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateMetrics();
-            }
-        };
-        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
-    }
-
-    /**
-     * methode to generate random values for the sensors, called every second
-     */
-    public static void updateMetrics() {
-        if (!isLaunched) {
-            return;
-        } else if (isAstronauteEjected) {
-            return;
-        }
-        else{
-            generateHeartBeats();
-            generateBloodPresure();
-        }
-    }
-
-    public static void startAstroClock() {
+    public void startAstroClock() {
         if (isLaunched) {
             LOGGER.log(Level.SEVERE, "Error: rocket already launched");
         }
@@ -91,9 +73,9 @@ public class AstroHealthSensor {
         launchDateTime = LocalDateTime.now();
     }
 
-    private static void generateBloodPresure() {
-        heartbeats += randomGenerator.nextInt(11) - 5;
-        heartbeats = Math.max(60, Math.min(180, heartbeats));
+    private static int generateBloodPresure(int bloodPressure) {
+        bloodPressure += randomGenerator.nextInt(11) - 5;
+        return Math.max(60, Math.min(180, bloodPressure));
     }
 
     /**
@@ -101,8 +83,8 @@ public class AstroHealthSensor {
      * it generates a random delta between -5 and 5 and adds it to the previous value of the heartbeats
      * to be more realistic, the value is limited between 60 and 120
      */
-    private static void generateHeartBeats() {
+    private static int generateHeartBeats(int heartbeats) {
         heartbeats += randomGenerator.nextInt(11) - 5;
-        heartbeats = Math.max(60, Math.min(120, heartbeats));
+        return Math.max(60, Math.min(120, heartbeats));
     }
 }

@@ -17,25 +17,24 @@ import java.util.logging.Logger;
 public class KafkaListeners {
 
     private static final Logger LOGGER = Logger.getLogger(KafkaListeners.class.getSimpleName());
+
     @Autowired
-    private AstronautHealthRepository astroRepo;
-    @KafkaListener(topics = "astroHealth")
+    TelemetryOrchestratorMetrics orchestrator;
+
+    @KafkaListener(topics = "astroHealth", groupId = "astroBoy")
     public void listener(String log){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        AstronautHealth AstroHealth;
+        AstronautHealth astronautHealth;
         try {
-            AstroHealth = objectMapper.readValue(log, AstronautHealth.class);
+            astronautHealth = objectMapper.readValue(log, AstronautHealth.class);
         } catch (Exception e){
             LOGGER.log(Level.INFO,"[ERROR] something went wrong : " + e.getMessage());
             return;
         }
-        LOGGER.log(Level.INFO, "nouvelle metrics de kafka: "+ AstroHealth.toString());
-        saveToDB(AstroHealth);
-    }
-
-    @Transactional
-    private void saveToDB(AstronautHealth AstroHealth) {
-        astroRepo.save(AstroHealth);
+        if(astronautHealth != null){
+            LOGGER.log(Level.INFO, "nouvelle metrics de kafka: "+ astronautHealth);
+            orchestrator.processAstronautHealthStorage(astronautHealth);
+        }
     }
 }

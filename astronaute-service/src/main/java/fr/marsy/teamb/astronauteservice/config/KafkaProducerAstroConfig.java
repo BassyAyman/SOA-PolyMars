@@ -23,7 +23,7 @@ public class KafkaProducerAstroConfig {
      * methode of configuration that permit to send String to Kafka
      * @return rules over the server to send Strings
      */
-    public Map<String, Object> producerConfig(){
+    public Map<String, Object> producerAstroConfig(){
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, boostrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -37,15 +37,15 @@ public class KafkaProducerAstroConfig {
      * in the methode Factory change the Value to the wanted object
      */
     @Bean
-    public ProducerFactory<String, AstronautHealth> producerFactory(){
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+    public ProducerFactory<String, AstronautHealth> producerAstroFactory(){
+        return new DefaultKafkaProducerFactory<>(producerAstroConfig());
     }
 
     /**
      * methode to send message through kafka
      */
     @Bean
-    public KafkaTemplate<String, AstronautHealth> kafkaTemplate(ProducerFactory<String, AstronautHealth> producerFactory){
+    public KafkaTemplate<String, AstronautHealth> kafkaAstroTemplate(ProducerFactory<String, AstronautHealth> producerFactory){
         return new KafkaTemplate<>(producerFactory);
     }
 }
