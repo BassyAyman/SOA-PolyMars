@@ -141,9 +141,9 @@ public class RocketController {
         if (this.sensors.isDestroyed()) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
         }
-        if (Sensors.isMaxQReached()) {
+        if (this.sensors.isMaxQReached()) {
             LOGGER.log(Level.INFO, "MaxQ reached...");
-            Sensors.throttleDownEngine();
+            this.sensors.throttleDownEngine();
             return ResponseEntity.ok("Engine throttled down for Max Q phase.");
         }
         return ResponseEntity.ok("Max Q not reached.");

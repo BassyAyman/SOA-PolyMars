@@ -112,7 +112,7 @@ public class Sensors {
     }
 
     //MOCK: update metrics (called every second)
-    private static void updateMetrics() {
+    private void updateMetrics() {
         if (!isLaunched) {
             return;
         }
@@ -211,7 +211,7 @@ public class Sensors {
         return isPayloadDropped;
     }
 
-    public static void throttleDownEngine() {
+    public void throttleDownEngine() {
         if (!isEngineThrottledDown) {
             LOGGER.log(Level.INFO, "Throttling down engine for Max Q phase.");
             DISPLAY.log("MaxQ is reached --> Throttling down engine for Max Q phase.");
@@ -220,6 +220,7 @@ public class Sensors {
             int oldVelocity = (int) velocity;
             velocity *= 0.8;
             DISPLAY.log("Velocity decreased from " + oldVelocity + " to " + (int) velocity);
+            kafkaProducerComponent.sendToCommandLogs("Velocity decreased from " + oldVelocity + " to " + (int) velocity);
         } else {
             LOGGER.log(Level.INFO, "Engine is already throttled down.");
         }
@@ -238,7 +239,7 @@ public class Sensors {
         }
     }
 
-    public static boolean isMaxQReached() {
+    public boolean isMaxQReached() {
         LOGGER.log(Level.INFO, "Checking if Max Q is reached...");
         // pressure equivalent for MAX_VELOCITY * 0.95
         double maxPressure = Math.pow(10, -50);
