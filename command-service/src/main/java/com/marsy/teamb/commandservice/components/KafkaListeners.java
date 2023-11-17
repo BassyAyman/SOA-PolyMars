@@ -58,7 +58,7 @@ public class KafkaListeners {
 
     @KafkaListener(topics = "missionInfo")
     void listenOnMissionInfo(String missionID) {
-        DISPLAY.logIgor("marsy missionID received : " + missionID);
+        DISPLAY.logIgor("marsy missionID successfully initialized with : " + missionID);
         this.currentMission = missionID;
     }
 }

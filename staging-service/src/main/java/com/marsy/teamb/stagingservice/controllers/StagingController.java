@@ -28,8 +28,7 @@ public class StagingController {
 
     @PostMapping(path = "/fuelState")
     public ResponseEntity<String> shouldWeStage(@RequestBody FuelDataDTO fuelDto) {
-        if (fuelDto.getFuelVolume() <= 8) {
-            //todo: call only once
+        if (fuelDto.getFuelVolume() <= 8 && fuelDto.getFuelVolume() > 6) {
             try {
                 // LOGGER.log(Level.INFO, "[EXTERNAL CALL] to rocket-service: stage rocket");
                 // DISPLAY.logIgor("[EXTERNAL CALL] to rocket-service: stage rocket");
