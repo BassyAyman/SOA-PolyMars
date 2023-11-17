@@ -42,7 +42,7 @@ public class KafkaListeners {
             DISPLAY.logIgor("[ERROR] something went wrong : " + e.getMessage());
             return;
         }
-        LOGGER.log(Level.INFO, "nouveau message systeme: "+ marsyLog.toString());
+        DISPLAY.logIgor("Nouveau message systeme: "+ marsyLog.toString());
         // store to mongo db
         logsRepository.save(new MarsyLogForDB(currentMission, marsyLog.getService(), marsyLog.getMessage()));
     }
