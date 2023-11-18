@@ -11,24 +11,19 @@ tmux send-keys -t mysession './scripts/log_displayIgor.sh' C-m
 tmux split-window -h
 tmux send-keys -t mysession './scripts/log_webcaster.sh' C-m
 
-# Navigate back to the first pane before splitting for bottom panes
+# Select the first pane to split the bottom part
 tmux select-pane -t mysession:0.0
 
-# Create a new pane for follow-metrics.sh at the bottom
-tmux split-window -v -p 20
-tmux send-keys -t mysession './scripts/follow-metrics.sh' C-m
-
-# Resize bottom pane to a single line
-tmux resize-pane -t mysession:0.2 -y 1
+# Create a new pane at the bottom for follow-metrics.sh
+tmux split-window -v
+tmux resize-pane -t mysession:0.2 -y 1 # Resize to one line height
+tmux send-keys -t mysession:0.2 './scripts/follow-metrics.sh' C-m
 
 # Create another pane at the very bottom for log_astronaute.sh
-# Make sure to select the correct pane to split from, which should be follow-metrics.sh pane
-tmux select-pane -t mysession:0.2
+# This will be the last pane at index 0.3
 tmux split-window -v
-tmux send-keys -t mysession './scripts/log_astronaute.sh' C-m
-
-# Resize new bottom pane to a single line
-tmux resize-pane -t mysession:0.3 -y 1
+tmux resize-pane -t mysession:0.3 -y 1 # Resize to one line height
+tmux send-keys -t mysession:0.3 './scripts/log_astronaute.sh' C-m
 
 # Start the hidden session
 tmux new-session -d -s hidden_session
