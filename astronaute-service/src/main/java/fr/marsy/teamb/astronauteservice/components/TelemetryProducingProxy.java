@@ -11,34 +11,49 @@ import java.util.logging.Logger;
 
 @Component
 public class TelemetryProducingProxy {
-    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final Logger LOGGER = Logger.getLogger(TelemetryProducingProxy.class.getSimpleName());
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     @Autowired
     private AstroHealthSensor astroHealthSensor;
     @Autowired
     private KafkaProducerComponent producerComponent;
 
-    private static final Logger LOGGER = Logger.getLogger(TelemetryProducingProxy.class.getSimpleName());
-
     /**
      * Send astro health to telemetry every second via kafka bus
      */
-    public void sendAstroHealth(){
+    public synchronized void sendAstroHealth() {
+        if (scheduler.isShutdown()) {
+            LOGGER.warning("Attempted to schedule a task on a shut down scheduler");
+            producerComponent.sendToCommandLogs("Cannot send astro health, scheduler is shut down. :-) Be happy, life is short.");
+            return;
+        }
+
         LOGGER.info("Sending astro health to telemetry via kafka");
         Runnable task = this::sendAstroHealthToTelemetryViaKafka;
         scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 
-    public void stopAstroHealthSend() {
-        scheduler.shutdown();
+    public synchronized void stopAstroHealthSend() {
+        if (!scheduler.isShutdown()) {
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(15, TimeUnit.SECONDS)) {
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
         astroHealthSensor.ejectAstronaut();
     }
 
     public void startAstroHealthOclock() {
-        astroHealthSensor.startAstroClock();
+        AstroHealthSensor.startAstroClock();
     }
 
-    private void sendAstroHealthToTelemetryViaKafka(){
-        if(astroHealthSensor.isIsLaunched()){
+    private void sendAstroHealthToTelemetryViaKafka() {
+        if (astroHealthSensor.isIsLaunched()) {
             producerComponent.sendToAstroHealth(
                     new AstronautHealth(
                             astroHealthSensor.consultMissionID(),
