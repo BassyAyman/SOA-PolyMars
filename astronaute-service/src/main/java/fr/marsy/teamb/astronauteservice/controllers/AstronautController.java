@@ -1,9 +1,12 @@
 package fr.marsy.teamb.astronauteservice.controllers;
 
+import fr.marsy.teamb.astronauteservice.components.AstroHealthSensor;
 import fr.marsy.teamb.astronauteservice.components.KafkaProducerComponent;
 import fr.marsy.teamb.astronauteservice.components.TelemetryProducingProxy;
+import fr.marsy.teamb.astronauteservice.modeles.AstronautHealth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +28,8 @@ public class AstronautController {
     KafkaProducerComponent producerComponent;
     @Autowired
     TelemetryProducingProxy telemetryProducingProxy;
+    @Autowired
+    AstroHealthSensor astroHealthSensor;
 
     @PutMapping("/startAstroHealth")
     public ResponseEntity<String> startAstroHealth(){
@@ -40,5 +45,16 @@ public class AstronautController {
         LOGGER.log(Level.INFO, "Astronaut ejected from rocket...");
         producerComponent.sendToCommandLogs("Astronaut ejected from rocket...");
         telemetryProducingProxy.stopAstroHealthSend();
+    }
+
+    @GetMapping("/astroHealthMetrics")
+    public ResponseEntity<AstronautHealth> astroHealthMetrics() {
+        return ResponseEntity.ok(new AstronautHealth(
+                astroHealthSensor.consultMissionID(),
+                astroHealthSensor.consultAstronauteName(),
+                astroHealthSensor.consultHeartBeats(),
+                astroHealthSensor.consultBloodPressure(),
+                astroHealthSensor.consultElapsedTime()
+        ));
     }
 }
