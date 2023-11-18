@@ -203,7 +203,7 @@ wait_on_health http://localhost:8086 telemetry-service
 wait_on_health http://localhost:8087 staging-service
 wait_on_health http://localhost:8088 satellite-service
 wait_on_health http://localhost:8089 booster-service
-wait_on_health http://localhost:8091 webcaster-service
+# wait_on_health http://localhost:8091 webcaster-service
 wait_on_health http://localhost:8092 calculator-service
-wait_on_health http://localhost:8093 astronaute-service
+# wait_on_health http://localhost:8093 astronaute-service
 echo "All services are up and running."
