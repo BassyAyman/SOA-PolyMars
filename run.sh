@@ -4,24 +4,30 @@ tmux kill-session -t mysession 2>/dev/null
 
 tmux new-session -d -s mysession
 
-# First top left pane for log_display_igor.sh
+# Create top left pane for log_display_igor.sh
 tmux send-keys -t mysession:0.0 './scripts/log_displayIgor.sh' C-m
 
 # Split top pane horizontally for log_webcaster.sh
 tmux split-window -h
 tmux send-keys -t mysession:0.1 './scripts/log_webcaster.sh' C-m
 
-# Create a new horizontal pane at the bottom for follow-metrics.sh
+# Select the first pane to split for the bottom panes
 tmux select-pane -t mysession:0.0
+
+# Create the first bottom pane for follow-metrics.sh
 tmux split-window -v
-tmux resize-pane -D 10 # Resize to make it small enough for follow-metrics.sh
-tmux send-keys -t mysession:0.2 'sleep 1; ./scripts/follow-metrics.sh' C-m
+tmux select-layout even-vertical # This will even out the vertical splits, making room for the last split
+tmux send-keys -t mysession:0.2 './scripts/follow-metrics.sh' C-m
+
+# Resize the pane to the smallest possible, effectively making it one line
+tmux resize-pane -t mysession:0.2 -y 1
 
 # Split the bottom pane horizontally for log_astronaute.sh
-tmux select-pane -t mysession:0.2
-tmux split-window -v
-tmux resize-pane -D 1 # Resize to make it one line in height
+tmux split-window -h
 tmux send-keys -t mysession:0.3 './scripts/log_astronaute.sh' C-m
+
+# Resize the last pane to the smallest possible, effectively making it one line
+tmux resize-pane -t mysession:0.3 -y 1
 
 # Start the hidden session
 tmux new-session -d -s hidden_session
