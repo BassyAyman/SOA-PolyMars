@@ -24,7 +24,7 @@ public class TelemetryProducingProxy {
     public synchronized void sendAstroHealth() {
         if (scheduler.isShutdown()) {
             LOGGER.warning("Attempted to schedule a task on a shut down scheduler");
-            producerComponent.sendToCommandLogs("Cannot send astro health, scheduler is shut down. :-) Be happy, life is short.");
+            LOGGER.warning("Cannot send astro health, scheduler is shut down. :-) Be happy, life is short.");
             return;
         }
 
