@@ -23,7 +23,7 @@ public class AstroHealthSensor {
     private static int bloodPressure = 125; // default value
     private static boolean isLaunched = false;
     private static boolean isAstronauteEjected = false;
-    private static final String astronauteName = "John Doe";
+    private static final String astronauteName = "Thomas Pasquier";
 
     public void ejectAstronaut(){
         LOGGER.log(Level.INFO, "Astronaut ejected from rocket...");
