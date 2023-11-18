@@ -33,8 +33,7 @@ public class AstronautController {
 
     @PutMapping("/startAstroHealth")
     public ResponseEntity<String> startAstroHealth(){
-        LOGGER.log(Level.INFO, "Astronaut equipment install OK...");
-        producerComponent.sendToCommandLogs("Astronaut equipment install OK...");
+        LOGGER.log(Level.INFO, "ASTRO Astronaut equipment install OK...");
         telemetryProducingProxy.startAstroHealthOclock();
         telemetryProducingProxy.sendAstroHealth();
         return ResponseEntity.ok("OK");
@@ -42,8 +41,7 @@ public class AstronautController {
 
     @PutMapping("/ejectAstronaut")
     public void ejectAstronaut(){
-        LOGGER.log(Level.INFO, "Astronaut ejected from rocket...");
-        producerComponent.sendToCommandLogs("Astronaut ejected from rocket...");
+        LOGGER.log(Level.INFO, "ASTRO Astronaut ejected from rocket...");
         telemetryProducingProxy.stopAstroHealthSend();
     }
 
