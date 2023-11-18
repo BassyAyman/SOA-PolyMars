@@ -65,33 +65,6 @@ public class AstroHealthSensor {
         isAstronauteEjected = false;
     }
 
-    @PostConstruct
-    public void init() {
-        Timer timer = new Timer();
-        TimerTask updateMetricsTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateMetrics();
-            }
-        };
-        timer.scheduleAtFixedRate(updateMetricsTask, 0, 1000); // call task every second
-    }
-
-    /**
-     * methode to generate random values for the sensors, called every second
-     */
-    public static void updateMetrics() {
-        if (!isLaunched) {
-            return;
-        } else if (isAstronauteEjected) {
-            return;
-        }
-        else{
-            generateHeartBeats();
-            generateBloodPresure();
-        }
-    }
-
     public static void startAstroClock() {
         if (isLaunched) {
             LOGGER.log(Level.SEVERE, "Error: rocket already launched");
