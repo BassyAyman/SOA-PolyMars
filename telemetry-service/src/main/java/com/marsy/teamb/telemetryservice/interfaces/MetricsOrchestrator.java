@@ -1,5 +1,6 @@
 package com.marsy.teamb.telemetryservice.interfaces;
 
+import com.marsy.teamb.telemetryservice.modeles.AstronautHealth;
 import com.marsy.teamb.telemetryservice.modeles.BoosterHardwareData;
 import com.marsy.teamb.telemetryservice.modeles.RocketHardwareData;
 
@@ -18,5 +19,7 @@ public interface MetricsOrchestrator {
     void processRocketMetricStorage(RocketHardwareData dataRocketMetrics);
 
     void processBoosterMetricStorage(BoosterHardwareData boosterHardwareData);
+
+    void processAstronautHealthStorage(AstronautHealth astronautHealth);
 
 }
