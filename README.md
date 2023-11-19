@@ -38,6 +38,7 @@ The script divides the tmux window into multiple panes, each running a specific 
 * Top Right Pane: Runs log_webcaster.sh for webcaster specific logs.
 * Bottom Left Pane: Executes follow-metrics.sh, showing real-time metrics of the rocket.
 * Bottom Right Pane: Runs log_astronaute.sh, dedicated to astronaut metrics.
+  
 Additionally, the script creates a hidden session running the scenario.sh.
 If it fails because your computer is a potato powered laptop... you may need it to start it manually while letting the log terminal opened.
 
