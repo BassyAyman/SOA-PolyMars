@@ -60,9 +60,3 @@ The scenario consists in the following steps:
 * Booster landing
 * Simulated critical problem on the rocket (an external call directly on the rocket service)
 * Order of command center to destroy the rocket and then auto-destruction (rocket-service auto-shutdown)
-
-## Distribution of points (400 in total)
-* Ayman Bassy: 100 points  
-* Igor Melnyk: 100 points  
-* Tobias Bonifay: 100 points  
-* Mathieu Schalkwijk: 100 points
